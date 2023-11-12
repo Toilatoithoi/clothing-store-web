@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
-
+import '@/styles/globals.css'
+import Header from '@/components/Header'
+import '@/styles/index.scss';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -16,7 +17,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <div className='flex flex-col h-screen w-screen'>
+          {/* <div className='hidden'>{children}</div> */}
+          <header className="bg-red-400  min-h-[11.5rem]">Header</header>
+          <div className='flex-1 overflow-y-auto'>
+            <main className="bg-yellow-400 h-[130rem] flex flex-col">
+              <div className='h-[6rem] bg-slate-500'>Trang chủ/ áo nam</div>
+              <div className='h-[4rem] mb-[1.5rem] bg-red-950'>sort info</div>
+              <div className='flex bg-slate-500 flex-1'>
+                <div className='w-[21.5rem] bg-red-400 h-full'>Side bar</div>
+                <div>List product</div>
+              </div>
+            </main>
+            <footer className="bg-green-400 h-[40rem]">Footer</footer>
+          </div>
+        </div>
+      </body>
     </html>
   )
 }
