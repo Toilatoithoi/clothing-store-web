@@ -1,3 +1,4 @@
+// valuedate code nó sẽ nhắc khii code sai cú pháp
 {
   "extends": "next/core-web-vitals"
 }

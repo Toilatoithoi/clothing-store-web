@@ -1,8 +1,18 @@
 'use client'
 import React from 'react';
+
+// gọi ki bên viết hàm export const hàm
 import { formatNumber } from '@/utils';
+
+// gọi khi bên viết hàm const rồi export defalut hàm
+// import formatNumber from '@/utils'
+
 import Logo from '@/assets/svg/logo.svg'
+
+// dùng để gọi file style.scss dùng để chia nhỏ giao diện cho việc sử lí thuận tiện hơn
+// khi nào comploment được sử dụng nó mới load giao diện lên giúp nhanh hơn
 import './style.scss';
+
 import { FaHeadset } from 'react-icons/fa6'
 import { CiUser, CiSearch } from 'react-icons/ci'
 import { BsHandbag } from 'react-icons/bs'
@@ -12,7 +22,13 @@ interface HeaderProps {
 
 }
 
-
+// Comploment khi code giao diện nếu bỏ tất cả vào một file logic sẽ rất lớn nên chia nhỏ nó ra, chia thành 
+// nhiều thành phần, mỗi 1 comploment là 1 thành phần
+// Theo quy ước tên của comploment sẽ viết hoa chữ cái đầu tiên của mỗi từ
+// Mỗi comploment sẽ có các thành phần :
+// -  1 comploment đơn giản nó là một hằng số phần này có thể nhận vào thuộc tính của lớp cha truyền cho lớn con
+// -	Phải trả về jsx không phải html
+//  jsx khác html vd: class = className
 const Header = (props: HeaderProps) => { //jsx, không phai html 
   return (
     <header className=" flex flex-col bg-white border border-blue-100">
@@ -57,4 +73,5 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
   )
 }
 
+// trả về header để có thể gọi ở bất kì đâu
 export default Header

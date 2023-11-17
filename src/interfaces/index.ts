@@ -3,3 +3,9 @@ export interface UserInfo {
   dob: Date;
   age?: number;
 }
+
+// const user: UserInfo = {
+//   name: 'Duc',
+//   dob: new Date(),
+//   age: 18
+// }

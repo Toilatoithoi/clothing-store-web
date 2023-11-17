@@ -1,3 +1,4 @@
+// để config cho svgr
 module.exports = {
   plugins: [
     {
