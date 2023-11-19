@@ -11,14 +11,17 @@
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@types/big.js": "^6.2.2",
+    "@types/react-image-gallery": "^1.2.3",
     "@types/react-rangeslider": "^2.2.7",
     "big.js": "^6.2.1",
     "date-fns": "^2.30.0",
     "formik": "^2.4.1",
+    "keen-slider": "^6.8.6",
     "next": "14.0.2",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^4.11.0",
+    "react-image-gallery": "^1.3.0",
     "react-rangeslider": "^2.2.0",
     "swr": "^2.2.4",
     "yup": "0.32.9"

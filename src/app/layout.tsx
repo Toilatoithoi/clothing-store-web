@@ -25,71 +25,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* đây là layout của cả trang là các thành phần được dùng chung */}
-      {/* inter.className để dùng google fornt */}
       <body className={inter.className}>
-        {/* để các thành phẩn còn nó thành một cột muốn dùng flexbox cho con bên dưới thì thằng cha phải là flex*/}
         <div className='flex flex-col h-screen w-screen'>
-
-          {/* childern là những page nằm trong nằm trong app childern phụ thuộc vào nhập routr là đường link vd localhost:30000/user-cart */}
-          {/* vd user-cart nó sẽ load vào vị trí của children header sẽ ở dưới*/}
-          {/* <div className='hidden'>{children}</div> */}
-           
-          {/* thẻ header */}
           <Header />
-
-          {/* nội dung */}
-          {/* dùng flex để nó chiếm hết phần còn lại sau khi fix width cứng header và main thì fix cứng width và nó quá dài phải overflow nếu không có sẽ mất footer, sẽ thêm flex-1 để overflow mới ăn */}
           <div className='flex-1 overflow-y-auto bg-white'>
-            {/* nó cho các phần bên dưới thành một cột cao tối thiểu 1300px*/}
-            {/* phải là min vì không khi kéo nhỏ màn hình sẽ bị đẩy tràn xuống */}
             <main className="min-h-[130rem] flex flex-col max-w-screen-xl m-auto">
-
-              {/* trang chủ */}
-              <div className='h-[6rem] flex items-center text-gray-400 text-[1.6rem]'>
-                <span className='hover:text-gray-600 cursor-pointer'>Trang chủ</span>
-                <span className='mx-2'>/</span>
-                <span className='hover:text-gray-600 cursor-pointer'>áo nam</span>
-              </div>
-
-              {/* tổng sản phẩm */}
-              <div className='h-[4rem] mb-[1.5rem] flex justify-between items-center bg-slate-100 px-4'>
-                <div>Tổn 35 sản phẩm </div>
-                <div className='flex'>
-                  <div className='mr-4'>Sắp xếp theo</div>
-                  <div>Mới nhất</div>
-                </div>
-              </div>
-              {/* flex để các thằng con bên dưới thẳng hàng để cho thằng con ăn hết chiều cao thì phải cho flex-1 */}
-              {/* nếu để là h-full thì do những thằng trên ăn 1 phần của layout nên sẽ bị đẩy xuống footer */}
-              {/* gap-[1.5rem] là để các thằng con bên dưới cách xa 15px */}
-              <div className='flex flex-1 gap-[1.5rem]'>
-
-                {/* sidebar chứa danh mục sản phẩm */}
-                <SideBar />
-
-                {/* Danh sách sản phẩm */}
-                <div className='flex-1 flex gap-5 flex-wrap items-start'>
-                  {/* là các sản phẩm  */}
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                </div>
-              </div>
+              {children}
             </main>
-
-            {/* footer */}
             <Footer />
-
           </div>
         </div>
       </body>
