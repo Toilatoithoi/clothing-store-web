@@ -1,44 +1,104 @@
 'use client'
 import React from 'react';
-
-// gọi ki bên viết hàm export const hàm
+import BannerImg from '@/assets/png/set-do-3.jpg'
 import { formatNumber } from '@/utils';
-
-// gọi khi bên viết hàm const rồi export defalut hàm
-// import formatNumber from '@/utils'
-
 import Logo from '@/assets/svg/logo.svg'
-
-// dùng để gọi file style.scss dùng để chia nhỏ giao diện cho việc sử lí thuận tiện hơn
-// khi nào comploment được sử dụng nó mới load giao diện lên giúp nhanh hơn
 import './style.scss';
 
 import { FaHeadset } from 'react-icons/fa6'
 import { CiUser, CiSearch } from 'react-icons/ci'
 import { BsHandbag } from 'react-icons/bs'
 import { AiOutlineGlobal } from 'react-icons/ai'
+import Image from 'next/image';
 
 interface HeaderProps {
 
 }
 
-// Comploment khi code giao diện nếu bỏ tất cả vào một file logic sẽ rất lớn nên chia nhỏ nó ra, chia thành 
-// nhiều thành phần, mỗi 1 comploment là 1 thành phần
-// Theo quy ước tên của comploment sẽ viết hoa chữ cái đầu tiên của mỗi từ
-// Mỗi comploment sẽ có các thành phần :
-// -  1 comploment đơn giản nó là một hằng số phần này có thể nhận vào thuộc tính của lớp cha truyền cho lớn con
-// -	Phải trả về jsx không phải html
-//  jsx khác html vd: class = className
-const Header = (props: HeaderProps) => { //jsx, không phai html 
+const NavConfig = [
+  {
+    label: 'Áo khoác',
+    path: '/ao-khoac',
+    children: [
+      {
+        label: 'Áo khoác bomber',
+        path: '/ao-khoac',
+      },
+      {
+        label: 'Áo khoác dáng parka',
+        path: '/ao-khoac',
+      },
+      {
+        label: 'Áo khoác Jean',
+        path: '/ao-khoac',
+      },
+      {
+        label: 'Áo khoác Phao',
+        path: '/ao-khoac',
+      },
+      {
+        label: 'Cardigan',
+        path: '/ao-khoac',
+      },
+      {
+        label: 'Áo khoác bomber',
+        path: '/ao-khoac',
+      },
+      {
+        label: 'Áo khoác bomber',
+        path: '/ao-khoac',
+      },
+      {
+        label: 'Áo khoác bomber',
+        path: '/ao-khoac',
+      },
+      {
+        label: 'Áo khoác bomber',
+        path: '/ao-khoac',
+      },
+    ]
+  },
+  {
+    label: 'Sơ mi',
+    path: '/ao-khoac',
+  },
+  {
+    label: 'QUần nam',
+    path: '/ao-khoac',
+  },
+  {
+    label: 'Sét đồ',
+    path: '/ao-khoac',
+  },
+]
+
+const Header = (props: HeaderProps) => {
   return (
-    <header className=" flex flex-col bg-white border border-blue-100">
+    <header className=" header flex flex-col bg-white border border-blue-100">
       <div className='pt-[3rem] shadow-sm'>
         <div className="h-[7rem] max-w-screen-xl m-auto px-[1.6rem] flex justify-between items-center">
-          <div className='flex'>
-            <div className='text-[2rem] uppercase font-semibold mr-[2.5rem] hover:text-[#BC0517] cursor-pointer'>Áo nam</div>
-            <div className='text-[2rem] uppercase font-semibold mr-[2.5rem] hover:text-[#BC0517] cursor-pointer'> sơ mi</div>
-            <div className='text-[2rem] uppercase font-semibold mr-[2.5rem] hover:text-[#BC0517] cursor-pointer'>Quần nam</div>
-            <div className='text-[2rem] uppercase font-semibold mr-[2.5rem] hover:text-[#BC0517] cursor-pointer'>sét đồ</div>
+          <div className='flex h-full nav-bar'>
+            {
+              NavConfig.map((item, idx) => (
+                <div key={idx} className='text-[2rem] relative h-full flex items-center uppercase font-semibold mr-[2.5rem] nav-container'>
+                  <div className='hover:text-[#BC0517] cursor-pointer nav-btn'>
+                    {item.label}
+                  </div>
+                  <div className=' sub-nav border-t z-10 bg-white shadow-md  border-[#BC0517] absolute top-full left-0 w-[60vw] max-h-[40rem] flex p-[2.4rem] gap-[3.2rem]'>
+                    <div className='flex-1 grid grid-cols-2 gap-[1.6rem]'>
+                      {item.children?.map((subNav, idx) =>
+                        <div key={idx} className='hover:text-[#BC0517] cursor-pointer text-[1.6rem] h-[4.8rem] flex   items-center border-b border-gray-200'>
+                          {subNav.label}
+                        </div>)}
+
+                    </div>
+                    <div className='flex-1'>
+                      <Image src={BannerImg} alt={'Banner'} />
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
           </div>
           <div className='w-[7rem]'><Logo /></div>
           <div className='flex items-center'>
@@ -73,5 +133,4 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
   )
 }
 
-// trả về header để có thể gọi ở bất kì đâu
 export default Header

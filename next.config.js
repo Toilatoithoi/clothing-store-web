@@ -2,7 +2,7 @@
 const nextConfig = {
   env: {
   },
-  reactStrictMode: false,
+  reactStrictMode: true,
   webpack(config) {
     //for react-pdf
     config.resolve.alias.canvas = false;
