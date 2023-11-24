@@ -1,13 +1,39 @@
+// dùng để chứa css khác cú pháp nhưng bản cách vẫn là css
+// scss khác css 
+// .header .headr-item {
+    //color: red
+// }
+//khác
+// .header {
+//     .header-item {
+            //color: red
+//     }
+// }
+// dấu & thay cho thằng cha vd nav-container là dấu &
 .header {
-    .nav-container {
-        .sub-nav {
-            display: none;
-        }
-
-        &:hover {
-            .sub-nav {
-                display: flex;
-            }
-        }
+    .nav-container{
+     .sub-nav{
+         display: none;
+     }
+ 
+     &:hover{
+         .sub-nav{
+             display: flex;
+         }
+      }
     }
-}
+ }
+ 
+ .header{
+     .list-container{
+         .list-nav{
+             display: none;
+         }
+ 
+         &:hover{
+             .list-nav{
+                 display: flex;
+             }
+         }
+     }
+ }
