@@ -8,13 +8,17 @@ const inter = Quicksand({ subsets: ['latin'] })
 import * as yup from 'yup';
 import 'react-rangeslider/lib/index.css';
 import Footer from '@/components/Footer';
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import ModalProvider from '@/components/ModalProvider'
+import LoginForm from '@/components/LoginForm'
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
+  const [showLogin, setShowLogin] = useState(true);
   useEffect(() => {
     yup.setLocale({
       mixed: {
@@ -34,6 +38,12 @@ export default function RootLayout({
             <Footer />
           </div>
         </div>
+        <ModalProvider
+          onHide={() => setShowLogin(false)}
+          show={showLogin}
+        >
+          <LoginForm />
+        </ModalProvider>
       </body>
     </html>
   )

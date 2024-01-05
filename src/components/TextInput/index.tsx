@@ -17,7 +17,7 @@ const TextInput = (props: TextInputProps) => {
 
   return (
     <div className={`input-container flex flex-col ${className}`}>
-      <label >{props.label}</label>
+      <label className='font-bold'>{props.label}</label>
       {props.type === 'textarea' ? <textarea cols={cols} rows={rows} className={` px-[0.8rem] flex items-center border
        border-gray-300 outline-none focus:border-[#052abc] h-[12rem]
        ${hasError ? 'border-red-500' : ''}
