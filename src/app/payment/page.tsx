@@ -1,11 +1,12 @@
 
 'use client'
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoIosArrowForward } from "react-icons/io";
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import TextInput from '@/components/TextInput';
 import { isBlank } from '@/utils';
+import Combobox, { ComboboxOption } from '@/components/Combobox';
 
 interface PaymentForm {
   name: string;
@@ -35,11 +36,12 @@ interface AddressResponse {
   Id: string;
   Districts: Districts[]
 }
-interface DropdownOptions {
-  label: string;
-  value: string;
-}
+
 const Payment = () => {
+  const [cityOptions, setCityOptions] = useState<ComboboxOption[]>([])
+  const [districtsOptions, setDistrictsOptions] = useState<Record<string, ComboboxOption[]>>({})
+  const [wardsOptions, setWardsOptions] = useState<Record<string, ComboboxOption[]>>({})
+
   useEffect(() => {
     getAddressOptions();
   }, [])
@@ -47,9 +49,9 @@ const Payment = () => {
     try {
       const res = await fetch('/address.json');
       const data: AddressResponse[] = await res.json();
-      const cityOptions: DropdownOptions[] = [];
-      const districtsOptions: Record<string, DropdownOptions[]> = {}
-      const wardsOptions: Record<string, DropdownOptions[]> = {}
+      const cityOptions: ComboboxOption[] = [];
+      const districtsOptions: Record<string, ComboboxOption[]> = {}
+      const wardsOptions: Record<string, ComboboxOption[]> = {}
 
       data.forEach((city) => {
         cityOptions.push({ label: city.Name, value: city.Id })
@@ -61,8 +63,9 @@ const Payment = () => {
           wardsOptions[district.Id] = district.Wards.map(ward => ({ label: ward.Name, value: ward.Id }))
         })
       })
-
-      console.log({ cityOptions, districtsOptions, wardsOptions })
+      setCityOptions(cityOptions);
+      setDistrictsOptions(districtsOptions);
+      setWardsOptions(wardsOptions);
 
     } catch (error) {
       console.log(error)
@@ -104,7 +107,7 @@ const Payment = () => {
         validationSchema={schema}
         onSubmit={handlePayment}
       >
-        {({ values, touched, errors, handleSubmit, handleBlur, handleChange }) =>
+        {({ values, touched, errors, handleSubmit, handleBlur, handleChange, isValid, setFieldValue }) => // handleSubmit -> check isValid = true ? onSubmit(): null
           <form className='w-full' onSubmit={handleSubmit}>
             <div className='flex w-full gap-[3.2rem]'>
               <div className='bg-[#f7f8fa] flex-1 p-[3rem]  h-fit gap-4'>
@@ -135,12 +138,82 @@ const Payment = () => {
                     errorMessage={errors.email}
                     placeholder='Email của bạn'
                     label="Email" />
+                  <Combobox
+                    options={cityOptions}
+                    label='Tỉnh/thành phố'
+                    selected={values.city}
+                    onChange={(option) => {
+                      setFieldValue('city', option.value);
+                    }}
+                    hasError={touched.city && !isBlank(errors.city)}
+                    errorMessage={errors.city}
+                  />
+                  <Combobox
+                    options={districtsOptions[values.city ?? ''] ?? []}
+                    label='Quận huyện'
+                    selected={values.district}
+                    onChange={(option) => {
+                      setFieldValue('district', option?.value);
+                    }}
+                    hasError={touched.district && !isBlank(errors.district)}
+                    errorMessage={errors.district}
+                  />
+                  <Combobox
+                    options={wardsOptions[values.district ?? ''] ?? []}
+                    label='Phường/ xã'
+                    selected={values.wards}
+                    onChange={(option) => {
+                      setFieldValue('wards', option?.value);
+                    }}
+                    hasError={touched.wards && !isBlank(errors.wards)}
+                    errorMessage={errors.wards}
+                  />
 
+                  <TextInput
+                    name='address'
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    hasError={touched.address && !isBlank(errors.address)}
+                    errorMessage={errors.address}
+                    placeholder='Địa chỉ của bạn'
+                    label="Địa chỉ" />
+                  <TextInput
+                    name='note'
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    placeholder='Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn.'
+                    className='col-span-2'
+                    type='textarea'
+                    rows={5}
+                    label="Ghi chú đơn hàng (tuỳ chọn)" />
                 </div>
 
               </div>
-              <div className='bg-[#f7f8fa] w-[40rem]  p-[3rem]'>
-                <button type="submit" className=' btn-primary'>Thanh toán</button>
+              <div className='bg-[#f7f8fa] w-[40rem]  p-[3rem] border border-gray-950'>
+                <div className="font-bold text-[1.8rem]">ĐƠN HÀNG CỦA BẠN</div>
+                <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                  <div className="font-bold uppercase">SẢN PHẨM</div>
+                  <div className="font-bold uppercase">Tạm tính</div>
+                </div>
+                <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                  <div>
+                    <div className="font-bold">Áo nỉ nam ANHTK409  × 1</div>
+                    <div>Màu sắc: Đen Cỡ:S</div>
+                  </div>
+                  <div>399.000 VND</div>
+
+                </div>
+                <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                  <div className="font-bold">Tạm tính</div>
+                  <div>399.000 VND</div>
+                </div>
+                <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                  <div className="font-bold">Tổng</div>
+                  <div className="font-bold">399.000 VND</div>
+                </div>
+                <div className='font-semibold text-[1.4rem] mt-[1.6rem]'>Trả tiền mặt khi nhận hàng</div>
+                <div className='mb-[0.8rem] text-[1.4rem]'>Trả tiền mặt khi giao hàng</div>
+                <button disabled={!isValid} type="submit" className='bg-black disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center font-bold'>Đặt hàng</button>
               </div>
             </div>
           </form>}
