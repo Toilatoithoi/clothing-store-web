@@ -129,7 +129,7 @@ const Payment = () => {
                     hasError={touched.phone && !isBlank(errors.phone)}
                     errorMessage={errors.phone}
                     placeholder='Số điện thoại của bạn'
-                    label="Phone" />
+                    label="Số điện thoại" />
                   <TextInput
                     name='email'
                     onBlur={handleBlur}
@@ -150,7 +150,7 @@ const Payment = () => {
                   />
                   <Combobox
                     options={districtsOptions[values.city ?? ''] ?? []}
-                    label='Quận huyện'
+                    label='Quận/huyện'
                     selected={values.district}
                     onChange={(option) => {
                       setFieldValue('district', option?.value);
@@ -160,7 +160,7 @@ const Payment = () => {
                   />
                   <Combobox
                     options={wardsOptions[values.district ?? ''] ?? []}
-                    label='Phường/ xã'
+                    label='Phường/xã'
                     selected={values.wards}
                     onChange={(option) => {
                       setFieldValue('wards', option?.value);
