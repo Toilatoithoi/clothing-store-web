@@ -35,7 +35,7 @@ const Combobox = (props: ComboboxProps) => {
   const selectedOption = props.options.find(item => item.value === props.selected);
   return (
     <div className={`input-container flex flex-col ${props.className}`}>
-      <label >{props.label}</label>
+      <label className='font-bold'>{props.label}</label>
       <ComboboxCmt value={selectedOption} onChange={(value) => {
         props.onChange?.(value);
       }}>

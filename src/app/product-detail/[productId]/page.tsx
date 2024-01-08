@@ -73,7 +73,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
             <div className='text-[2.4rem] font-semibold'>419.000 VND</div>
           </div>
           <div className='flex items-center py-[0.8rem]'>
-            <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Màu sác</div>
+            <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Màu sắc</div>
             <div className='mr-4 rounded-[0.4rem] cursor-pointer border border-gray-400 hover:border-gray-600'>
               <Image src={ProductImage} className='w-[3rem] h-[3rem] object-contain' width={30} height={30} alt={'size'} objectFit='cover' />
             </div>
@@ -137,12 +137,12 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
                   <Disclosure.Panel
                     static
                   >
-                    <div className='flex flex-col p-2 gap-6  max-h-[40rem] overflow-y-auto'>
-                      – Chất liệu: Pique
-                      – Form      : Regular
-                      – Đặc tính :
-                      – Màu        : Đen, Trắng, Be
-                      – Size        : M-XL
+                    <div className='flex flex-col p-2 gap-2  max-h-[40rem] overflow-y-auto'>
+                      <div>Chất liệu: Pique</div>
+                      <div>Form      : Regular</div>
+                      <div>Đặc tính :</div>
+                      <div>Màu        : Đen, Trắng, Be</div>
+                      <div>Size        : M-XL</div>
                     </div>
                   </Disclosure.Panel>
                 </Transition>
