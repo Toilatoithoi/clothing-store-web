@@ -11,6 +11,7 @@ import Footer from '@/components/Footer';
 import { useEffect, useState } from 'react'
 import ModalProvider from '@/components/ModalProvider'
 import LoginForm from '@/components/LoginForm'
+import SignUpForm from '@/components/SignUpForm'
 
 export default function RootLayout({
   children,
@@ -19,13 +20,27 @@ export default function RootLayout({
 }) {
 
   const [showLogin, setShowLogin] = useState(true);
+  const [showRegister, setShowRegister] = useState(false);
+
   useEffect(() => {
     yup.setLocale({
       mixed: {
         required: ({ label }: { label: string; }) => `${label} không được để trống`
       },
     })
-  }, [])
+  }, []);
+
+
+  const handleShowRegister = () => {
+    setShowLogin(false); // ẩn form login
+    setShowRegister(true);  // show form đăng ký
+  }
+
+  const handleShowLogin = () => {
+    setShowLogin(true); // show form login
+    setShowRegister(false); // ẩn form đăng ký
+  }
+
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -42,7 +57,13 @@ export default function RootLayout({
           onHide={() => setShowLogin(false)}
           show={showLogin}
         >
-          <LoginForm />
+          <LoginForm onShowRegister={handleShowRegister} />
+        </ModalProvider>
+        <ModalProvider
+          onHide={() => setShowRegister(false)}
+          show={showRegister}
+        >
+          <SignUpForm onShowLogin={handleShowLogin} />
         </ModalProvider>
       </body>
     </html>

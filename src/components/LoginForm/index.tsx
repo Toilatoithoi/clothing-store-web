@@ -12,7 +12,7 @@ interface LoginPayload {
   saveLogin?: boolean;
 }
 
-const LoginForm = () => {
+const LoginForm = (props: { onShowRegister(): void }) => {
 
   const schema = yup.object().shape({
     username: yup.string().label('Tên đăng nhập').required(),
@@ -42,7 +42,7 @@ const LoginForm = () => {
           setFieldValue
         }) => <form className='flex flex-col gap-8' onSubmit={handleSubmit} >
             <div className='w-full text-center text-[3rem] font-bold text-black'>Đăng nhập</div>
-            <div>Trở thành thành viên của 360 Boutique <Link className='text-blue-500' href={'/'}>Đăng ký ngay</Link></div>
+            <div>Trở thành thành viên của 360 Boutique <strong className='text-blue-500 cursor-pointer' onClick={props.onShowRegister} >Đăng ký ngay</strong></div>
             <TextInput
               label='Số điện thoại / Tên người dùng'
               value={values.username}
@@ -51,6 +51,7 @@ const LoginForm = () => {
               name="username"
               hasError={!isBlank(errors.username) && touched.username}
               errorMessage={errors.username}
+              autoComplete='off'
             />
             <TextInput
               label='Mật khẩu'
@@ -59,6 +60,7 @@ const LoginForm = () => {
               onChange={handleChange}
               name="password"
               type='password'
+              autoComplete='off'
               hasError={!isBlank(errors.password) && touched.password}
               errorMessage={errors.password}
             />
