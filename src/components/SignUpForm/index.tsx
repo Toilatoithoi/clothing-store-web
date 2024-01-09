@@ -10,11 +10,11 @@ interface SingUpPayload {
   surname: string;
   name: string;
   phone: string;
-  email:string;
+  email: string;
   password: string;
 }
 
-const SignUpForm = () => {
+const SignUpForm = (props: { onShowLogin(): void }) => {
 
   const schema = yup.object().shape({
     surname: yup.string().label('Họ').required(),
@@ -51,7 +51,7 @@ const SignUpForm = () => {
           setFieldValue
         }) => <form className='flex flex-col gap-8' onSubmit={handleSubmit} >
             <div className='w-full text-center text-[3rem] font-bold text-black'>Đăng ký</div>
-            <div>Bạn đã có tài khoản? <Link className='text-blue-500' href={'/'}>Đăng nhập ngay</Link></div>
+            <div>Bạn đã có tài khoản? <strong className='text-blue-500 cursor-pointer' onClick={props.onShowLogin}>Đăng nhập ngay</strong></div>
             <TextInput
               label='Họ'
               value={values.surname}
