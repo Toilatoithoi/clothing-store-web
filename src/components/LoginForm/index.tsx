@@ -63,6 +63,8 @@ const LoginForm = () => {
               errorMessage={errors.password}
             />
             <div className="flex justify-between" >
+              {/* dùng để set lại setFieldValue khi click vào */}
+              {/* values.saveLogin xem có phải true hay không nếu true nó sẽ hiện svg tích*/}
               <Checkbox selected={values.saveLogin} name='saveLogin' onChange={setFieldValue} label='Nhớ mật khẩu' />
               <div>Quên mật khẩu</div>
             </div>
