@@ -1,0 +1,43 @@
+'use client'
+import Video from '@/components/Video';
+import React from 'react'
+
+const LookBookDetail = (props: { params: { productId: string; } }) => {
+  return (
+      <div>
+          <div className='h-[4.5rem] w-full'>
+              <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center flex gap-[0.4rem] font-thin text-[1.2rem]'>
+                  <div className='text-gray-500'>Trang chủ</div>
+                  <div className='text-gray-500'>/</div>
+                  <div className='text-gray-500'>LookBook</div>
+                  <div className='text-gray-500'>/</div>
+                  <div className='text-gray-500'> ENJOY CHRISTMAS | 2023 Holidays</div>
+              </div>
+          </div>
+          <div>
+              <div className='h-[44.5rem] pl-8 flex mb-5'>
+                  <div className='flex-1'>
+                     <Video url='bw7I65kzG_Q' />
+                  </div>
+                  <div className='bg-[#f7f8fa] h-[44.5rem] w-[60rem] px-[1.6rem] py-[1.6rem] flex flex-col items-start justify-center cursor-pointer'>
+                      <div className='h-fit pb-4 mb-4 border-b-[0.05rem] border-gray-300 cursor-pointer'>   
+                          <div className='text-[1.8rem] font-bold'>ENJOY CHRISMAS | MUA 1 TẶNG 1 toàn bộ hệ thống</div>
+                      </div>
+                      <div className='text-[1rem] font-medium mb-6 cursor-pointer'>
+                          Mùa lễ Giáng sinh đã rất cận kề, tín đồ thời trang hẳn không thể bỏ lỡ các gam màu đặc trưng của mùa lễ hội, 360® tung ra BST đậm màu sắc Noel, mở ra một bữa tiệc cuối năm trọn vị cảm xúc.
+                      </div>
+                      <div className='text-[1rem] font-medium mb-6 cursor-pointer'>
+                          Sự kết hợp giữa những gam màu: xanh, đỏ cơ bản của mùa lễ với những tone màu nâu, be ấm áp khiến cho không khí Giáng sinh vẫn tưng bừng mà không bị quá rực rỡ cho những chàng trai hiện đại.
+                             Trên nền các chất liệu vải cao cấp như: dạ ép, nỉ cào bông, pique, texture,… những chiếc áo khoác, blazer, hoodie ra đời vừa mang phong cách trẻ trung lại vẫn giữ nguyên nét chỉn chu, lịch sự.
+                      </div>
+                      <div className='text-[1rem] font-medium mb-6 cursor-pointer'>
+                      Tận hưởng mùa lễ hội bằng những thiết kế trending trong BST Giáng sinh mới nhất từ 360®. Hãy sở hữu ngay những items này để chiếm trọn spotlight mùa lễ hội bạn nhé!
+                      </div>
+                  </div>           
+              </div>
+          </div>
+      </div>
+  )
+}
+
+export default LookBookDetail
