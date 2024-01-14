@@ -20,6 +20,7 @@ import { MdLocalShipping } from "react-icons/md";
 import { FaCcAmazonPay } from "react-icons/fa";
 import { RiVipFill } from "react-icons/ri";
 import { FcDataRecovery } from "react-icons/fc";
+import ProductSlider from '@/components/ProductSilder';
 
 const images = [
   {
@@ -50,7 +51,7 @@ const Menu = () => {
       <div className="flex mb-[2rem]">
         <div className="flex-1 max-w-[100%] mr-[2.4rem]"><ImageGallery items={images} showBullets={true}/></div>
       </div>
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center pb-8 border-b-2 border-gray-500 mb-8">
         <div className="flex items-center justify-between pr-20 mr-4 border-r-2 border-gray-800">
             <div className='mr-6'>
                 <MdLocalShipping  className='text-[4rem]'/>
@@ -87,6 +88,14 @@ const Menu = () => {
                <div className='font-semibold'>Hỗ trợ tận tâm</div>
             </div>
         </div>
+      </div>
+      <div className='mb-[8rem]'>
+        <div className='text-[2rem] font-bold mb-[2.4rem] flex items-center justify-center'>NHỮNG SẢN PHẨM NHIỀU NGƯỜI MUA</div>
+        <div><ProductSlider /></div>
+      </div>
+      <div className='mb-[8rem] border-t-[0.05rem] border-gray-200 pt-[1.6rem]'>
+        <div className='text-[2rem] font-bold mb-[2.4rem] flex items-center justify-center'>KHUYẾN MÃI HÔM NAY</div>
+        <div><ProductSlider /></div>
       </div>
     </div>
   )
