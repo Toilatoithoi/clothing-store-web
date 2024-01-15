@@ -14,29 +14,39 @@ import { Disclosure, Transition } from '@headlessui/react'
 import { TiMinus } from 'react-icons/ti'
 import { FaPlus } from 'react-icons/fa6'
 // thư viện sử lí ảnh ở detail 
-import ImageGallery from "react-image-gallery"
+import ImageGallery, { ReactImageGalleryItem } from "react-image-gallery"
 import "react-image-gallery/styles/css/image-gallery.css"
 import { MdLocalShipping } from "react-icons/md";
 import { FaCcAmazonPay } from "react-icons/fa";
 import { RiVipFill } from "react-icons/ri";
 import { FcDataRecovery } from "react-icons/fc";
 import ProductSlider from '@/components/ProductSilder';
+import './style.scss';
 
-const images = [
+
+const images: ReactImageGalleryItem[] = [
   {
     original: Menu1.src,
+    sizes: '50rem'
   },
   {
     original: Menu2.src,
+    sizes: '50rem'
   },
   {
     original: Menu3.src,
+    sizes: '50rem'
+
   },
   {
     original: Menu4.src,
+    sizes: '50rem'
+
   },
   {
     original: Menu5.src,
+    sizes: '50rem'
+
   },
 ];
 
@@ -47,46 +57,46 @@ const Menu = () => {
   // query data của product theo id
   // render data lên
   return (
-    <div className="w-full h-full flex-1">   
+    <div className="w-full h-full flex-1 menu-page">
       <div className="flex mb-[2rem]">
-        <div className="flex-1 max-w-[100%] mr-[2.4rem]"><ImageGallery items={images} showBullets={true}/></div>
+        <div className="flex-1 max-w-[100%] mr-[2.4rem]"><ImageGallery items={images} showBullets={true} /></div>
       </div>
       <div className="flex items-center justify-center pb-8 border-b-2 border-gray-500 mb-8">
         <div className="flex items-center justify-between pr-20 mr-4 border-r-2 border-gray-800">
-            <div className='mr-6'>
-                <MdLocalShipping  className='text-[4rem]'/>
-            </div>
-            <div className='text-[1.2rem]'>
-               <div className='font-bold'>Freeship</div>
-               <div className='font-semibold'>Cho đơn hàng từ 500K</div>
-            </div>
+          <div className='mr-6'>
+            <MdLocalShipping className='text-[4rem]' />
+          </div>
+          <div className='text-[1.2rem]'>
+            <div className='font-bold'>Freeship</div>
+            <div className='font-semibold'>Cho đơn hàng từ 500K</div>
+          </div>
         </div>
         <div className="flex items-center justify-between pr-20 mr-4 border-r-2 border-gray-800">
-            <div className='mr-6'>
-                <FaCcAmazonPay  className='text-[4rem]'/>
-            </div>
-            <div className='text-[1.2rem]'>
-               <div className='font-bold'>Thanh toán COD</div>
-               <div className='font-semibold'>Nhận hàng & thanh toán</div>
-            </div>
+          <div className='mr-6'>
+            <FaCcAmazonPay className='text-[4rem]' />
+          </div>
+          <div className='text-[1.2rem]'>
+            <div className='font-bold'>Thanh toán COD</div>
+            <div className='font-semibold'>Nhận hàng & thanh toán</div>
+          </div>
         </div>
         <div className="flex items-center justify-between pr-20 mr-4 border-r-2 border-gray-800">
-            <div className='mr-6'>
-                <RiVipFill  className='text-[4rem]'/>
-            </div>
-            <div className='text-[1.2rem]'>
-               <div className='font-bold'>Nhiều ưu đãi</div>
-               <div className='font-semibold'>Chiết khấu & quà tặng</div>
-            </div>
+          <div className='mr-6'>
+            <RiVipFill className='text-[4rem]' />
+          </div>
+          <div className='text-[1.2rem]'>
+            <div className='font-bold'>Nhiều ưu đãi</div>
+            <div className='font-semibold'>Chiết khấu & quà tặng</div>
+          </div>
         </div>
         <div className="flex items-center justify-between pr-20 mr-4 border-r-2 border-gray-800">
-            <div className='mr-6'>
-                <FcDataRecovery  className='text-[4rem]'/>
-            </div>
-            <div className='text-[1.2rem]'>
-               <div className='font-bold'>Sửa đồ</div>
-               <div className='font-semibold'>Hỗ trợ tận tâm</div>
-            </div>
+          <div className='mr-6'>
+            <FcDataRecovery className='text-[4rem]' />
+          </div>
+          <div className='text-[1.2rem]'>
+            <div className='font-bold'>Sửa đồ</div>
+            <div className='font-semibold'>Hỗ trợ tận tâm</div>
+          </div>
         </div>
       </div>
       <div className='mb-[8rem]'>
