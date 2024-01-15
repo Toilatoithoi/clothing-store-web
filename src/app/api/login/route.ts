@@ -1,0 +1,65 @@
+import { isBlank } from '@/utils';
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/db';
+import { hashPassword } from '@/utils/service';
+import jwt from 'jsonwebtoken';
+
+export const POST = async (req: NextRequest) => {
+  //validate input 
+  const body = await req.json();
+  if (isBlank(body.username) || isBlank(body.password)) {
+    return NextResponse.json({
+      code: 'INTERNAL_SERVER_ERROR',
+      message: 'Đầu vào không hợp lệ'
+    }, {
+      status: 400
+    })
+  }
+
+  // check username có tồn tại không 
+
+  const user = await prisma.user.findFirst({
+    where: {
+      username: body.username
+    }
+  })
+
+  if (user == null) {
+    return NextResponse.json({
+      code: 'USER_NOT_FOUND',
+    }, {
+      status: 404
+    })
+  }
+
+
+  // check password
+
+  const currPassword = user.password;
+  const comparePassword = hashPassword(body.password);
+
+  if (currPassword !== comparePassword) {
+    return NextResponse.json({
+      code: 'WRONG_PASSWORD',
+    }, {
+      status: 400
+    })
+  }
+
+
+
+  //generate token
+  const userInfo = {
+    ...user,
+    password: undefined
+  }
+  const accessToken = await jwt.sign(userInfo, process.env.JWT_SECRET_KEY!, {
+    expiresIn: '7d'
+  })
+
+
+  //reponse 
+
+
+  return NextResponse.json({ accessToken, userInfo })
+}

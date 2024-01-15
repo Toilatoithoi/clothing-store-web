@@ -16,6 +16,96 @@ model User {
   phoneNumber String?   @map("phone_number") @db.VarChar(10)
   username    String?   @db.VarChar(50)
   password    String?   @db.VarChar(255)
+  bill        bill[]
 
   @@map("user")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model bill {
+  id        Int         @id @default(autoincrement())
+  user_id   Int
+  city      String      @db.VarChar(255)
+  district  String      @db.VarChar(255)
+  wards     String      @db.VarChar(255)
+  address   String      @db.VarChar(255)
+  note      String?     @db.VarChar(255)
+  status    String?     @default("\\0") @db.VarChar(255)
+  user      User        @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "fk_bill_user")
+  bill_user bill_user[]
+
+  @@index([user_id], map: "UserID")
+}
+
+model bill_user {
+  id         Int     @id @default(autoincrement())
+  bill_id    Int
+  product_id Int
+  quantity   Int
+  bill       bill    @relation(fields: [bill_id], references: [id], onUpdate: Restrict, map: "bill_user_ibfk_1")
+  product    product @relation(fields: [product_id], references: [id], onUpdate: Restrict, map: "bill_user_ibfk_2")
+
+  @@index([bill_id], map: "BillID")
+  @@index([product_id], map: "ProductID")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model catetory {
+  id             Int        @id @default(autoincrement())
+  name           String     @db.VarChar(255)
+  parent_id      Int?
+  catetory       catetory?  @relation("catetoryTocatetory", fields: [parent_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_parentId")
+  other_catetory catetory[] @relation("catetoryTocatetory")
+  product        product[]
+
+  @@index([parent_id], map: "fk_parentId")
+  @@index([id], map: "id")
+}
+
+model image_product {
+  id               Int      @id @default(autoincrement())
+  url              String   @db.VarChar(255)
+  product_id       Int
+  is_edit          Boolean? @default(dbgenerated("(b'0')")) @db.Bit(1)
+  product_model_id Int?
+  product          product  @relation(fields: [product_id], references: [id], onUpdate: Restrict, map: "image_product_ibfk_1")
+
+  @@index([product_id], map: "ProductID")
+}
+
+model post {
+  id       Int       @id @default(autoincrement())
+  title    String?   @db.VarChar(255)
+  content  String?   @db.LongText
+  createAt DateTime? @db.Date
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model product {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(255)
+  description   String?         @db.VarChar(255)
+  status        String?         @default("\\0") @db.VarChar(255)
+  category_id   Int?
+  bill_user     bill_user[]
+  image_product image_product[]
+  catetory      catetory?       @relation(fields: [category_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_product_category")
+  product_model product_model[]
+
+  @@index([category_id], map: "fk_product_category")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model product_model {
+  id         Int      @id
+  product_id Int?
+  price      Float?
+  color      String?  @db.VarChar(255)
+  size       String?  @db.Char(1)
+  sold       Int?
+  stock      Int?
+  image      String?  @db.VarChar(255)
+  product    product? @relation(fields: [product_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "product_model_ibfk_1")
+
+  @@index([product_id], map: "F_product_modal_product_id")
 }
