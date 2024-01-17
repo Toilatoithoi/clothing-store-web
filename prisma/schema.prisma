@@ -17,36 +17,25 @@ model User {
   username    String?   @db.VarChar(50)
   password    String?   @db.VarChar(255)
   bill        bill[]
+  cart        cart[]
 
   @@map("user")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model bill {
-  id        Int         @id @default(autoincrement())
-  user_id   Int
-  city      String      @db.VarChar(255)
-  district  String      @db.VarChar(255)
-  wards     String      @db.VarChar(255)
-  address   String      @db.VarChar(255)
-  note      String?     @db.VarChar(255)
-  status    String?     @default("\\0") @db.VarChar(255)
-  user      User        @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "fk_bill_user")
-  bill_user bill_user[]
+  id           Int            @id @default(autoincrement())
+  user_id      Int
+  city         String         @db.VarChar(255)
+  district     String         @db.VarChar(255)
+  wards        String         @db.VarChar(255)
+  address      String         @db.VarChar(255)
+  note         String?        @db.VarChar(255)
+  status       String?        @default("\\0") @db.VarChar(255)
+  user         User           @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "fk_bill_user")
+  bill_product bill_product[]
 
   @@index([user_id], map: "UserID")
-}
-
-model bill_user {
-  id         Int     @id @default(autoincrement())
-  bill_id    Int
-  product_id Int
-  quantity   Int
-  bill       bill    @relation(fields: [bill_id], references: [id], onUpdate: Restrict, map: "bill_user_ibfk_1")
-  product    product @relation(fields: [product_id], references: [id], onUpdate: Restrict, map: "bill_user_ibfk_2")
-
-  @@index([bill_id], map: "BillID")
-  @@index([product_id], map: "ProductID")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -87,7 +76,8 @@ model product {
   description   String?         @db.VarChar(255)
   status        String?         @default("\\0") @db.VarChar(255)
   category_id   Int?
-  bill_user     bill_user[]
+  bill_product  bill_product[]
+  cart_product  cart_product[]
   image_product image_product[]
   catetory      catetory?       @relation(fields: [category_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_product_category")
   product_model product_model[]
@@ -108,4 +98,39 @@ model product_model {
   product    product? @relation(fields: [product_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "product_model_ibfk_1")
 
   @@index([product_id], map: "F_product_modal_product_id")
+}
+
+model bill_product {
+  id         Int     @id @default(autoincrement())
+  bill_id    Int
+  product_id Int
+  quantity   Int
+  product    product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "bill_product_fk1")
+  bill       bill    @relation(fields: [bill_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "bill_product_fk2")
+
+  @@index([bill_id], map: "BillID")
+  @@index([product_id], map: "ProductID")
+}
+
+model cart {
+  id               Int            @id @default(autoincrement())
+  total_amount     Int
+  promotional_code String?        @db.VarChar(45)
+  user_id          Int
+  user             User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_user_ibfk")
+  cart_product     cart_product[]
+
+  @@index([user_id], map: "cart_user_ibfk_idx")
+}
+
+model cart_product {
+  id         Int     @id @default(autoincrement())
+  product_id Int
+  cart_id    Int
+  quantity   Int?
+  product    product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_product_fk1")
+  cart       cart    @relation(fields: [cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_product_fk2")
+
+  @@index([product_id], map: "cart_product_fk1_idx")
+  @@index([cart_id], map: "cart_product_fk2_idx")
 }
