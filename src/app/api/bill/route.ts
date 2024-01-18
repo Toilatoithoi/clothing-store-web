@@ -42,23 +42,23 @@ export const POST = async (req: NextRequest) => {
     })
   }
 
-
-  try {
-    // check bill có thành công không 
-
-    const billTue = await prisma.bill.findFirst({
-      where: {
-        status: "sccess"
+  
+    try {
+        // check bill có thành công không 
+  
+        const billTue = await prisma.bill.findFirst({
+           where: {
+            status: "SCCESS"
+           }
+        })
+    
+        if (billTue == null) {
+           return NextResponse.json({
+            code: 'Bill is false',
+        }, {
+            status: 404
+        })
       }
-    })
-
-    if (billTue == null) {
-      return NextResponse.json({
-        code: 'Bill is false',
-      }, {
-        status: 404
-      })
-    }
 
     // thêm vào db
     const createdBill = await prisma.bill.create({
