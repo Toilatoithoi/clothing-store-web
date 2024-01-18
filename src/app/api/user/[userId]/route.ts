@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import jwt from 'jsonwebtoken'
 import { User } from '@prisma/client';
+import { verifyToken } from '@/utils/service';
 
 // Update user info
 export const PUT = async (req: NextRequest, { params }: { params: { userId: string; } }) => {
@@ -41,17 +42,12 @@ export const PUT = async (req: NextRequest, { params }: { params: { userId: stri
 }
 
 export const GET = async (req: NextRequest, { params }: { params: { userId: string; } }) => {
+  const data = await verifyToken(req);
 
-  const authorization = req.headers.get('authorization');
-  if (!authorization) {
+  if (data == null) {
     return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
   }
-  const [tokenType, accessToken] = authorization.split(' ');
 
-  if (tokenType !== 'Bearer' || !accessToken) {
-    return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
-  }
-  const data = await jwt.verify(accessToken, process.env.JWT_SECRET_KEY ?? '') as User;
   if (String(data.id) !== String(params.userId)) {
     return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
   }

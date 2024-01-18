@@ -1,8 +1,17 @@
+'use client'
 import React from 'react'
 import SideBar from '../Sidebar'
 import ProductCard from '../ProductCard'
-
+import useSWR from 'swr'
+import { fetcher } from '@/utils/fetcher'
 const ListProduct = () => {
+  const { data } = useSWR('/api/product', fetcher, {
+    revalidateOnMount: true,
+    revalidateOnFocus: false,
+  });
+
+  console.log({ data })
+
   return (
     <>
 

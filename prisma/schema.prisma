@@ -38,19 +38,6 @@ model bill {
   @@index([user_id], map: "UserID")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model catetory {
-  id             Int        @id @default(autoincrement())
-  name           String     @db.VarChar(255)
-  parent_id      Int?
-  catetory       catetory?  @relation("catetoryTocatetory", fields: [parent_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_parentId")
-  other_catetory catetory[] @relation("catetoryTocatetory")
-  product        product[]
-
-  @@index([parent_id], map: "fk_parentId")
-  @@index([id], map: "id")
-}
-
 model image_product {
   id               Int      @id @default(autoincrement())
   url              String   @db.VarChar(255)
@@ -77,9 +64,9 @@ model product {
   status        String?         @default("\\0") @db.VarChar(255)
   category_id   Int?
   bill_product  bill_product[]
-  cart_product  cart_product[]
+  cart          cart[]
   image_product image_product[]
-  catetory      catetory?       @relation(fields: [category_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_product_category")
+  catetory      category?       @relation(fields: [category_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_product_category")
   product_model product_model[]
 
   @@index([category_id], map: "fk_product_category")
@@ -113,24 +100,26 @@ model bill_product {
 }
 
 model cart {
-  id               Int            @id @default(autoincrement())
-  total_amount     Int
-  promotional_code String?        @db.VarChar(45)
-  user_id          Int
-  user             User           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_user_ibfk")
-  cart_product     cart_product[]
-
-  @@index([user_id], map: "cart_user_ibfk_idx")
-}
-
-model cart_product {
   id         Int     @id @default(autoincrement())
   product_id Int
-  cart_id    Int
+  user_id    Int
   quantity   Int?
   product    product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_product_fk1")
-  cart       cart    @relation(fields: [cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_product_fk2")
+  user       User    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_user_ibfk")
 
   @@index([product_id], map: "cart_product_fk1_idx")
-  @@index([cart_id], map: "cart_product_fk2_idx")
+  @@index([user_id], map: "cart_product_fk2_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model category {
+  id             Int        @id @default(autoincrement())
+  name           String     @db.VarChar(255)
+  parent_id      Int?
+  category       category?  @relation("categoryTocategory", fields: [parent_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_parentId")
+  other_category category[] @relation("categoryTocategory")
+  product        product[]
+
+  @@index([parent_id], map: "fk_parentId")
+  @@index([id], map: "id")
 }
