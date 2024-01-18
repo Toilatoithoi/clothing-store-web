@@ -69,7 +69,7 @@ const UserCart = () => {
 
           </div>
           <div className='bg-[#f7f8fa] w-[40rem]  p-[3rem]'>
-            <div className='h-[4rem] flex items-center text-[2rem] font-bold mb-[1.6rem]'>Tóp tắt đơn hàng</div>
+            <div className='h-[4rem] flex items-center text-[2rem] font-bold mb-[1.6rem]'>Tóm tắt đơn hàng</div>
             <div className=' w-full flex justify-between h-[3.6rem] items-center text-[1.6rem]'>
               <div className='font-bold'>Tạm tính</div>
               <div>2.670.000 VNĐ</div>
