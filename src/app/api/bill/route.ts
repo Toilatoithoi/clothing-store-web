@@ -48,7 +48,7 @@ export const POST = async (req: NextRequest) => {
   
         const billTue = await prisma.bill.findFirst({
            where: {
-            status: "sccess"
+            status: "SCCESS"
            }
         })
     
