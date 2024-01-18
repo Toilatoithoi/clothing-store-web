@@ -23,10 +23,25 @@ const ListProduct = () => {
 
 
       <div className='h-[4rem] mb-[1.5rem] flex justify-between items-center bg-slate-100 px-4'>
-        <div>Tổn 35 sản phẩm </div>
+        <div>Tổng 35 sản phẩm </div>
         <div className='flex'>
           <div className='mr-4'>Sắp xếp theo</div>
-          <div>Mới nhất</div>
+          <div>
+            <select className='outline-none'>
+              <option>
+                Theo mức độ phổ biến
+              </option>
+              <option>
+                Mới nhất
+              </option>
+              <option>
+                Theo giá từ thấp đến cao
+              </option>
+              <option>
+                Theo giá từ cao đến thấp
+              </option>      
+            </select>
+          </div>
         </div>
       </div>
 

@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { verifyToken } from '@/utils/service';
 
 export const PUT = async (req: NextRequest, { params }: { params: { billId: string; } }) => {
+    
+    const data = await verifyToken(req);
+    if (data == null) {
+      return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
+    }
+
     const id = Number(params.billId);
     const body = await req.json();
     // validate data: user_id có hợp lệ k? .....
   
     try {
-      const bill = await prisma.bill.findFirst({ where: { id } });
+      const bill = await prisma.bill.findFirst({ where: { id , user:{
+        username: data.username
+      }} });
       // lây thông tin bill trên db -> nếu mà không có thông tin bill -> thông báo lỗi bill not exist
       if (bill == null) {
         return NextResponse.json({
@@ -19,7 +28,8 @@ export const PUT = async (req: NextRequest, { params }: { params: { billId: stri
       // update data vào hệ thống
       const res = await prisma.bill.update({
         where: {
-          id
+          id,
+          user_id: data.id
         },
         data: {
           ...body,
@@ -38,9 +48,15 @@ export const PUT = async (req: NextRequest, { params }: { params: { billId: stri
   }
 
   export const GET = async (req: NextRequest, { params }: { params: { billId: string; } }) => {
+    const data = await verifyToken(req);
+    if (data == null) {
+      return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
+    }
     const id = Number(params.billId);
     try {
-      const bill = await prisma.bill.findFirst({ where: { id } });
+      const bill = await prisma.bill.findFirst({ where: { id, user:{
+        username: data.username
+      } } });
 
        // lây thông tin bill trên db -> nếu mà không có thông tin bill -> thông báo lỗi bill not exist
        if (bill == null) {
