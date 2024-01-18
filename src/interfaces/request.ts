@@ -1,4 +1,5 @@
 import { product_model } from '@prisma/client';
+import { bill_product } from '@prisma/client';
 
 export interface CreateUserReq {
   username: string;
@@ -10,6 +11,12 @@ export interface CreateUserReq {
   name: string;
 }
 
+enum BILL_STATUS {
+  SUCCESS = 'SUCCESS',
+  REJECT = 'REJECT',
+  CANCEL = 'CANCEL',
+}
+
 export interface CreateBillReq {
   user_id: number;
   city: string;
@@ -17,7 +24,8 @@ export interface CreateBillReq {
   wards: string;
   address: string;
   note: string;
-  status: string;
+  status?: BILL_STATUS;
+  bill_product: bill_product[];
 }
 
 export interface CreateBillProductReq {
@@ -69,6 +77,6 @@ export interface CreateProductReq {
   name: string;
   description?: string;
   status?: PRODUCT_STATUS;
-  categoryId?: string;
+  category_id?: number;
   model: product_model[]
 }

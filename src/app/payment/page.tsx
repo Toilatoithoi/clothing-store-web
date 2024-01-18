@@ -94,7 +94,7 @@ const Payment = () => {
     <div>
       <div className='flex items-center justify-center my-[3.2rem]'>
         <div>Giỏ hàng</div><IoIosArrowForward />
-        <div>Thanh toán</div><IoIosArrowForward />
+        <div className='font-bold'>Thanh toán</div><IoIosArrowForward />
         <div>Hoàn tất</div>
       </div>
       <Formik

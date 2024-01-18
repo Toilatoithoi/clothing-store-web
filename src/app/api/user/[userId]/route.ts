@@ -8,11 +8,15 @@ import { verifyToken } from '@/utils/service';
 export const PUT = async (req: NextRequest, { params }: { params: { userId: string; } }) => {
   console.log({ params })
   const id = Number(params.userId);
+  const data = await verifyToken(req);
+  if (data == null) {
+    return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
+  }
   const body = await req.json();
   // validate data: phoneNumber có hợp lệ k? .....
 
   try {
-    const user = await prisma.user.findFirst({ where: { id } });
+    const user = await prisma.user.findFirst({ where: { id, username: data.username } });
     // lây thông tin user trên db -> nếu mà không có thông tin user -> thông báo lỗi user not exist
     if (user == null) {
       return NextResponse.json({
