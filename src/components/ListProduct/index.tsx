@@ -27,7 +27,7 @@ const ListProduct = () => {
         <div className='flex'>
           <div className='mr-4'>Sắp xếp theo</div>
           <div>
-            <select>
+            <select className='outline-none'>
               <option>
                 Theo mức độ phổ biến
               </option>
