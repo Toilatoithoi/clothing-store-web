@@ -1,3 +1,5 @@
+import { product_model } from '@prisma/client';
+
 export interface CreateUserReq {
   username: string;
   password: string;
@@ -45,4 +47,28 @@ export interface CreatePostReq {
   title: string;
   content: string;
   createAt: string;
+}
+
+
+enum PRODUCT_STATUS {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  DELETED = 'DELETED',
+}
+
+
+interface ProductModel {
+  color: string;
+  size: string;
+  price: number;
+  stock: number;
+  image: string;
+}
+
+export interface CreateProductReq {
+  name: string;
+  description?: string;
+  status?: PRODUCT_STATUS;
+  categoryId?: string;
+  model: product_model[]
 }

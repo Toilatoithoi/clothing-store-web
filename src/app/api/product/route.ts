@@ -1,28 +1,29 @@
+import { CreateProductReq } from '@/interfaces/request';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
-
+import prisma from '@/lib/db';
 export const GET = async (request: NextRequest,) => {
-  // const url = request.url;
-  // const query = new URL(url).searchParams.get('name')
-  // console.log({ query })
   console.log('GET')
-  return NextResponse.json({ demo: 'demo' })
+  return NextResponse.json([])
 }
 
-export const POST = async (request: NextRequest,) => {
-  // Tạo product
-  const body = await request.json(); // lấy data product client truyền xuống;
-  // validate trường thông tin: name không dc trống ....
-
-  // nếu lỗi return 
+export const POST = async (req: NextRequest,) => {
   try {
-    // kết nối với data base 
+    const body: CreateProductReq = await req.json();
+    //tạo product
 
-    // thêm product vào data base
+    const product = await prisma.product.create({
+      data: {
+        name: body.name,
+        description: body.description,
+      }
+    })
 
-    // trả về response success 
+    // const model = await prisma.product_model.createMany({
 
+    // })
   } catch (error) {
+    console.log({ error })
     return NextResponse.json({ code: 'INTERNAL_SERVER_ERROR', message: 'lỗi hệ thống' })
 
   }
