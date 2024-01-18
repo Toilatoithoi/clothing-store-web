@@ -31,7 +31,7 @@ const UserCart = () => {
                   <div>Áo hoodie nam AHHTK403</div>
                   <div>Màu sắc: Be</div>
                   <div>Cỡ: M</div>
-                  <div>Xóa</div>
+                  <div className='cursor-pointer hover:text-red-500'>Xóa</div>
                 </div>
               </div>
               <div className='text-center'>500,000</div>
@@ -45,7 +45,7 @@ const UserCart = () => {
                   <div>Áo hoodie nam AHHTK403</div>
                   <div>Màu sắc: Be</div>
                   <div>Cỡ: M</div>
-                  <div>Xóa</div>
+                  <div className='cursor-pointer hover:text-red-500'>Xóa</div>
                 </div>
               </div>
               <div className='text-center'>500,000</div>
@@ -59,7 +59,7 @@ const UserCart = () => {
                   <div>Áo hoodie nam AHHTK403</div>
                   <div>Màu sắc: Be</div>
                   <div>Cỡ: M</div>
-                  <div>Xóa</div>
+                  <div className='cursor-pointer hover:text-red-500'>Xóa</div>
                 </div>
               </div>
               <div className='text-center'>500,000</div>
