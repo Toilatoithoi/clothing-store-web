@@ -1,43 +1,78 @@
 import { Formik } from 'formik'
 import Link from 'next/link';
-import React from 'react';
+import React, { useRef } from 'react';
 import TextInput from '../TextInput';
-import { isBlank } from '@/utils';
+import { isBlank, uuid } from '@/utils';
 import Checkbox from '../CheckBox';
 import * as yup from 'yup';
+import { fetcher } from '@/utils/fetcher';
+import { METHOD } from '@/constants';
+import { useMutation } from '@/store/custom';
+import Loader from '../Loader';
+import { mutate } from 'swr';
+import { COMMON_SHOW_REGISTER } from '@/store/key';
 
 interface SingUpPayload {
   surname: string;
   name: string;
-  phone: string;
-  email: string;
+  phoneNumber: string;
+  username: string;
   password: string;
 }
 
+const registerFetcher = (key: string,) => {
+  return fetcher(key, METHOD.POST)
+}
+
 const SignUpForm = (props: { onShowLogin(): void }) => {
+  const componentId = useRef(uuid())
+  const { trigger, data, error } = useMutation('/api/register', {
+    url: '/api/register',
+    method: METHOD.POST,
+    onSuccess(data, key, config) {
+      console.log(data)
+      mutate(COMMON_SHOW_REGISTER, false)
+    },
+    componentId: componentId.current,
+    loading: true,
+    notification: {
+      title: 'Đăng ký tài khoản',
+      content: 'Đăng ký tài khoản thành công',
+      ignoreError: true,
+    }
+  })
 
   const schema = yup.object().shape({
     surname: yup.string().label('Họ').required(),
     name: yup.string().label('Tên').required(),
-    phone: yup.string().label('Số điện thoại').required().matches(/^(?:[0-9] ?){6,14}[0-9]$/, 'Số điện thoại không hợp lệ'),
-    email: yup.string().label('Email').required().email('Phải nhập đúng định dạng'),
+    phoneNumber: yup.string().label('Số điện thoại').required().matches(/^(?:[0-9] ?){6,14}[0-9]$/, 'Số điện thoại không hợp lệ'),
+    username: yup.string().label('Email').required().email('Phải nhập đúng định dạng'),
     password: yup.string().label('Mật khẩu').required(),
   })
 
   const handleSignUp = (values: SingUpPayload) => {
     console.log({ values })
+
+    trigger({
+      name: values.surname + values.name,
+      username: values.username,
+      password: values.password,
+      phoneNumber: values.phoneNumber
+    })
   }
 
+  console.log({ data, error })
+
   return (
-    <div className='w-screen max-w-xl'>
+    <Loader id={componentId.current} className='w-screen max-w-xl'>
       <Formik
         onSubmit={handleSignUp}
         initialValues={{
           password: '',
           name: '',
           surname: '',
-          phone: '',
-          email: ''
+          phoneNumber: '',
+          username: ''
         }}
         validationSchema={schema}
       >
@@ -52,6 +87,7 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
         }) => <form className='flex flex-col gap-8' onSubmit={handleSubmit} >
             <div className='w-full text-center text-[3rem] font-bold text-black'>Đăng ký</div>
             <div>Bạn đã có tài khoản? <strong className='text-blue-500 cursor-pointer' onClick={props.onShowLogin}>Đăng nhập ngay</strong></div>
+            {error?.message && <div className='text-red-500 text-center w-full'>{error.message}</div>}
             <TextInput
               label='Họ'
               value={values.surname}
@@ -72,21 +108,21 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
             />
             <TextInput
               label='Số điện thoại'
-              value={values.phone}
+              value={values.phoneNumber}
               onBlur={handleBlur}
               onChange={handleChange}
-              name="phone"
-              hasError={!isBlank(errors.phone) && touched.phone}
-              errorMessage={errors.phone}
+              name="phoneNumber"
+              hasError={!isBlank(errors.phoneNumber) && touched.phoneNumber}
+              errorMessage={errors.phoneNumber}
             />
             <TextInput
               label='Email'
-              value={values.email}
+              value={values.username}
               onBlur={handleBlur}
               onChange={handleChange}
-              name="email"
-              hasError={!isBlank(errors.email) && touched.email}
-              errorMessage={errors.email}
+              name="username"
+              hasError={!isBlank(errors.username) && touched.username}
+              errorMessage={errors.username}
             />
             <TextInput
               label='Mật khẩu'
@@ -101,7 +137,7 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
             <button type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Đăng ký</button>
           </form>}
       </Formik>
-    </div>
+    </Loader>
   )
 }
 

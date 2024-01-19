@@ -9,3 +9,14 @@ export interface UserInfo {
 //   dob: new Date(),
 //   age: 18
 // }
+
+export interface AppStatus {
+  isAuthenticated?: boolean;
+}
+
+export interface NotificationConfig {
+  title?: string;
+  ignoreSuccess?: boolean;
+  ignoreError?: boolean;
+  content?: string;
+}

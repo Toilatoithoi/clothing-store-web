@@ -5,33 +5,39 @@ import { hashPassword } from '@/utils/service';
 import jwt from 'jsonwebtoken';
 
 export const POST = async (req: NextRequest) => {
-  //validate input 
+  //validate input
   const body = await req.json();
   if (isBlank(body.username) || isBlank(body.password)) {
-    return NextResponse.json({
-      code: 'INTERNAL_SERVER_ERROR',
-      message: 'Đầu vào không hợp lệ'
-    }, {
-      status: 400
-    })
+    return NextResponse.json(
+      {
+        code: 'INPUT_INVALID',
+        message: 'Đầu vào không hợp lệ',
+      },
+      {
+        status: 400,
+      }
+    );
   }
 
-  // check username có tồn tại không 
+  // check username có tồn tại không
 
   const user = await prisma.user.findFirst({
     where: {
-      username: body.username
-    }
-  })
+      username: body.username,
+    },
+  });
 
   if (user == null) {
-    return NextResponse.json({
-      code: 'USER_NOT_FOUND',
-    }, {
-      status: 404
-    })
+    return NextResponse.json(
+      {
+        code: 'USER_NOT_FOUND',
+        message: 'Không tìm thấy user',
+      },
+      {
+        status: 404,
+      }
+    );
   }
-
 
   // check password
 
@@ -39,27 +45,27 @@ export const POST = async (req: NextRequest) => {
   const comparePassword = hashPassword(body.password);
 
   if (currPassword !== comparePassword) {
-    return NextResponse.json({
-      code: 'WRONG_PASSWORD',
-    }, {
-      status: 400
-    })
+    return NextResponse.json(
+      {
+        code: 'WRONG_PASSWORD',
+        message: 'Mật khẩu không đúng',
+      },
+      {
+        status: 400,
+      }
+    );
   }
-
-
 
   //generate token
   const userInfo = {
     ...user,
-    password: undefined
-  }
+    password: undefined,
+  };
   const accessToken = await jwt.sign(userInfo, process.env.JWT_SECRET_KEY!, {
-    expiresIn: '7d'
-  })
+    expiresIn: '7d',
+  });
 
+  //reponse
 
-  //reponse 
-
-
-  return NextResponse.json({ accessToken, userInfo })
-}
+  return NextResponse.json({ accessToken, userInfo });
+};

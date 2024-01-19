@@ -6,3 +6,11 @@ export const FETCH_COUNT = 50;
 // nếu bên chỗ viết hàm chỉ export thì sẽ gọi thể kiểu import {} from 
 // import {formatNumber} from '@/utils/index';
 // formatNumber(FETCH_COUNT)
+
+
+export enum METHOD {
+  GET = 'get',
+  POST = 'post',
+  PUT = 'put',
+  DELETE = 'delete',
+}
