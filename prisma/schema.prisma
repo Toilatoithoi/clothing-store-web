@@ -60,7 +60,7 @@ model post {
 model product {
   id            Int             @id @default(autoincrement())
   name          String          @db.VarChar(255)
-  description   String?         @db.VarChar(255)
+  description   String?         @db.VarChar(800)
   status        String?         @default("\\0") @db.VarChar(255)
   category_id   Int?
   bill_product  bill_product[]
@@ -74,11 +74,11 @@ model product {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model product_model {
-  id         Int      @id
+  id         Int      @id @default(autoincrement())
   product_id Int?
   price      Float?
   color      String?  @db.VarChar(255)
-  size       String?  @db.Char(1)
+  size       String?  @db.Char(3)
   sold       Int?
   stock      Int?
   image      String?  @db.VarChar(255)

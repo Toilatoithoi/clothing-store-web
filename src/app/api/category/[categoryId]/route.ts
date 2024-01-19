@@ -41,7 +41,21 @@ export const PUT = async (req: NextRequest, { params }: { params: { categoryId: 
 export const DELETE = async (req: NextRequest, { params }: { params: { categoryId: string; } }) => {
   const id = Number(params.categoryId);
   try {
-    const category = await prisma.category.findMany();
+    const product_category = await prisma.product.findFirst({ where: { category_id: id } });
+    if (product_category != null) {
+      return NextResponse.json({
+        code: "PRODUCT_CATEGORY_EXIST",
+        message: "Category là khoá ngoại"
+      }, { status: 403 })
+    }
+
+    const category_parent = await prisma.category.findFirst({ where: { parent_id: id } });
+    if (category_parent != null) {
+      return NextResponse.json({
+        code: "CATEGORY_PARENT_EXIST",
+        message: "Category là khoá ngoại"
+      }, { status: 403 })
+    }
 
     const parent = await prisma.category.findFirst({ where: { id } })
     if (parent == null) {

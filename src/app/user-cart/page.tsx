@@ -13,7 +13,7 @@ const UserCart = () => {
   return (
     <div>
       <div className='flex items-center justify-center my-[3.2rem]'>
-        <div>Giỏ hàng</div><IoIosArrowForward />
+        <div className='font-bold'>Giỏ hàng</div><IoIosArrowForward />
         <div>Thanh toán</div><IoIosArrowForward />
         <div>Hoàn tất</div>
       </div>
@@ -21,9 +21,9 @@ const UserCart = () => {
         <div className='flex w-full gap-[3.2rem]'>
           <div className='bg-[#f7f8fa] flex-1 p-[3rem] grid grid-cols-5 h-fit gap-4'>
             <div className='col-span-2'>Sản phẩm</div>
-            <div>Giá </div>
-            <div>Số lượng</div>
-            <div>Tạm tính</div>
+            <div className='text-center'>Giá </div>
+            <div className='text-center'>Số lượng</div>
+            <div className='text-center'>Tạm tính</div>
             <>
               <div className='flex col-span-2'>
                 <Image src={ProductImage} className='object-contain mr-4' alt="product" width={80} />
@@ -31,12 +31,12 @@ const UserCart = () => {
                   <div>Áo hoodie nam AHHTK403</div>
                   <div>Màu sắc: Be</div>
                   <div>Cỡ: M</div>
-                  <div>Xóa</div>
+                  <div className='cursor-pointer hover:text-red-500'>Xóa</div>
                 </div>
               </div>
-              <div>500,000</div>
-              <div><InputCount /></div>
-              <div>500,000</div>
+              <div className='text-center'>500,000</div>
+              <div className='flex justify-center'><InputCount /></div>
+              <div className='text-center'>500,000</div>
             </>
             <>
               <div className='flex col-span-2'>
@@ -45,12 +45,12 @@ const UserCart = () => {
                   <div>Áo hoodie nam AHHTK403</div>
                   <div>Màu sắc: Be</div>
                   <div>Cỡ: M</div>
-                  <div>Xóa</div>
+                  <div className='cursor-pointer hover:text-red-500'>Xóa</div>
                 </div>
               </div>
-              <div>500,000</div>
-              <div><InputCount /></div>
-              <div>500,000</div>
+              <div className='text-center'>500,000</div>
+              <div className='flex justify-center'><InputCount /></div>
+              <div className='text-center'>500,000</div>
             </>
             <>
               <div className='flex col-span-2'>
@@ -59,17 +59,17 @@ const UserCart = () => {
                   <div>Áo hoodie nam AHHTK403</div>
                   <div>Màu sắc: Be</div>
                   <div>Cỡ: M</div>
-                  <div>Xóa</div>
+                  <div className='cursor-pointer hover:text-red-500'>Xóa</div>
                 </div>
               </div>
-              <div>500,000</div>
-              <div><InputCount /></div>
-              <div>500,000</div>
+              <div className='text-center'>500,000</div>
+              <div className='flex justify-center'><InputCount /></div>
+              <div className='text-center'>500,000</div>
             </>
 
           </div>
           <div className='bg-[#f7f8fa] w-[40rem]  p-[3rem]'>
-            <div className='h-[4rem] flex items-center text-[2rem] font-bold mb-[1.6rem]'>Tóp tắt đơn hàng</div>
+            <div className='h-[4rem] flex items-center text-[2rem] font-bold mb-[1.6rem]'>Tóm tắt đơn hàng</div>
             <div className=' w-full flex justify-between h-[3.6rem] items-center text-[1.6rem]'>
               <div className='font-bold'>Tạm tính</div>
               <div>2.670.000 VNĐ</div>
