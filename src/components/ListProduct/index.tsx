@@ -4,13 +4,14 @@ import SideBar from '../Sidebar'
 import ProductCard from '../ProductCard'
 import useSWR from 'swr'
 import { fetcher } from '@/utils/fetcher'
+import { useSWRWrapper } from '@/store/custom'
+import { ProductRes } from '@/interfaces/model'
 const ListProduct = () => {
-  const { data } = useSWR('/api/product', fetcher, {
-    revalidateOnMount: true,
-    revalidateOnFocus: false,
-  });
+  const { data } = useSWRWrapper<ProductRes[]>('/api/product', {
+    url: '/api/product',
+  })
 
-  console.log({ data })
+  console.log({ data });
 
   return (
     <>
@@ -39,7 +40,7 @@ const ListProduct = () => {
               </option>
               <option>
                 Theo giá từ cao đến thấp
-              </option>      
+              </option>
             </select>
           </div>
         </div>
@@ -47,19 +48,9 @@ const ListProduct = () => {
 
       <div className='flex flex-1 gap-[1.5rem]'>
         <SideBar />
-        <div className='flex-1 flex gap-5 flex-wrap items-start'>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
+        <div className='grid grid-cols-4 gap-5 h-fit'>
+          {data?.map(item => <ProductCard data={item} key={item.id} />)}
+
         </div>
       </div>
     </>

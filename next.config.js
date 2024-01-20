@@ -3,6 +3,14 @@ const nextConfig = {
   env: {
     ENDPOINT: process.env.ENDPOINT
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '360.com.vn',
+      },
+    ],
+  },
   reactStrictMode: true,
   webpack(config) {
     //for react-pdf

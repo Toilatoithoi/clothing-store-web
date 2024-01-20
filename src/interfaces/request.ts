@@ -57,13 +57,11 @@ export interface CreatePostReq {
   createAt: string;
 }
 
-
-enum PRODUCT_STATUS {
+export enum PRODUCT_STATUS {
   DRAFT = 'DRAFT',
   PUBLISHED = 'PUBLISHED',
   DELETED = 'DELETED',
 }
-
 
 interface ProductModel {
   color: string;
@@ -78,5 +76,5 @@ export interface CreateProductReq {
   description?: string;
   status?: PRODUCT_STATUS;
   category_id?: number;
-  model: product_model[]
+  model: ProductModel[];
 }

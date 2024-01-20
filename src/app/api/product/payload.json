@@ -1,0 +1,34 @@
+{
+  "name": "ÁO SƠ MI NAM SKDTK425",
+  "category_id": 4,
+  "product_mode": [
+    {
+      "price": 399000,
+      "color": "Trắng",
+      "size": "S",
+      "stock": 100,
+      "image": "https://360.com.vn/wp-content/uploads/2023/10/SKDTK425-QACTK306-4-Custom.jpg"
+    },
+    {
+      "price": 399000,
+      "color": "Đen",
+      "size": "S",
+      "stock": 100,
+      "image": "https://360.com.vn/wp-content/uploads/2023/10/SKDTK425-QACTK306-4-Custom.jpg"
+    },
+    {
+      "price": 399000,
+      "color": "Trắng",
+      "size": "M",
+      "stock": 100,
+      "image": "https://360.com.vn/wp-content/uploads/2023/10/SKDTK425-QACTK306-4-Custom.jpg"
+    },
+    {
+      "price": 399000,
+      "color": "Đen",
+      "size": "M",
+      "stock": 100,
+      "image": "https://360.com.vn/wp-content/uploads/2023/10/SKDTK425-QACTK306-4-Custom.jpg"
+    }
+  ]
+}

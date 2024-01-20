@@ -1,12 +1,15 @@
 import { METHOD } from '@/constants';
 import { NotificationConfig } from '@/interfaces';
-import { useSWRConfig } from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import useSWRMutation, { SWRMutationConfiguration } from 'swr/mutation';
 import { COMMON_LOADING } from './key';
 import { fetcher } from '@/utils/fetcher';
 import { toast } from 'react-toastify';
 import ToastNotification from '@/components/ToastNotification';
-import { uuid } from '@/utils';
+import { isBlank, uuid } from '@/utils';
+import { PublicConfiguration } from 'swr/_internal';
+import { RestError } from '@/utils/service';
+import { getKey } from '@/utils/localStorage';
 
 export const useMutation = <T = Record<string, unknown>,>(
   key: string,
@@ -100,3 +103,49 @@ export const useMutation = <T = Record<string, unknown>,>(
     },
   );
 };
+
+
+
+export function useSWRWrapper<T = Record<string, unknown>>(
+  key: string | null | (() => string | null),
+  {
+    url,
+    ignoreKeyParse,
+    method,
+    params,
+    auth,
+    ...config
+  }: {
+    url?: string;
+    method?: METHOD;
+    params?: Record<string, unknown>;
+    auth?: boolean;
+    ignoreKeyParse?: boolean;
+  } & Partial<PublicConfiguration<T, RestError, (arg: string) => any>>,
+) {
+  let keyParse = typeof key === 'string' ? key : key?.();
+  const accessToken = getKey('access_token') as string;
+
+  return useSWR<T>(
+    isBlank(keyParse!) ? null : (keyParse as any),
+    () => {
+      return new Promise((resolve, reject) => {
+        fetcher<T>(
+          url ?? (typeof key === 'string' ? key : key?.()) ?? '',
+          method ?? METHOD.GET,
+          params,
+          {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        )
+          .then(data => {
+            resolve(data!);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    config,
+  );
+}
