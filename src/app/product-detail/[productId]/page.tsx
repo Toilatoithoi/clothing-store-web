@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaMinus, FaPlus, FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa";
 import ProductImage from "@/assets/png/product-1.jpg"
@@ -12,6 +12,9 @@ import { Disclosure, Transition } from '@headlessui/react';
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import ProductSlider from '@/components/ProductSilder';
+import { useSWRWrapper } from '@/store/custom';
+import { ProductDetail } from '@/interfaces/model';
+import { formatNumber } from '@/utils';
 
 const images = [
   {
@@ -51,18 +54,60 @@ const images = [
 
 const ProductDetailPage = (props: { params: { productId: string; } }) => {
   // query data của product băng id -> render data lên 
+
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
+  const [sizes, setSizes] = useState<string[]>([]);
+  const [colors, setColors] = useState<Record<string, {
+    price: number;
+    color: string;
+    size: string;
+    image: string;
+  }>>({});
+
+  const { data: product } = useSWRWrapper<ProductDetail>(`/api/product/${props.params.productId}`, {
+    url: `/api/product/${props.params.productId}`
+  })
+
+  useEffect(() => {
+    const sizes: string[] = [];
+    const colors: Record<string, {
+      price: number;
+      color: string;
+      size: string;
+      image: string;
+    }> = {};
+
+    product?.product_model.forEach(model => {
+      if (!sizes.includes(model.size)) { // kiểm tra size đã có trong list chưa
+        sizes.push(model.size);
+      }
+      if (!colors[model.color]) {
+        colors[model.color] = model;
+      }
+    })
+
+    setSizes(sizes);
+    setColors(colors);
+    setSelectedSize(product?.product_model[0]?.size ?? '');
+    setSelectedColor(product?.product_model[0]?.color ?? '')
+  }, [product])
+
+
+
+
+  console.log({ sizes })
   return (
     <div className='w-full  h-full flex-1'>
       <div className='flex gap-[0.8rem]  p-[1.2rem] items-center'>
         <a className='text-[1.6rem] text-gray-500' href="">Trang chủ</a>/
-        <a className='text-[1.6rem] text-gray-500' href="">Set đồ</a>/
-        <a className='text-[1.6rem] text-gray-500' href="">Set đô nỉ</a>
+        <a className='text-[1.6rem] text-gray-500' href="">{product?.category?.name}</a>/
       </div>
       <div className='flex mb-[8rem]'>
         <div className='flex-1 max-w-[60%] mr-[2.4rem]' ><ImageGallery items={images} thumbnailPosition="left" /></div>
         <div className='flex flex-col flex-1 p-[1.6rem]'>
           <div className='border-dashed border-b border-[#6d6d6d1a]'>
-            <div className='text-[2.7rem]'>Áo polo nam POTTK442</div>
+            <div className='text-[2.7rem]'>{product?.name}</div>
             <div className='flex mb-[1.6rem]'>
               <FaStar className="text-yellow-500" />
               <FaStar className="text-yellow-500" />
@@ -70,24 +115,30 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
               <FaStar className="text-yellow-500" />
               <FaRegStar className="text-yellow-500" />
             </div>
-            <div className='text-[2.4rem] font-semibold'>419.000 VND</div>
+            <div className='text-[2.4rem] font-semibold'>{formatNumber(product?.product_model[0]?.price)} VND</div>
           </div>
           <div className='flex items-center py-[0.8rem]'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Màu sắc</div>
-            <div className='mr-4 rounded-[0.4rem] cursor-pointer border border-gray-400 hover:border-gray-600'>
-              <Image src={ProductImage} className='w-[3rem] h-[3rem] object-contain' width={30} height={30} alt={'size'} objectFit='cover' />
-            </div>
-            <div className='mr-4 rounded-[0.4rem] cursor-pointer border border-gray-400 hover:border-gray-600'>              <Image src={ProductImage} className='w-[3rem] h-[3rem] object-contain' width={30} height={30} alt={'size'} objectFit='cover' />
-            </div>
-            <div className='mr-4 rounded-[0.4rem] cursor-pointer border border-gray-400 hover:border-gray-600'>              <Image src={ProductImage} className='w-[3rem] h-[3rem] object-contain' width={30} height={30} alt={'size'} objectFit='cover' />
-            </div>
+            {
+              Object.keys(colors).map(key =>
+                <div
+                  key={key}
+                  onClick={() => {
+                    setSelectedColor(key)
+                  }}
+                  className={`mr-4 rounded-[0.4rem] cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedColor === key ? 'border-gray-600' : ''}`}>
+                  <Image src={colors[key].image} className='w-[3rem] h-[3rem] object-contain' width={30} height={30} alt={'size'} objectFit='cover' />
+                </div>)
+            }
+
           </div>
           <div className='flex items-center py-[0.8rem]'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Cỡ</div>
-            <div className='mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600'>S</div>
-            <div className='mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600'>M</div>
-            <div className='mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600'>L</div>
-            <div className='mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600'>XL</div>
+            {sizes.map(size => <div className={`mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedSize === size ? 'border-gray-600' : ''}`}
+              onClick={() => setSelectedSize(size)}
+              key={size}>{size}</div>
+            )}
+
           </div>
           <div className='text-[#bc0516] text-[1.6rem] py-[0.8rem] cursor-pointer'>Hướng dẫn kích thước</div>
           <div className='flex items-center'>
@@ -137,12 +188,8 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
                   <Disclosure.Panel
                     static
                   >
-                    <div className='flex flex-col p-2 gap-2  max-h-[40rem] overflow-y-auto'>
-                      <div>Chất liệu: Pique</div>
-                      <div>Form      : Regular</div>
-                      <div>Đặc tính :</div>
-                      <div>Màu        : Đen, Trắng, Be</div>
-                      <div>Size        : M-XL</div>
+                    <div className='flex flex-col p-2 gap-2  max-h-[40rem] overflow-y-auto' dangerouslySetInnerHTML={{ __html: product?.description ?? '' }}>
+
                     </div>
                   </Disclosure.Panel>
                 </Transition>
@@ -152,14 +199,14 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
         </div>
       </div>
 
-      <div className='mb-[8rem]'>
+      {/* <div className='mb-[8rem]'>
         <div className='text-[2rem] font-bold mb-[2.4rem]'>Sản phẩm đã xem</div>
         <div><ProductSlider /></div>
       </div>
       <div className='mb-[8rem] border-t-[0.05rem] border-gray-200 pt-[1.6rem]'>
         <div className='text-[2rem] font-bold mb-[2.4rem]'>Sản phẩm cùng danh mục</div>
         <div><ProductSlider /></div>
-      </div>
+      </div> */}
     </div>
   )
 }

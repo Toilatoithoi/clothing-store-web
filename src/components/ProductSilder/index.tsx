@@ -31,12 +31,12 @@ const ProductSlider = () => {
   return (
     <div className='w-full relative'>
       <div ref={sliderRef} className="keen-slider">
+        {/* <div className="keen-slider__slide number-slide1"><ProductCard /></div>
         <div className="keen-slider__slide number-slide1"><ProductCard /></div>
         <div className="keen-slider__slide number-slide1"><ProductCard /></div>
         <div className="keen-slider__slide number-slide1"><ProductCard /></div>
         <div className="keen-slider__slide number-slide1"><ProductCard /></div>
-        <div className="keen-slider__slide number-slide1"><ProductCard /></div>
-        <div className="keen-slider__slide number-slide1"><ProductCard /></div>
+        <div className="keen-slider__slide number-slide1"><ProductCard /></div> */}
 
       </div>
       {loaded && instanceRef.current && (

@@ -1,5 +1,4 @@
-
-export const isBlank = (str?: string): boolean => {
+export const isBlank = (str?: string | null): boolean => {
   return str == null || /^\s*$/.test(str);
 };
 
@@ -47,8 +46,16 @@ export const formatNumber = (
       fractionDigit = digit;
     }
     if (fractionDigit > 0) {
-      const mainNum = Number(`${Number(tempValue.toString())}e+${fractionDigit}`);
-      const temp = +`${isSkipRound ? mainNum : floor ? Math.floor(mainNum) : Math.round(mainNum)}e-${fractionDigit}`;
+      const mainNum = Number(
+        `${Number(tempValue.toString())}e+${fractionDigit}`
+      );
+      const temp = +`${
+        isSkipRound
+          ? mainNum
+          : floor
+          ? Math.floor(mainNum)
+          : Math.round(mainNum)
+      }e-${fractionDigit}`;
       let fractionString = '';
       let i = '';
       if (toFixed === true) {
@@ -58,14 +65,24 @@ export const formatNumber = (
       } else {
         i = temp.toString();
         if (temp.toString().indexOf('.') >= 1) {
-          fractionString = temp.toString().substring(temp.toString().indexOf('.'), temp.toString().length);
+          fractionString = temp
+            .toString()
+            .substring(temp.toString().indexOf('.'), temp.toString().length);
           i = temp.toString().substring(0, temp.toString().indexOf('.'));
         }
       }
       return prefix + i.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + fractionString;
     } else {
-      const mainNum = Number(`${Number(tempValue.toString())}e+${fractionDigit}`);
-      const temp = +`${isSkipRound ? mainNum : floor ? Math.floor(mainNum) : Math.round(mainNum)}e-${fractionDigit}`;
+      const mainNum = Number(
+        `${Number(tempValue.toString())}e+${fractionDigit}`
+      );
+      const temp = +`${
+        isSkipRound
+          ? mainNum
+          : floor
+          ? Math.floor(mainNum)
+          : Math.round(mainNum)
+      }e-${fractionDigit}`;
       const i = temp.toString();
       return prefix + i.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }

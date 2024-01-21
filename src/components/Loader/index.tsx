@@ -35,7 +35,6 @@ const Loader: React.FC<LoaderProps> = ({
   return (
     <LoadingOverlay
       className={className}
-      id={id}
       spinner={<Preload />}
       active={loading || innerLoading}
     >
