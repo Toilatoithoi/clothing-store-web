@@ -12,3 +12,16 @@ export interface Category {
   name: string;
   level: string;
 }
+
+export interface ProductDetail {
+  id: number;
+  name: string;
+  category: Category;
+  product_model: {
+    price: number;
+    color: string;
+    size: string;
+    image: string;
+  }[];
+  description: string;
+}

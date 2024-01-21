@@ -55,7 +55,18 @@ export const GET = async (
 ) => {
   const id = Number(params.productId);
   try {
-    const product = await prisma.product.findFirst({ where: { id } });
+    const product = await prisma.product.findFirst({
+      where: { id },
+      select: {
+        name: true,
+        category: true,
+        product_model: true,
+        status: true,
+        id: true,
+        description: true,
+        image_product: true,
+      },
+    });
 
     // lây thông tin category trên db -> nếu mà không có thông tin category -> thông báo lỗi category not exist
     if (product == null) {
@@ -67,12 +78,7 @@ export const GET = async (
         { status: 403 }
       );
     }
-
-    const product_model = await prisma.product_model.findMany({
-      where: { product_id: id },
-    });
-
-    return NextResponse.json(product_model);
+    return NextResponse.json(product);
   } catch (error) {
     console.log({ error });
     return NextResponse.json(
