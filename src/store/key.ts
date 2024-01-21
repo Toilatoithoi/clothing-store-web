@@ -1,5 +1,6 @@
 export const APP_STATUS = 'APP_STATUS';
 
+// key
 export const COMMON_SHOW_REGISTER = 'COMMON_SHOW_REGISTER';
 export const COMMON_SHOW_LOGIN = 'COMMON_SHOW_LOGIN';
 export const COMMON_LOADING = 'COMMON_LOADING';

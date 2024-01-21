@@ -11,6 +11,7 @@ export interface UserInfo {
 // }
 
 export interface AppStatus {
+  // true nếu là đã đăng nhập
   isAuthenticated?: boolean;
 }
 

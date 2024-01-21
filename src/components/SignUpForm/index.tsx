@@ -26,6 +26,7 @@ const registerFetcher = (key: string,) => {
 
 const SignUpForm = (props: { onShowLogin(): void }) => {
   const componentId = useRef(uuid())
+  // gửi dữ liệu từ form và chỉ kích hoạt khi có trigger và khi có trigger mình sẽ truyền data xuống server
   const { trigger, data, error } = useMutation('/api/register', {
     url: '/api/register',
     method: METHOD.POST,
@@ -33,11 +34,16 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
       console.log(data)
       mutate(COMMON_SHOW_REGISTER, false)
     },
+    // thực hiện loading
     componentId: componentId.current,
     loading: true,
     notification: {
+      // config thông báo
+      // title dùng chung cho thành công và thấT bại
       title: 'Đăng ký tài khoản',
+      // chỉ dùng cho thành công
       content: 'Đăng ký tài khoản thành công',
+      // không show thông báo lỗi lên
       ignoreError: true,
     }
   })

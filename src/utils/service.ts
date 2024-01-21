@@ -37,8 +37,7 @@ export class RestError {
   code: string;
   message?: string;
 
-  
-
+  //  tự map message nếu có giá trị truyền vào không thì sẽ lấy giá trị của code
   constructor(code: string, message?: string) {
     this.code = code;
     this.message = message ?? mapCodeToMessage[code];

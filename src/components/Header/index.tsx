@@ -185,10 +185,12 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
   const { data: appStatus } = useAppStatus();
 
   const handleShowLogin = () => {
+    // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
     mutate(COMMON_SHOW_LOGIN, true);
   }
 
   const handleShowRegister = () => {
+    // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng kí
     mutate(COMMON_SHOW_REGISTER, true);
   }
 
