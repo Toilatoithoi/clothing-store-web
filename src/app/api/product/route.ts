@@ -3,24 +3,62 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { isBlank } from '@/utils';
+import { category } from '@prisma/client';
 export const GET = async (request: NextRequest) => {
   const url = new URL(request.url);
   const category_id = url.searchParams.get('categoryId');
+  const fetchCount = url.searchParams.get('fetchCount');
+  let page = Number(url.searchParams.get('page') ?? 0) - 1;
+  if (page < 0) {
+    page = 0;
+  }
   try {
-    const products = await prisma.product.findMany({
-      select: {
-        product_model: true,
-        name: true,
-        status: true,
-        category: true,
-      },
-      where: {
-        status: 'PUBLISHED',
-        ...(!isBlank(category_id!) && {
-          category_id: Number(category_id),
+    let category: category | null = null;
+    if (category_id && !isBlank(category_id)) {
+      category = await prisma.category.findFirst({
+        where: { id: Number(category_id) },
+      });
+    }
+
+    const where = {
+      status: 'PUBLISHED',
+      ...(category != null && {
+        category: {
+          OR: [
+            {
+              id: Number(category_id),
+            },
+            {
+              parent_id: Number(category_id),
+            },
+          ],
+        },
+      }),
+    };
+
+    const [products, count] = await prisma.$transaction([
+      prisma.product.findMany({
+        select: {
+          product_model: true,
+          name: true,
+          status: true,
+          category: true,
+          id: true,
+        },
+        ...(!isBlank(fetchCount) && {
+          take: Number(fetchCount),
+          skip: Number(page ?? 0) * Number(fetchCount), // skip = (page - 1) * fetchCount
         }),
-      },
-    });
+        where,
+        orderBy: {
+          id: 'asc',
+        },
+      }),
+      prisma.product.count({
+        where,
+      }),
+    ]);
+
     const res = products.map((product) => {
       const price = {
         priceMin: product.product_model[0]?.price ?? 0,
@@ -42,10 +80,18 @@ export const GET = async (request: NextRequest) => {
         category: product.category,
         price,
         image: product.product_model[0]?.image,
+        id: product.id,
       };
     });
 
-    return NextResponse.json(res);
+    return NextResponse.json({
+      items: res,
+      pagination: {
+        totalCount: count,
+        page: page <= 0 ? 1 : page + 1,
+        totalPage: fetchCount ? count / Number(fetchCount) : 1,
+      },
+    });
   } catch (error) {
     console.log({ error });
     return NextResponse.json(

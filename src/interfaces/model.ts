@@ -7,3 +7,8 @@ export interface ProductRes {
     priceMax: number;
   };
 }
+export interface Category {
+  id: number;
+  name: string;
+  level: string;
+}

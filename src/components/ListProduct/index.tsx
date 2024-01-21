@@ -6,9 +6,16 @@ import useSWR from 'swr'
 import { fetcher } from '@/utils/fetcher'
 import { useSWRWrapper } from '@/store/custom'
 import { ProductRes } from '@/interfaces/model'
-const ListProduct = () => {
-  const { data } = useSWRWrapper<ProductRes[]>('/api/product', {
+import { PaginationRes } from '@/interfaces';
+import { formatNumber } from '@/utils'
+
+
+const ListProduct = (props: { categoryId?: string; }) => {
+  const { data } = useSWRWrapper<PaginationRes<ProductRes>>('/api/product', {
     url: '/api/product',
+    params: {
+      ...props.categoryId && { categoryId: props.categoryId }
+    }
   })
 
   console.log({ data });
@@ -24,14 +31,11 @@ const ListProduct = () => {
 
 
       <div className='h-[4rem] mb-[1.5rem] flex justify-between items-center bg-slate-100 px-4'>
-        <div>Tổng 35 sản phẩm </div>
+        <div>{`Tổng ${formatNumber(data?.pagination.totalCount)} sản phẩm `}</div>
         <div className='flex'>
           <div className='mr-4'>Sắp xếp theo</div>
           <div>
             <select className='outline-none'>
-              <option>
-                Theo mức độ phổ biến
-              </option>
               <option>
                 Mới nhất
               </option>
@@ -49,8 +53,7 @@ const ListProduct = () => {
       <div className='flex flex-1 gap-[1.5rem]'>
         <SideBar />
         <div className='grid grid-cols-4 gap-5 h-fit'>
-          {data?.map(item => <ProductCard data={item} key={item.id} />)}
-
+          {data?.items.map(item => <ProductCard data={item} key={item.id} />)}
         </div>
       </div>
     </>
@@ -58,3 +61,4 @@ const ListProduct = () => {
 }
 
 export default ListProduct
+

@@ -20,3 +20,12 @@ export interface NotificationConfig {
   ignoreError?: boolean;
   content?: string;
 }
+
+export interface PaginationRes<T> {
+  items: T[];
+  pagination: {
+    totalCount: number;
+    page: number;
+    totalPage: number;
+  };
+}
