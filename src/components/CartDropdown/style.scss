@@ -1,0 +1,10 @@
+.cart {
+  .cart-menu {
+    display: none;
+  }
+  &:hover {
+    .cart-menu {
+      display: block;
+    }
+  }
+}
