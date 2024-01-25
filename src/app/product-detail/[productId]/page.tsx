@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaMinus, FaPlus, FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa";
 import ProductImage from "@/assets/png/product-1.jpg"
@@ -13,8 +13,9 @@ import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import ProductSlider from '@/components/ProductSilder';
 import { useSWRWrapper } from '@/store/custom';
-import { ProductDetail } from '@/interfaces/model';
+import { ProductDetail, ProductModel } from '@/interfaces/model';
 import { formatNumber } from '@/utils';
+import { useCart } from '@/components/CartDropdown/hook';
 
 const images = [
   {
@@ -58,45 +59,47 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [sizes, setSizes] = useState<string[]>([]);
-  const [colors, setColors] = useState<Record<string, {
-    price: number;
-    color: string;
-    size: string;
-    image: string;
-  }>>({});
-
+  const [colors, setColors] = useState<Record<string, ProductModel>>({});
+  const MapSizeColorToModel = useRef<Record<string, ProductModel>>({})
+  const { addToCart } = useCart()
   const { data: product } = useSWRWrapper<ProductDetail>(`/api/product/${props.params.productId}`, {
     url: `/api/product/${props.params.productId}`
   })
 
   useEffect(() => {
-    const sizes: string[] = [];
-    const colors: Record<string, {
-      price: number;
-      color: string;
-      size: string;
-      image: string;
-    }> = {};
+    if (product) {
+      const sizes: string[] = [];
+      const colors: Record<string, ProductModel> = {};
 
-    product?.product_model.forEach(model => {
-      if (!sizes.includes(model.size)) { // kiểm tra size đã có trong list chưa
-        sizes.push(model.size);
-      }
-      if (!colors[model.color]) {
-        colors[model.color] = model;
-      }
-    })
+      product?.product_model.forEach(model => {
+        if (!sizes.includes(model.size)) { // kiểm tra size đã có trong list chưa
+          sizes.push(model.size);
+        }
+        if (!colors[model.color]) {
+          colors[model.color] = model;
+        }
+        MapSizeColorToModel.current[model.size + model.color] = model;
+      })
 
-    setSizes(sizes);
-    setColors(colors);
-    setSelectedSize(product?.product_model[0]?.size ?? '');
-    setSelectedColor(product?.product_model[0]?.color ?? '')
+      setSizes(sizes);
+      setColors(colors);
+      setSelectedSize(product?.product_model[0]?.size ?? '');
+      setSelectedColor(product?.product_model[0]?.color ?? '')
+    }
   }, [product])
 
+  const handleAddCart = () => {
+    const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
+    addToCart({
+      ...selectedModel,
+      quantity: 1,
+      product: product!,
+    })
+  }
 
 
-
-  console.log({ sizes })
+  console.log({ sizes, MapSizeColorToModel: MapSizeColorToModel.current })
+  const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
   return (
     <div className='w-full  h-full flex-1'>
       <div className='flex gap-[0.8rem]  p-[1.2rem] items-center'>
@@ -115,7 +118,10 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
               <FaStar className="text-yellow-500" />
               <FaRegStar className="text-yellow-500" />
             </div>
-            <div className='text-[2.4rem] font-semibold'>{formatNumber(product?.product_model[0]?.price)} VND</div>
+            <div className="flex text-[1.6rem] items-center" >
+              <span className='mr-1'>Tình trạng:</span> <strong className='text-green-600'>{`${selectedModel?.stock} sản phẩm sẵn có`}</strong>
+            </div>
+            <div className='text-[2.4rem] font-semibold'>{formatNumber(selectedModel?.price)} VND</div>
           </div>
           <div className='flex items-center py-[0.8rem]'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Màu sắc</div>
@@ -126,7 +132,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
                   onClick={() => {
                     setSelectedColor(key)
                   }}
-                  className={`mr-4 rounded-[0.4rem] cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedColor === key ? 'border-gray-600' : ''}`}>
+                  className={`mr-4 rounded-[0.4rem] cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedColor === key ? 'border-gray-600 border-[2px]' : ''}`}>
                   <Image src={colors[key].image} className='w-[3rem] h-[3rem] object-contain' width={30} height={30} alt={'size'} objectFit='cover' />
                 </div>)
             }
@@ -134,7 +140,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
           </div>
           <div className='flex items-center py-[0.8rem]'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Cỡ</div>
-            {sizes.map(size => <div className={`mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedSize === size ? 'border-gray-600' : ''}`}
+            {sizes.map(size => <div className={`mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedSize === size ? 'border-gray-600 border-[2px]' : ''}`}
               onClick={() => setSelectedSize(size)}
               key={size}>{size}</div>
             )}
@@ -146,7 +152,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
             <div><InputCount /></div>
           </div>
           <div className='flex items-center py-[0.8rem]'>
-            <button className='h-[4rem] flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
+            <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
             <button className='h-[4rem] flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button>
           </div>
           <div className='bg-[#F7F8FA] p-[1.6rem]'>

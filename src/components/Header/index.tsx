@@ -19,6 +19,7 @@ import { useSWRWrapper } from '@/store/custom';
 import { Category } from '@/interfaces/model';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import CartDropdown from '../CartDropdown';
 
 interface HeaderProps {
 
@@ -133,7 +134,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
             </div>
             {appStatus?.isAuthenticated ? <div className="flex item-center gap-[1.6rem]">
               <div className="text-[2.4rem]"><FaRegUser /></div>
-              <div className="text-[2.8rem]"><HiOutlineShoppingBag /></div>
+              <div className="text-[2.8rem]"><CartDropdown /></div>
               <div className="text-[2.8rem]"><RiGlobalLine /></div>
             </div> : <div className='flex gap-4'>
               <button type="button" className='font-bold' onClick={handleShowLogin}>Đăng nhập</button>
