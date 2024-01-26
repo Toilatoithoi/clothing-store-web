@@ -1,15 +1,26 @@
 
 'use client'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoIosArrowForward } from "react-icons/io";
 import Pay from '@/assets/svg/pay.svg'
 import { CiShoppingTag } from "react-icons/ci";
 import ProductImage from '@/assets/png/product-1.jpg'
 import Image from 'next/image'
 import InputCount from '@/components/InputCount';
+import { useCart } from '@/components/CartDropdown/hook';
 
 
 const UserCart = () => {
+  const { data } = useCart();
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    if (data && data.length > 0) {
+      const totalPrice = data.reduce((acc, item) => acc + item.quantity * item.price, 0);
+      setTotal(totalPrice);
+    }
+  }, [data])
+
+  console.log({ data })
   return (
     <div>
       <div className='flex items-center justify-center my-[3.2rem]'>

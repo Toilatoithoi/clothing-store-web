@@ -16,7 +16,8 @@ import { useSWRWrapper } from '@/store/custom';
 import { ProductDetail, ProductModel } from '@/interfaces/model';
 import { formatNumber } from '@/utils';
 import { useCart } from '@/components/CartDropdown/hook';
-
+import 'react-tooltip/dist/react-tooltip.css'
+import { Tooltip } from 'react-tooltip'
 const images = [
   {
     original: ProductImage.src,
@@ -133,18 +134,19 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
                     setSelectedColor(key)
                   }}
                   className={`mr-4 rounded-[0.4rem] cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedColor === key ? 'border-gray-600 border-[2px]' : ''}`}>
-                  <Image src={colors[key].image} className='w-[3rem] h-[3rem] object-contain' width={30} height={30} alt={'size'} objectFit='cover' />
+                  <a data-tooltip-id="my-tooltip" data-tooltip-content={colors[key].color}><Image src={colors[key].image} className='w-[3rem] h-[3rem] object-contain' width={30} height={30} alt={'size'} objectFit='cover' /></a>
+                  <Tooltip id="my-tooltip" />
                 </div>)
             }
 
           </div>
           <div className='flex items-center py-[0.8rem]'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Cỡ</div>
-            {sizes.map(size => <div className={`mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedSize === size ? 'border-gray-600 border-[2px]' : ''}`}
+            {sizes.map(size => <><a><div className={`mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedSize === size ? 'border-gray-600 border-[2px]' : ''}`}
               onClick={() => setSelectedSize(size)}
-              key={size}>{size}</div>
-            )}
-
+              key={size} data-tooltip-id="my-tooltip" data-tooltip-content={size}>{size}
+            </div></a><Tooltip id="my-tooltip" /></>
+            )}    
           </div>
           <div className='text-[#bc0516] text-[1.6rem] py-[0.8rem] cursor-pointer'>Hướng dẫn kích thước</div>
           <div className='flex items-center'>
@@ -152,8 +154,8 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
             <div><InputCount /></div>
           </div>
           <div className='flex items-center py-[0.8rem]'>
-            <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
-            <button className='h-[4rem] flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button>
+            <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
+            <button className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button>
           </div>
           <div className='bg-[#F7F8FA] p-[1.6rem]'>
             <div className='flex items-center mb-[0.8rem]'>

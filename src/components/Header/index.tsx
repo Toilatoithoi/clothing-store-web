@@ -134,7 +134,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
             </div>
             {appStatus?.isAuthenticated ? <div className="flex item-center gap-[1.6rem]">
               <div className="text-[2.4rem]"><FaRegUser /></div>
-              <div className="text-[2.8rem]"><CartDropdown /></div>
+              <div className="text-[2.8rem] cursor-pointer"><CartDropdown /></div>
               <div className="text-[2.8rem]"><RiGlobalLine /></div>
             </div> : <div className='flex gap-4'>
               <button type="button" className='font-bold' onClick={handleShowLogin}>Đăng nhập</button>
