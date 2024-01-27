@@ -45,7 +45,7 @@ export default function RootLayout({
   const { data: triggerShowLogin } = useSWR<boolean>(COMMON_SHOW_LOGIN);
   const { data: triggerShowRegister } = useSWR<boolean>(COMMON_SHOW_REGISTER);
 
-  console.log({ userInfo })
+
   useEffect(() => {
     yup.setLocale({
       mixed: {
