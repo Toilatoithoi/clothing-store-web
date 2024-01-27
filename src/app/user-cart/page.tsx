@@ -1,15 +1,30 @@
 
 'use client'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoIosArrowForward } from "react-icons/io";
 import Pay from '@/assets/svg/pay.svg'
 import { CiShoppingTag } from "react-icons/ci";
 import ProductImage from '@/assets/png/product-1.jpg'
 import Image from 'next/image'
 import InputCount from '@/components/InputCount';
+import { ProductCart } from '@/components/CartDropdown/hook';
+import { useSWRWrapper } from '@/store/custom';
 
 
 const UserCart = () => {
+  const { data } =  useSWRWrapper<ProductCart[]>(`/api/cart`, {
+    url: `/api/cart`
+  })
+  console.log(data)
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    if (data) {
+      const totalPrice = data.reduce((acc, item) => acc + item.quantity * item.price, 0);
+      setTotal(totalPrice);
+    }
+  }, [data])
+
+  console.log({ data })
   return (
     <div>
       <div className='flex items-center justify-center my-[3.2rem]'>
@@ -24,7 +39,7 @@ const UserCart = () => {
             <div className='text-center'>Giá </div>
             <div className='text-center'>Số lượng</div>
             <div className='text-center'>Tạm tính</div>
-            <>
+            {/* <>
               <div className='flex col-span-2'>
                 <Image src={ProductImage} className='object-contain mr-4' alt="product" width={80} />
                 <div>
@@ -65,6 +80,23 @@ const UserCart = () => {
               <div className='text-center'>500,000</div>
               <div className='flex justify-center'><InputCount /></div>
               <div className='text-center'>500,000</div>
+            </> */}
+            <>
+              {data != null  &&
+                data.map((item) => ( 
+                  <div key={item.id} className='flex col-span-2'>
+                    <Image src={ProductImage} className='object-contain mr-4' alt="product" width={80} />
+                    <div>
+                      <div>{item.product.name}</div>
+                      <div>{item.size}</div>
+                      <div>{item.color}</div>
+                      <div className='cursor-pointer hover:text-red-500'>Xóa</div>
+                    </div>
+                    <div className='text-center'>{item.price}</div>
+                    <div className='flex justify-center'><InputCount /></div>
+                    <div className='text-center'>{item.price}</div>
+                  </div>
+                ))}
             </>
 
           </div>

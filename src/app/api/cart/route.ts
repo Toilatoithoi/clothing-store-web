@@ -38,7 +38,7 @@ export const GET = async (req: NextRequest) => {
   }
 
 
-  export const POST = async (req: NextRequest) => {
+  export const PUT = async (req: NextRequest) => {
 
     const data = await verifyToken(req);
     if (data == null) {
@@ -47,35 +47,54 @@ export const GET = async (req: NextRequest) => {
   
     //validate input 
     const body = await req.json();
-    const productids = body.product_id.split(',')
 
-    if (isBlank(body.product_id) || isBlank(body.quantity) ) {
-      return NextResponse.json({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Đầu vào không hợp lệ'
-      }, {
-        status: 400
-      })
-    }
+    // if (isBlank(body.product_model_id) || isBlank(body.quantity) ) {
+    //   return NextResponse.json({
+    //     code: 'INTERNAL_SERVER_ERROR',
+    //     message: 'Đầu vào không hợp lệ'
+    //   }, {
+    //     status: 400
+    //   })
+    // }
   
     
     try {
-      const modelsToCreate: { user_id: number; product_id: number; quantity: number; }[] = [];
+      const cart = await prisma.cart.findMany({
+        where: {
+          user: {
+            username: data.username
+          }
+        }
+      });
+      const modelsToCreate: {product_model_id: number; quantity: number; }[] = [];
 
-      productids.forEach((id_p: any) => {
-        const model = {
-          user_id: data.id,
-          product_id: Number(id_p),
-          quantity: body.quantity
-        };
-        modelsToCreate.push(model);
+      body.forEach((a: any) => {
+        cart.forEach(async (b) =>{
+           if(a.id = b.id){ 
+            await prisma.cart.update({
+              where: {id: b.id},
+              data:{
+                product_model_id: Number(a.product_model_id),
+                quantity: Number(a.quantity)
+              }
+            })
+           }else{
+            await prisma.cart.create({
+                data:{
+                  ...a,
+                  id: undefined
+                }
+            })
+           }
+        })
       });
 
-      const createdCart = await prisma.cart.createMany({
-        data: modelsToCreate,
-      });
+      // const createdCart = await prisma.cart.upsert({
+      //   data: modelsToCreate,
+      // });
 
-      return NextResponse.json({ createdCart })
+
+      return NextResponse.json({})
 
     } catch (error) {
       console.log({ error })

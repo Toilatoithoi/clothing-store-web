@@ -11,6 +11,7 @@ import { PublicConfiguration } from 'swr/_internal';
 import { RestError } from '@/utils/service';
 import { getKey } from '@/utils/localStorage';
 
+// truyen cho useSWR một url, method, notification rồi call api nếu lỗi sẽ gọi hàm onError nếu thành công onSuccess gửi request từ client xuống server
 export const useMutation = <T = Record<string, unknown>,>(
   key: string,
   {
@@ -76,6 +77,7 @@ export const useMutation = <T = Record<string, unknown>,>(
             />,
             {
               toastId: uuid(),
+              // chỉnh vị trí
               position: 'bottom-right',
               hideProgressBar: true,
               theme: 'light',
@@ -136,6 +138,7 @@ export function useSWRWrapper<T = Record<string, unknown>>(
           method ?? METHOD.GET,
           params,
           {
+            // bước xác thực
             Authorization: `Bearer ${accessToken}`,
           },
         )
