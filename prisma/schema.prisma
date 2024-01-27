@@ -81,6 +81,7 @@ model product_model {
   sold       Int?
   stock      Int?
   image      String?  @db.VarChar(255)
+  cart       cart[]
   product    product? @relation(fields: [product_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "product_model_ibfk_1")
 
   @@index([product_id], map: "F_product_modal_product_id")
@@ -99,11 +100,12 @@ model bill_product {
 }
 
 model cart {
-  id               Int  @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   product_model_id Int
   user_id          Int
   quantity         Int?
-  user             User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_user_ibfk")
+  user             User          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_user_ibfk")
+  product_model    product_model @relation(fields: [product_model_id], references: [id], onUpdate: Restrict, map: "cart_product_mode_id")
 
   @@index([product_model_id], map: "cart_product_fk1_idx")
   @@index([user_id], map: "cart_product_fk2_idx")
