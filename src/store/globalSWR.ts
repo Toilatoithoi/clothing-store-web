@@ -13,5 +13,7 @@ export const useUserInfo = () => {
   return useSWRWrapper(USER_INFO, {
     url: '/api/user/verifyToken',
     method: METHOD.GET,
+    refreshInterval: 0,
+    revalidateOnFocus: false,
   });
 };

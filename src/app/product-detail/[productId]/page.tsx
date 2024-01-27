@@ -59,6 +59,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
 
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const [quantity, setQuantity] = useState(1);
   const [sizes, setSizes] = useState<string[]>([]);
   const [colors, setColors] = useState<Record<string, ProductModel>>({});
   const MapSizeColorToModel = useRef<Record<string, ProductModel>>({})
@@ -96,9 +97,11 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
     const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
     addToCart({
       ...selectedModel,
-      quantity: 1,
+      quantity,
       product: product!,
     })
+
+    setQuantity(1);
   }
 
 
@@ -149,12 +152,12 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
               onClick={() => setSelectedSize(size)}
               key={size} data-tooltip-id="my-tooltip" data-tooltip-content={size}>{size}
             </div></a><Tooltip id="my-tooltip" /></>
-            )}    
+            )}
           </div>
           <div className='text-[#bc0516] text-[1.6rem] py-[0.8rem] cursor-pointer'>Hướng dẫn kích thước</div>
           <div className='flex items-center'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Số lượng</div>
-            <div><InputCount /></div>
+            <div><InputCount value={quantity} onChange={setQuantity} /></div>
           </div>
           <div className='flex items-center py-[0.8rem]'>
             <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
