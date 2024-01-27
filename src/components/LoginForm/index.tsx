@@ -19,6 +19,7 @@ interface LoginPayload {
 }
 
 const LoginForm = (props: { onShowRegister(): void }) => {
+  // tại sao lại phải dùng useRef vì compomentId sẽ chỉ lấy 1 lần nếu để uuid() sẽ mỗi lần chạy lại sẽ lấy id mới
   const componentId = useRef(uuid())
   const { trigger, data, error } = useMutation<{ accessToken: string, userInfo: Record<string, unknown> }>('/api/login', {
     url: '/api/login',

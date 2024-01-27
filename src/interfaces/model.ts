@@ -29,3 +29,4 @@ export interface ProductDetail {
   product_model: ProductModel[];
   description: string;
 }
+

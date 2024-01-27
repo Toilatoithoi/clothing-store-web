@@ -64,7 +64,6 @@ model product {
   status        String?         @default("\\0") @db.VarChar(255)
   category_id   Int?
   bill_product  bill_product[]
-  cart          cart[]
   image_product image_product[]
   category      category?       @relation(fields: [category_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_product_category")
   product_model product_model[]
@@ -100,14 +99,13 @@ model bill_product {
 }
 
 model cart {
-  id         Int     @id @default(autoincrement())
-  product_id Int
-  user_id    Int
-  quantity   Int?
-  product    product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_product_fk1")
-  user       User    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_user_ibfk")
+  id               Int  @id @default(autoincrement())
+  product_model_id Int
+  user_id          Int
+  quantity         Int?
+  user             User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cart_user_ibfk")
 
-  @@index([product_id], map: "cart_product_fk1_idx")
+  @@index([product_model_id], map: "cart_product_fk1_idx")
   @@index([user_id], map: "cart_product_fk2_idx")
 }
 
