@@ -30,6 +30,7 @@ export default function RootLayout({
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+
   const { data: userInfo, isLoading } = useUserInfo();
   // state COMMON_SHOW_LOGIN kiểu boolean
   // state COMMON_SHOW_REGISTER kiểu boolean
@@ -52,13 +53,12 @@ export default function RootLayout({
       },
     })
 
-    // check xem đã đăng nhập chưa. ??? 
-    const accessToken = getKey('access_token') as string;
-
   }, []);
 
   useEffect(() => {
       // để thay đổi giá trị của state global dùng mutate
+      // nếu userInfo == null  thì APP_STATUS set bằng false
+      // APP_STATUS bằng true là đã login
       mutate(APP_STATUS, { isAuthenticated: userInfo != null })
   }, [userInfo])
 

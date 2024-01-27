@@ -61,6 +61,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   const [selectedColor, setSelectedColor] = useState('');
   const [sizes, setSizes] = useState<string[]>([]);
   const [colors, setColors] = useState<Record<string, ProductModel>>({});
+  // tìm kiểm m
   const MapSizeColorToModel = useRef<Record<string, ProductModel>>({})
   const { addToCart } = useCart()
   const { data: product } = useSWRWrapper<ProductDetail>(`/api/product/${props.params.productId}`, {
@@ -69,8 +70,10 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
 
   useEffect(() => {
     if (product) {
+      // 
       const sizes: string[] = [];
-      // ???
+      // là một list các phần tử nên dùng object.key hay array vẫn giống nhau
+      // khác nhau array còn phải for còn object chỉ cần key dùng cho tìm kiểm hiệu qua rhown
       const colors: Record<string, ProductModel> = {};
 
       product?.product_model.forEach(model => {
