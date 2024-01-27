@@ -33,12 +33,14 @@ export default function RootLayout({
   const { data: userInfo, isLoading } = useUserInfo();
   // state COMMON_SHOW_LOGIN kiểu boolean
   // state COMMON_SHOW_REGISTER kiểu boolean
-  // do cả hai đều trả về data nên phải thêm : vào để không nhầm
-  // useSWR trả về object có chứa key là data
+  // do cả hai đều trả về data nên phải thêm : tên mới vào để không nhầm
+  // useSWR trả về object có chứa key và data 
+  // Mỗi key sẽ ứng với 1 state vd: COMMON_SHOW_LOGIN có data kiểu boolean
   // lý do dùng global state vì nó không cần phải cho thằng cha truyền vào thằng con để tráng các compoment không bị phụ thuộc
   // từ tất cả compoment đều có thể tác động lên global state đấy 
   // lấy state ra để dùng useSWR<kiểu dữ liệu>(key)
   // useSWR và useMutation là useMutation khi nào gọi trigger mới query
+  // Muốn khởi tạo giá trị ban đầu cho state dùng fetch
   const { data: triggerShowLogin } = useSWR<boolean>(COMMON_SHOW_LOGIN);
   const { data: triggerShowRegister } = useSWR<boolean>(COMMON_SHOW_REGISTER);
 
@@ -50,8 +52,7 @@ export default function RootLayout({
       },
     })
 
-    // check xem đã đăng nhập chưa.
-
+    // check xem đã đăng nhập chưa. ??? 
     const accessToken = getKey('access_token') as string;
 
   }, []);
@@ -111,7 +112,7 @@ export default function RootLayout({
         <ModalProvider
           onHide={() => {
             setShowLogin(false);
-            // để thay đổi giá trị củ state global dùng mutate
+            // để thay đổi giá trị củ state global dùng mutate truyền key, giá trị cho state
             mutate(COMMON_SHOW_LOGIN, false);
           }}
           show={showLogin}

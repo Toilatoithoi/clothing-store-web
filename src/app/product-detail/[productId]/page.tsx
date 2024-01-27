@@ -70,20 +70,23 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   useEffect(() => {
     if (product) {
       const sizes: string[] = [];
+      // ???
       const colors: Record<string, ProductModel> = {};
 
       product?.product_model.forEach(model => {
         if (!sizes.includes(model.size)) { // kiểm tra size đã có trong list chưa
           sizes.push(model.size);
         }
-        if (!colors[model.color]) {
+        if (!colors[model.color]) {        // kiểm tra color đã có trong list chưa
           colors[model.color] = model;
         }
+        // ?????
         MapSizeColorToModel.current[model.size + model.color] = model;
       })
 
       setSizes(sizes);
       setColors(colors);
+      // ?????
       setSelectedSize(product?.product_model[0]?.size ?? '');
       setSelectedColor(product?.product_model[0]?.color ?? '')
     }

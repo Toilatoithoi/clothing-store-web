@@ -3,19 +3,23 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react';
 
 interface ModalProviderProps {
+  // provider có mục đích show và ẩn phần nội dung
   children?: React.ReactNode;
   show?: boolean;
   onHide: () => void;
 }
 
+// ModalProvider gồm 2 thành phần cơ bản 1 là phẩn mờ bảo phủ toàn bộ (overlay) và phần nội dung 
 const ModalProvider = (props: ModalProviderProps) => {
 
   const handleCloseModal = () => {
+    // khi click sẽ tắt form login
     props.onHide();
   }
 
   return (
     <Transition appear show={props.show} as={Fragment}>
+      {/*  Thành phần Dialog chính từ @headlessui/react. Nó đại diện cho container chính của modal, với một class để tùy chỉnh kiểu dáng và một prop onClose kích hoạt hàm handleCloseModal khi modal được đóng */}
       <Dialog as="div" className="relative z-10" onClose={handleCloseModal}>
         <Transition.Child
           as={Fragment}
@@ -40,7 +44,9 @@ const ModalProvider = (props: ModalProviderProps) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
+              {/* là phần nội dung */}
               <Dialog.Panel className={`w-fit transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}>
+                 {/* children là nhưng thứ nằm trong ModalProvider */}
                 {props.children}
               </Dialog.Panel>
             </Transition.Child>
