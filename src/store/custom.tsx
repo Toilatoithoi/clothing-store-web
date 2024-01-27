@@ -27,6 +27,7 @@ export const useMutation = <T = Record<string, unknown>,>(
   } & SWRMutationConfiguration<T, Record<string, unknown>>,
 ) => {
   const { mutate } = useSWRConfig();
+  const accessToken = getKey('access_token') as string;
   return useSWRMutation(
     key,
     (
@@ -44,9 +45,9 @@ export const useMutation = <T = Record<string, unknown>,>(
           url ?? key,
           method ?? METHOD.POST,
           body as Record<string, unknown>,
-          // {
-          //   Authorization: `Bearer ${session?.token}`,
-          // },
+          {
+            Authorization: `Bearer ${accessToken}`,
+          },
         )
           .then(data => resolve(data))
           .catch(err => reject(err))
