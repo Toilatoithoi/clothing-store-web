@@ -9,10 +9,12 @@ interface InputCountProps {
 const InputCount = (props: InputCountProps) => {
 
   const handleAdd = () => {
+    // nếu onChange khác null thì sẽ thực hiện
     props.onChange?.((props.value ?? 0) + 1)
   }
 
   const handleSub = () => {
+    // nếu onChange khác null thì sẽ thực hiện
     props.onChange?.((props.value ?? 0) - 1)
   }
 

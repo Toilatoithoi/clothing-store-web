@@ -14,6 +14,7 @@ export const useCart = () => {
     url: '/api/cart',
     method: METHOD.GET
   });
+  // gọi trigger khi cần update
   const { trigger } = useMutation<ProductCart[]>('/api/cart', {
     url: '/api/cart',
     method: METHOD.POST
