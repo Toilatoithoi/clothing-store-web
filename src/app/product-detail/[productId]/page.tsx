@@ -99,6 +99,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
       ...selectedModel,
       quantity,
       product: product!,
+      product_model_id: selectedModel.id
     })
 
     setQuantity(1);

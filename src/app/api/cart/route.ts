@@ -51,6 +51,54 @@ export const GET = async (req: NextRequest) => {
   }
 }
 
+export const POST = async (req: NextRequest) => {
+
+
+  try {
+    const data = await verifyToken(req);
+    if (data == null) {
+      return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
+    }
+    const body = await req.json();
+    //lấy danh   model theo user id;
+    const cartItem = await prisma.cart.findFirst({ // lấy ra bản ghi theo userid và product model id
+      where: {
+        user_id: data.id,
+        product_model_id: body.product_model_id
+      }
+    })
+    let res = null
+    console.log({ cartItem })
+    if (cartItem) { // nếu product_mode đã dc thêm vào giỏ hàng thì cartItem sẽ khác null
+
+      res = await prisma.cart.update({ // update quantity cho cartItem
+        data: {
+          quantity: (cartItem.quantity ?? 0) + Number(body.quantity ?? 0)
+        },
+        where: {
+          id: cartItem.id
+        }
+      })
+    } else { // nếu product_mode chưa dc thêm vào thì tạo mới
+      res = await prisma.cart.create({
+        data: {
+          user_id: data.id,
+          product_model_id: body.product_model_id,
+          quantity: body.quantity,
+        }
+      })
+    }
+
+    return NextResponse.json(res)
+
+  } catch (error) {
+    return NextResponse.json({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Lỗi hệ thống"
+    }, { status: 500 })
+  }
+}
+
 
 export const PUT = async (req: NextRequest) => {
 
