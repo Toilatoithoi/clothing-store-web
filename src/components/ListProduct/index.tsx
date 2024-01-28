@@ -11,6 +11,7 @@ import { formatNumber } from '@/utils'
 
 
 const ListProduct = (props: { categoryId?: string; }) => {
+  // lấy dữ liệu danh sách product từ api 
   const { data } = useSWRWrapper<PaginationRes<ProductRes>>('/api/product', {
     url: '/api/product',
     params: {
@@ -31,6 +32,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
 
 
       <div className='h-[4rem] mb-[1.5rem] flex justify-between items-center bg-slate-100 px-4'>
+        {/* tính tổng số sản phẩm */}
         <div>{`Tổng ${formatNumber(data?.pagination.totalCount)} sản phẩm `}</div>
         <div className='flex'>
           <div className='mr-4'>Sắp xếp theo</div>

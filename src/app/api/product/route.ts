@@ -5,9 +5,13 @@ import prisma from '@/lib/db';
 import { isBlank } from '@/utils';
 import { category } from '@prisma/client';
 export const GET = async (request: NextRequest) => {
+  // lấy từ link url api
   const url = new URL(request.url);
+  // lấy từ link url api lấy giá trị categoryId
   const category_id = url.searchParams.get('categoryId');
+  // lấy từ link url api lấy giá trị fetchCount
   const fetchCount = url.searchParams.get('fetchCount');
+  // lấy từ link url api lấy giá trị page nếu bằng null thig gán bằng 0 và trừ 1
   let page = Number(url.searchParams.get('page') ?? 0) - 1;
   if (page < 0) {
     page = 0;
@@ -19,11 +23,14 @@ export const GET = async (request: NextRequest) => {
         where: { id: Number(category_id) },
       });
     }
-
+    
+    // model where cho biểu thức điều kiện
     const where = {
       status: 'PUBLISHED',
       ...(category != null && {
+        // hiển thị tất cả category cha và category con
         category: {
+          // OR là 1 trong 2 thoả mãn là được
           OR: [
             {
               id: Number(category_id),
@@ -61,10 +68,12 @@ export const GET = async (request: NextRequest) => {
 
     const res = products.map((product) => {
       const price = {
+        // giá hiển thị ban đầu là product_model đầu tiên của product đó nếu không có giá trị thì sẽ mặc định là 0
         priceMin: product.product_model[0]?.price ?? 0,
         priceMax: product.product_model[0]?.price ?? 0,
       };
-
+       
+      // lấy giá lớn nhất của một model
       product.product_model.forEach((mode) => {
         if (mode.price && mode.price > price.priceMax) {
           price.priceMax = mode.price;
@@ -86,6 +95,7 @@ export const GET = async (request: NextRequest) => {
 
     return NextResponse.json({
       items: res,
+      // phân trang
       pagination: {
         totalCount: count,
         page: page <= 0 ? 1 : page + 1,
@@ -106,6 +116,7 @@ export const GET = async (request: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
   try {
+    // khi người ta điền thêm size và thêm màu thì sẽ tạo ra thêm bảng product_model
     const body = (await req.json()) as CreateProductReq;
     const product = await prisma.product.create({
       data: {
@@ -113,6 +124,8 @@ export const POST = async (req: NextRequest) => {
         status: PRODUCT_STATUS.DRAFT,
         description: body.description,
         category_id: body.category_id,
+        // tạo bảng product_model
+        // tạo đồng thời cả product và product_model thì nếu khi product_model bị lỗi thì product sẽ không thành công
         product_model: {
           create: body.model,
         },

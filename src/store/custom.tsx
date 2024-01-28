@@ -28,6 +28,7 @@ export const useMutation = <T = Record<string, unknown>,>(
   } & SWRMutationConfiguration<T, Record<string, unknown>>,
 ) => {
   const { mutate } = useSWRConfig();
+  // lấy ra accessToken
   const accessToken = getKey('access_token') as string;
   return useSWRMutation(
     key,
@@ -47,6 +48,7 @@ export const useMutation = <T = Record<string, unknown>,>(
           method ?? METHOD.POST,
           body as Record<string, unknown>,
           {
+            // bước xác thực bằng accessToken
             Authorization: `Bearer ${accessToken}`,
           },
         )
@@ -127,6 +129,7 @@ export function useSWRWrapper<T = Record<string, unknown>>(
   } & Partial<PublicConfiguration<T, RestError, (arg: string) => any>>,
 ) {
   let keyParse = typeof key === 'string' ? key : key?.();
+  // lấy ra accessToken
   const accessToken = getKey('access_token') as string;
 
   return useSWR<T>(
@@ -138,7 +141,7 @@ export function useSWRWrapper<T = Record<string, unknown>>(
           method ?? METHOD.GET,
           params,
           {
-            // bước xác thực
+            // bước xác thực bằng accessToken
             Authorization: `Bearer ${accessToken}`,
           },
         )

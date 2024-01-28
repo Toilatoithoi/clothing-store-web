@@ -26,6 +26,7 @@ const LoginForm = (props: { onShowRegister(): void }) => {
     method: METHOD.POST,
     onSuccess(data, key, config) {
       console.log({ data })
+      // dùng để set localStorage
       setKey('access_token', data.accessToken);
       mutate(USER_INFO, data.userInfo);
       mutate(APP_STATUS, { isAuthenticated: true });
