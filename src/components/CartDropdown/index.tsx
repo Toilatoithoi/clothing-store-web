@@ -3,6 +3,7 @@ import { HiOutlineShoppingBag } from "react-icons/hi";
 import { useCart } from './hook';
 import './style.scss';
 import Image, { StaticImageData } from 'next/image'
+import { formatNumber } from '@/utils';
 
 
 const CartDropdown = () => {
@@ -51,7 +52,7 @@ const CartDropdown = () => {
         <div>
           {summary.totalPrice > 0 && (
             <div className='text-center text-[1.6rem] font-[700] border-b-2 border-gray-300 pb-2'>
-              <div>Tổng cộng: {summary.totalPrice} VND</div>
+              <div>Tổng cộng: {formatNumber(summary.totalPrice)} VND</div>
             </div>
           )}
           {summary.totalPrice > 0 && (
