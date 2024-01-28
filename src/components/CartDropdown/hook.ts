@@ -1,7 +1,8 @@
+import { METHOD } from '@/constants';
 import { ProductDetail, ProductModel } from '@/interfaces/model';
+import { useSWRWrapper } from '@/store/custom';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr'
-export const USER_CART = 'USER_CART'
 
 export interface ProductCart extends ProductModel {
   id: number;
@@ -9,12 +10,14 @@ export interface ProductCart extends ProductModel {
   product: ProductDetail
 }
 export const useCart = () => {
-  const { data, mutate } = useSWR<ProductCart[]>('USER_CART');
+  const { data, mutate } = useSWRWrapper<ProductCart[]>('/api/cart', {
+    url: '/api/cart',
+    method: METHOD.GET
+  });
   const updateCart = (cart: ProductCart[]) => {
     mutate(cart)
-
   }
- 
+
 
 
 
