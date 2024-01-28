@@ -8,7 +8,9 @@ import ProductImage from '@/assets/png/product-1.jpg'
 import Image from 'next/image'
 import InputCount from '@/components/InputCount';
 import { ProductCart } from '@/components/CartDropdown/hook';
-import { useSWRWrapper } from '@/store/custom';
+import { useMutation, useSWRWrapper } from '@/store/custom';
+import { METHOD } from '@/constants';
+import { formatNumber } from '@/utils';
 
 
 const UserCart = () => {
@@ -16,11 +18,18 @@ const UserCart = () => {
     url: `/api/cart`
   })
   console.log(data)
-  const [total, setTotal] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
   useEffect(() => {
     if (data) {
-      const totalPrice = data.reduce((acc, item) => acc + item.quantity * item.price, 0);
-      setTotal(totalPrice);
+      // reduce là một phương thức của JavaScript được sử dụng để tính toán một giá trị duy nhất từ các phần tử của mảng
+      // acc tham số này là giá trị tích lũy, nghĩa là giá trị tạm tính tính đến thời điểm hiện tại trong quá trình duyệt qua mảng
+      // item tham số này là phần tử hiện tại trong mảng, trong trường hợp này là một đối tượng sản phẩm
+      const summaryQty = data.reduce((acc, item) => ({
+        totalPrice: acc.totalPrice + item.quantity * item.price,
+        totalQuantity: acc.totalQuantity + item.quantity,
+      }), { totalPrice: 0, totalQuantity: 0 });
+      setSummary(summaryQty)
     }
   }, [data])
 
@@ -81,34 +90,33 @@ const UserCart = () => {
               <div className='flex justify-center'><InputCount /></div>
               <div className='text-center'>500,000</div>
             </> */}
-            <>
               {data != null  &&
-                data.map((item) => ( 
-                  <div key={item.id} className='flex col-span-2'>
-                    <Image src={ProductImage} className='object-contain mr-4' alt="product" width={80} />
-                    <div>
-                      <div>{item.product.name}</div>
-                      <div>{item.size}</div>
-                      <div>{item.color}</div>
-                      <div className='cursor-pointer hover:text-red-500'>Xóa</div>
+                data.map((item) => (       
+                  <>   
+                    <div className='flex col-span-2'>
+                      <Image src={item.image} className='object-contain mr-4' alt="product" width={80} height={100} />
+                      <div>
+                        <div>{item.product.name}</div>
+                        <div>{item.size}</div>
+                        <div>{item.color}</div>
+                        <div className='cursor-pointer hover:text-red-500'>Xóa</div>
+                      </div>
                     </div>
+                    <div className='text-center'>{item.price}</div>          
+                    <div className='flex justify-center'><InputCount value={item.quantity} onChange={setQuantity}/></div>
                     <div className='text-center'>{item.price}</div>
-                    <div className='flex justify-center'><InputCount /></div>
-                    <div className='text-center'>{item.price}</div>
-                  </div>
+                  </>
                 ))}
-            </>
-
           </div>
           <div className='bg-[#f7f8fa] w-[40rem]  p-[3rem]'>
             <div className='h-[4rem] flex items-center text-[2rem] font-bold mb-[1.6rem]'>Tóm tắt đơn hàng</div>
             <div className=' w-full flex justify-between h-[3.6rem] items-center text-[1.6rem]'>
               <div className='font-bold'>Tạm tính</div>
-              <div>2.670.000 VNĐ</div>
+              <div>{formatNumber(summary.totalPrice)}</div>
             </div>
             <div className='w-full flex justify-between h-[3.6rem] items-center text-[1.6rem] mb-[2.4rem]'>
               <div className='font-bold'>Tổng</div>
-              <div className='font-bold'>2.670.000 VNĐ</div>
+              <div className='font-bold'>{formatNumber(summary.totalPrice)} VNĐ</div>
             </div>
             <div className='w-full mb-[2.4rem]'>
               <button type="button" className='h-[4rem] w-full flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1'>Thanh toán</button>
