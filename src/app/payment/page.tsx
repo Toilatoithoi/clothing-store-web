@@ -12,6 +12,7 @@ interface PaymentForm {
   name: string;
   email: string;
   phone: string;
+  // ? là có hoặc không cũng được
   city?: string;
   district?: string;
   wards?: string;
@@ -38,13 +39,31 @@ interface AddressResponse {
 }
 
 const Payment = () => {
+  // tạo ra 3 state đại diện cho city, district, wards
+  // nếu [] sẽ là mảng kiểu never chưa xác định mảng kiểu gì
+  //<Kiểu mảng>[
   const [cityOptions, setCityOptions] = useState<ComboboxOption[]>([])
   const [districtsOptions, setDistrictsOptions] = useState<Record<string, ComboboxOption[]>>({})
   const [wardsOptions, setWardsOptions] = useState<Record<string, ComboboxOption[]>>({})
 
   useEffect(() => {
+     // [] để chỉ chạy 1 lần đầu tiên 
     getAddressOptions();
   }, [])
+  // giá trị
+  // const [email, setEmail] = useState('')
+  // lỗi
+  // const [errorEmail, setErrorEmail] = useState('')
+  // chạm vào thanh input kết thúc
+  // không thể để touchEmail = true ban đầu do nếu làm thế thì khi vừa mới hiện lên đã báo lỗi người dùng chưa gõ xong thì không nên hển thị thông báo lỗi
+  // const [touchEmail, setTouchEmail] = useState(false)
+  // biến regEx kiểm tra phone
+  // phải có / / ở đầu và cuối
+  // const phone_check = /^\+(?:[0-9] ?){6,14}[0-9]$/
+  // mảng len dependacies
+  // nêu rỗng thì chỉ trả về 1 lần đầu tiên
+  // còn không sẽ trả về các lần giá trị trong mảng thay đổi
+  // khi email thay đổi sẽ gọi hàm console.log(email)
   const getAddressOptions = async () => {
     try {
       const res = await fetch('/address.json');
@@ -53,9 +72,13 @@ const Payment = () => {
       const districtsOptions: Record<string, ComboboxOption[]> = {}
       const wardsOptions: Record<string, ComboboxOption[]> = {}
 
+      // nếu không dùng map lại thì mỗi lần tìm kiếm sẽ là 1 vòng ỏ qua tất cả dữ liệu
+      // khi map lại sẽ tìm thông qua value
       data.forEach((city) => {
         cityOptions.push({ label: city.Name, value: city.Id })
         city.Districts.forEach(district => {
+          // nếu district null thì sẽ lấy [] 
+          // concat để nối 2 array 
           districtsOptions[city.Id] = (districtsOptions[city.Id] ?? []).concat([{
             label: district.Name,
             value: district.Id,
@@ -75,14 +98,19 @@ const Payment = () => {
   }
 
   const handlePayment = (values: PaymentForm) => {
+     // clg viết tắt 
     console.log('payment', values)
 
     // call api với values
   }
 
   const schema = yup.object().shape({
+    // thư viện yup 
+    // check rỗng
     name: yup.string().label('Họ và tên').required(),
+    // rỗng và email
     email: yup.string().label('Email').required().email('Email không hợp lệ'),
+     // rỗng và khớp với kiểu sđt
     phone: yup.string().label('Số điện thoại').required().matches(/^(?:[0-9] ?){6,14}[0-9]$/, 'Số điện thoại không hợp lệ'),
     city: yup.string().label('Tỉnh/Thành phố').required(),
     district: yup.string().label('Quận/huyện').required(),
@@ -98,21 +126,29 @@ const Payment = () => {
         <div>Hoàn tất</div>
       </div>
       <Formik
+        // giá trị khởi tạo ban đầu
         initialValues={{
+          // chú ý cái tên trong initialValues phải giống kiểu và tên với values trong handlePayment do trong onSubmit
           name: '',
           email: '',
           phone: ''
         }}
 
         validationSchema={schema}
+        // hàm sẽ được gọi khi submit
         onSubmit={handlePayment}
       >
         {({ values, touched, errors, handleSubmit, handleBlur, handleChange, isValid, setFieldValue }) => // handleSubmit -> check isValid = true ? onSubmit(): null
+          // children hàm số trả về jsx là 1 component
+          // value sẽ là state tổng chứa giá trị của cả form name, email
           <form className='w-full' onSubmit={handleSubmit}>
             <div className='flex w-full gap-[3.2rem]'>
+              {/* dùng grid chia làm 5 cột */}
+              {/* box-sizing là tổng chiều dài của phần tử có tính thêm border, padding hay không */}
               <div className='bg-[#f7f8fa] flex-1 p-[3rem]  h-fit gap-4'>
                 <div className='font-bold mb-[1.6rem] text-[1.8rem]'>ĐỊA CHỈ GIAO HÀNG</div>
                 <div className='list-input grid grid-cols-2 gap-x-[2.4rem] gap-y-[1.6rem]'>
+                  {/* valuedate form */}
                   <TextInput
                     name='name'
                     onBlur={handleBlur}
@@ -150,6 +186,9 @@ const Payment = () => {
                   />
                   <Combobox
                     options={districtsOptions[values.city ?? ''] ?? []}
+                    // ?? là nếu null thì sẽ truyền cái đường sau thay thế không phải boolean
+                    // || sẽ lấy cả null và boolean nghĩa là cái dk1 false thì sẽ lấy cái phía sau
+                    // ? : là if else
                     label='Quận/huyện'
                     selected={values.district}
                     onChange={(option) => {
@@ -213,6 +252,7 @@ const Payment = () => {
                 </div>
                 <div className='font-semibold text-[1.4rem] mt-[1.6rem]'>Trả tiền mặt khi nhận hàng</div>
                 <div className='mb-[0.8rem] text-[1.4rem]'>Trả tiền mặt khi giao hàng</div>
+                  {/* Khi không valid thì nút đặt hàng sẽ bị làm mờ  */}
                 <button disabled={!isValid} type="submit" className='bg-black disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center font-bold'>Đặt hàng</button>
               </div>
             </div>

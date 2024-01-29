@@ -29,13 +29,17 @@ export const GET = async (request: NextRequest) => {
       status: 'PUBLISHED',
       ...(category != null && {
         // hiển thị tất cả category cha và category con
+        // truyền một object category vào filter
         category: {
           // OR là 1 trong 2 thoả mãn là được
+          // tìm kiếm theo categoryId
           OR: [
             {
+              // bằng category truyền vào
               id: Number(category_id),
             },
             {
+              // category truyền vào bằng category cha
               parent_id: Number(category_id),
             },
           ],

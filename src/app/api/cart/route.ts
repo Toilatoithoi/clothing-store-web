@@ -65,6 +65,7 @@ export const POST = async (req: NextRequest) => {
     const cartItem = await prisma.cart.findFirst({ // lấy ra bản ghi theo userid và product model id
       where: {
         user_id: data.id,
+        // nếu không parseInt sẽ lỗi
         product_model_id: parseInt(body.product_model_id, 10)
       }
     })
@@ -84,6 +85,7 @@ export const POST = async (req: NextRequest) => {
       res = await prisma.cart.create({
         data: {
           user_id: data.id,
+          // nếu không parseInt sẽ lỗi
           product_model_id: parseInt(body.product_model_id, 10),
           quantity: body.quantity,
         }

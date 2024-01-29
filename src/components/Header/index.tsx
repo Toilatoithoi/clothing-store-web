@@ -132,6 +132,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
               <strong className="flex items-center mr-[0.4rem] text-[#BC0517]"><FaHeadset className="text-[2.8rem]  mr-[0.4rem]" /> Tư vấn bán hàng:</strong>
               0973.285.886
             </div>
+            {/* nếu đăng nhập rồi isAuthenticated là true sẽ show ra biểu tượng */}
             {appStatus?.isAuthenticated ? <div className="flex item-center gap-[1.6rem]">
               <div className="text-[2.4rem]"><FaRegUser /></div>
               <div className="text-[2.8rem] cursor-pointer"><CartDropdown /></div>

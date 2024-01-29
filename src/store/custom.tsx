@@ -22,6 +22,7 @@ export const useMutation = <T = Record<string, unknown>,>(
   }: {
     url?: string;
     method?: METHOD;
+    // thêm notification, componentId, loading
     notification?: NotificationConfig;
     componentId?: string;
     loading?: boolean;
@@ -30,10 +31,12 @@ export const useMutation = <T = Record<string, unknown>,>(
   const { mutate } = useSWRConfig();
   // lấy ra accessToken
   const accessToken = getKey('access_token') as string;
+  // trả về một hook useSWRMutation thư viện
   return useSWRMutation(
     key,
     (
       key: string,
+      // thêm body để mỗi khi dùng không phải thêm mà map sẵn vào useMution
       { arg: body }: { arg?: Record<string, unknown> | FormData },
     ) => {
       return new Promise<T>((resolve, reject) => {
@@ -43,6 +46,7 @@ export const useMutation = <T = Record<string, unknown>,>(
             loading: true,
           });
         }
+        // thêm fetcher để mỗi khi dùng không phải thêm mà map sẵn vào useMution
         fetcher<T>(
           url ?? key,
           method ?? METHOD.POST,
@@ -131,11 +135,12 @@ export function useSWRWrapper<T = Record<string, unknown>>(
   let keyParse = typeof key === 'string' ? key : key?.();
   // lấy ra accessToken
   const accessToken = getKey('access_token') as string;
-
+  // trả về một hook useSWRMutation thư viện
   return useSWR<T>(
     isBlank(keyParse!) ? null : (keyParse as any),
     () => {
       return new Promise((resolve, reject) => {
+        // thêm fetcher để mỗi khi dùng không phải thêm mà map sẵn vào useMution
         fetcher<T>(
           url ?? (typeof key === 'string' ? key : key?.()) ?? '',
           method ?? METHOD.GET,

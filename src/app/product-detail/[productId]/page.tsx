@@ -56,19 +56,30 @@ const images = [
 
 const ProductDetailPage = (props: { params: { productId: string; } }) => {
   // query data của product băng id -> render data lên 
-
+  //  khi click sẽ set lại giá trị cho size
   const [selectedSize, setSelectedSize] = useState('');
+  // khi click sẽ set lại giá trị cho color
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
+  // size là một mảng string
   const [sizes, setSizes] = useState<string[]>([]);
+  // color là record kiểu ProductModel để có thể làm tìm kiếm theo màu sắc
+  // có key là color string và value và product_model
+  // cần lấy product_model để lấy được image để in ra màn hình
   const [colors, setColors] = useState<Record<string, ProductModel>>({});
-  // tìm kiểm m
+  // MapSizeColorToModel có key là string và value là product_model
+  // MapSizeColorToModel dùng để map size và color
+  // key là size+màu và value là product_model tương ứng
   const MapSizeColorToModel = useRef<Record<string, ProductModel>>({})
+  // trả về quantity và product_model
+  // khi nào cần addToCart thì dùng useCart()
   const { addToCart } = useCart()
+  // lấy thông tin sản phẩm từ api product-detail
   const { data: product } = useSWRWrapper<ProductDetail>(`/api/product/${props.params.productId}`, {
     url: `/api/product/${props.params.productId}`
   })
-
+  
+  // bắt sự thay đổi của product
   useEffect(() => {
     if (product) {
       // 
@@ -84,14 +95,21 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
         if (!colors[model.color]) {        // kiểm tra color đã có trong list chưa
           colors[model.color] = model;
         }
-        // ?????
+        console.log(model)
+        // chứa key là size + màu và vaule gán bằng model
+        // vd: const colos = {'Xanh': {color:'xanh', size:'M'}}
+        // value: {color: xanh, size: 'M} 
+        // model là các product_model
+        // do là useRef nên phải .current
+        // khi gán thì dùng ngoặc ['key']
         MapSizeColorToModel.current[model.size + model.color] = model;
       })
 
       setSizes(sizes);
       setColors(colors);
-      // ?????
+      // lấy giá trị product_model size đầu tiên tìm được nếu không có trả về null
       setSelectedSize(product?.product_model[0]?.size ?? '');
+      // lấy giá trị product_model color đầu tiên tìm được nếu không có trả về null
       setSelectedColor(product?.product_model[0]?.color ?? '')
     }
   }, [product])
@@ -99,6 +117,8 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   const handleAddCart = () => {
     const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
     addToCart({
+      // thêm vào chỉ lấy quantity và product_model_id
+      // lý do dùng global state là để các compoment không phụ thuộc
       ...selectedModel,
       quantity,
       product: product!,
@@ -107,9 +127,10 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
 
     setQuantity(1);
   }
-
-
   console.log({ sizes, MapSizeColorToModel: MapSizeColorToModel.current })
+  // chon product_model mong muốn bằng MapSizeColorToModel.current[key] lấy giá trị
+  // mặc định khi render ban đầu sẽ hiển thị MapSizeColorToModel đầu tiên của product nếu không chọn
+  // selectdModel là product_model chọn
   const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
   return (
     <div className='w-full  h-full flex-1'>
@@ -137,13 +158,19 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
           <div className='flex items-center py-[0.8rem]'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Màu sắc</div>
             {
+              // Object.key sẽ trả về các key của object
+              // const color = {Xanh: "value1", key2: "value2"}
+              // Object.keys(a) = {key1, key2}
+              // lấy được key 
               Object.keys(colors).map(key =>
                 <div
                   key={key}
+                  // sự kiện khi click vào sẽ setSelectedColor
                   onClick={() => {
                     setSelectedColor(key)
                   }}
                   className={`mr-4 rounded-[0.4rem] cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedColor === key ? 'border-gray-600 border-[2px]' : ''}`}>
+                    {/* render ra image dùng colors[truyền key].thuộc tính muốn lấy giá trị */}
                   <a data-tooltip-id="my-tooltip" data-tooltip-content={colors[key].color}><Image src={colors[key].image} className='w-[3rem] h-[3rem] object-contain' width={30} height={30} alt={'size'} objectFit='cover' /></a>
                   <Tooltip id="my-tooltip" />
                 </div>)
@@ -152,7 +179,9 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
           </div>
           <div className='flex items-center py-[0.8rem]'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Cỡ</div>
+            {/* hiển thị danh sách màu sắc theo product */}
             {sizes.map(size => <><a><div className={`mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedSize === size ? 'border-gray-600 border-[2px]' : ''}`}
+              // sự kiện khi click vào sẽ setSelectedSize
               onClick={() => setSelectedSize(size)}
               key={size} data-tooltip-id="my-tooltip" data-tooltip-content={size}>{size}
             </div></a><Tooltip id="my-tooltip" /></>
