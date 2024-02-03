@@ -9,26 +9,27 @@ import Image from 'next/image'
 import { LuClock4 } from "react-icons/lu";
 import { useParams, useRouter } from 'next/navigation'
 import { useSWRWrapper } from '@/store/custom'
-import {PostRes} from '@/interfaces/model'
+import { PostRes } from '@/interfaces/model'
 import Link from 'next/link'
 
 const Promotion = (props: { promotionId?: string; }) => {
   const [id, setId] = useState<string>('3'); // Sửa từ 'string | undefined' thành 'string'
 
   useEffect(() => {
-    if(props.promotionId != null){
+    if (props.promotionId != null) {
       setId(props.promotionId || '3');
     }
- }, [props.promotionId])
+  }, [props.promotionId])
 
   const { data: postDetail } = useSWRWrapper<PostRes>(`/api/post/${id}`, {
     url: `/api/post/${id}`,
   })
+
   const { data: postData } = useSWRWrapper<PostRes[]>('/api/post', {
     url: '/api/post',
   })
-   // Sử dụng hook useRouter để lấy đối tượng router
-   const route = useRouter();
+  // Sử dụng hook useRouter để lấy đối tượng router
+  const route = useRouter();
   return (
     <div className='mt-6'>
       <div className="w-full">
@@ -89,22 +90,20 @@ const Promotion = (props: { promotionId?: string; }) => {
             </div> */}
             {
               postData?.map((item, idx) => (
-                <>
-                  <Link href={`/promotion/${item.id}`} key={idx}>
-                    <div className='flex gap-1 mb-4'>
-                      <Image className="object-contain mb-8" src={item.image} alt="Ảnh bìa" width={80} height={90} />
-                      <div>
-                        <div className='flex'>
-                          <LuClock4 className='m-1' />
-                          <div className='text-[1rem]'>
-                            {item.createAt.toString().split('T')[0]}
-                          </div>
+                <Link href={`/promotion/${item.id}`} key={idx}>
+                  <div className='flex gap-1 mb-4'>
+                    <Image className="object-contain mb-8" src={item.image} alt="Ảnh bìa" width={80} height={90} />
+                    <div>
+                      <div className='flex'>
+                        <LuClock4 className='m-1' />
+                        <div className='text-[1rem]'>
+                          {item.createAt.toString().split('T')[0]}
                         </div>
-                        <div className='text-[1rem] font-bold'>{item.title}</div>
                       </div>
+                      <div className='text-[1rem] font-bold'>{item.title}</div>
                     </div>
-                  </Link>
-                </>
+                  </div>
+                </Link>
               ))
             }
           </div>

@@ -4,11 +4,16 @@ import { useCart } from './hook';
 import './style.scss';
 import Image, { StaticImageData } from 'next/image'
 import { formatNumber } from '@/utils';
+import { useRouter } from 'next/navigation';
 
 
 const CartDropdown = () => {
   const { data } = useCart();
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
+
+
+  const router = useRouter();
+
   useEffect(() => {
     if (data && data.length > 0) {
       const summaryQty = data.reduce((acc, item) => ({
@@ -18,6 +23,10 @@ const CartDropdown = () => {
       setSummary(summaryQty)
     }
   }, [data])
+
+  const handleViewCartPage = () => {
+    router.push('/user-cart')
+  }
 
   console.log({ data })
   return (
@@ -57,7 +66,7 @@ const CartDropdown = () => {
           )}
           {summary.totalPrice > 0 && (
             <div className='flex items-center justify-center pt-4 mb-6'>
-              <button className='w-[25rem] flex items-center justify-center text-[1.6rem] font-bold p-4 text-white uppercase bg-[#bc0516] cursor-pointer ' type='button'>
+              <button onClick={handleViewCartPage} className='w-[25rem] flex items-center justify-center text-[1.6rem] font-bold p-4 text-white uppercase bg-[#bc0516] cursor-pointer ' type='button'>
                 Xem giỏ hàng
               </button>
             </div>

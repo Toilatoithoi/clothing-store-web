@@ -30,10 +30,11 @@ export const useCart = () => {
   // global state dùng key để lấy gia 1 giá trị bất kì
   // key hiểu nôm na là id để lấy ra giá trị của state
 
-  const addToCart = (model: ProductCart) => {
+  const addToCart = (model: ProductCart, override?: boolean) => {
     trigger({
       quantity: model.quantity,
-      product_model_id: model.product_model_id
+      product_model_id: model.product_model_id,
+      override
     })
 
   }

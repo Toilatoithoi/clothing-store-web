@@ -5,28 +5,31 @@ import { CreateBillReq } from '@/interfaces/request';
 import { verifyToken } from '@/utils/service';
 export const GET = async (req: NextRequest) => {
   try {
-    
+    // input fromDate, toDate, status
+    // verify token
     const data = await verifyToken(req);
     if (data == null) {
       return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
     }
 
+    // filter
     const bill = await prisma.bill.findMany({
       where: {
-        status: "SUCCESS", 
+        status: "SUCCESS", // nếu status != null thì mới cần truyền vào
         user: {
           username: data.username
-        }
+        },
+        // dùng gte, lte để filter theo from date, to date
       }
     });
 
     if (bill == null) {
       return NextResponse.json({
-       code: 'Bill is false',
-   }, {
-       status: 404
-   })
- }
+        code: 'Bill is false',
+      }, {
+        status: 404
+      })
+    }
 
     return NextResponse.json(bill);
   } catch (error) {
@@ -58,7 +61,9 @@ export const POST = async (req: NextRequest) => {
     })
   }
 
-  
+  //input address, note, name, phone..... billProducts: {} lấy tương tự cart
+
+
   try {
     // thêm vào db
     const createdBill = await prisma.bill.create({
@@ -69,26 +74,19 @@ export const POST = async (req: NextRequest) => {
         wards: body.wards,
         address: body.address,
         note: body.note,
-        status:"SUCCESS"
+        status: "SUCCESS",
+        bill_product: {
+          // create:[
+          // {
+          //   // product_model_id,
+          //   // quantity,            
+          // }
+          // ]
+        }
       }
     })
 
-    const modelsToCreate: { bill_id: number; product_id: number; quantity: number; }[] = [];
-
-    productids.forEach((id_p: any) => {
-        const model = {
-          bill_id: createdBill.id,
-          product_id: Number(id_p),
-          quantity: body.quantity
-        };
-        modelsToCreate.push(model);
-    });
-
-    const model = await prisma.bill_product.createMany({
-      data: modelsToCreate,
-    });
-
-    return NextResponse.json({ model })
+    return NextResponse.json({})
 
   } catch (error) {
     console.log({ error })

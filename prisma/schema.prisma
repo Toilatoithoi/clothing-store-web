@@ -32,6 +32,8 @@ model bill {
   address      String         @db.VarChar(255)
   note         String?        @db.VarChar(255)
   status       String?        @default("\\0") @db.VarChar(255)
+  created_at   DateTime?      @default(now()) @db.Timestamp(0)
+  updated_at   DateTime?      @default(now()) @db.Timestamp(0)
   user         User           @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "fk_bill_user")
   bill_product bill_product[]
 
@@ -64,7 +66,6 @@ model product {
   description   String?         @db.VarChar(800)
   status        String?         @default("\\0") @db.VarChar(255)
   category_id   Int?
-  bill_product  bill_product[]
   image_product image_product[]
   category      category?       @relation(fields: [category_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_product_category")
   product_model product_model[]
@@ -74,30 +75,31 @@ model product {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model product_model {
-  id         Int      @id @default(autoincrement())
-  product_id Int?
-  price      Float?
-  color      String?  @db.VarChar(255)
-  size       String?  @db.Char(3)
-  sold       Int?
-  stock      Int?
-  image      String?  @db.VarChar(255)
-  cart       cart[]
-  product    product? @relation(fields: [product_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "product_model_ibfk_1")
+  id           Int            @id @default(autoincrement())
+  product_id   Int?
+  price        Float?
+  color        String?        @db.VarChar(255)
+  size         String?        @db.Char(3)
+  sold         Int?
+  stock        Int?
+  image        String?        @db.VarChar(255)
+  bill_product bill_product[]
+  cart         cart[]
+  product      product?       @relation(fields: [product_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "product_model_ibfk_1")
 
   @@index([product_id], map: "F_product_modal_product_id")
 }
 
 model bill_product {
-  id         Int     @id @default(autoincrement())
-  bill_id    Int
-  product_id Int
-  quantity   Int
-  product    product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "bill_product_fk1")
-  bill       bill    @relation(fields: [bill_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "bill_product_fk2")
+  id               Int           @id @default(autoincrement())
+  bill_id          Int
+  product_model_id Int
+  quantity         Int
+  product_model    product_model @relation(fields: [product_model_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "bill_product_fk1")
+  bill             bill          @relation(fields: [bill_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "bill_product_fk2")
 
   @@index([bill_id], map: "BillID")
-  @@index([product_id], map: "ProductID")
+  @@index([product_model_id], map: "ProductID")
 }
 
 model cart {

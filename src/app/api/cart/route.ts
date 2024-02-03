@@ -3,6 +3,14 @@ import { isBlank } from '@/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { CreateCartReq } from '@/interfaces/request';
 import { verifyToken } from '@/utils/service';
+
+
+interface UpdateCartInput {
+  quantity: number;
+  product_model_id: number;
+  override?: boolean; // ghi đè hay cộng thêm quantiy vào. 
+}
+
 export const GET = async (req: NextRequest) => {
   try {
     const data = await verifyToken(req);
@@ -18,6 +26,7 @@ export const GET = async (req: NextRequest) => {
       },
       select: {
         quantity: true,
+        product_model_id: true,
         product_model: {
           select: {
             product: {
@@ -28,8 +37,8 @@ export const GET = async (req: NextRequest) => {
             color: true,
             price: true,
             size: true,
-            image: true
-          }
+            image: true,
+          },
         },
       }
     });
@@ -38,6 +47,7 @@ export const GET = async (req: NextRequest) => {
       return {
         ...item.product_model,
         quantity: item.quantity,
+        product_model_id: item.product_model_id,
       }
     })
 
@@ -59,14 +69,15 @@ export const POST = async (req: NextRequest) => {
     if (data == null) {
       return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
     }
-    const body = await req.json();
+    const body = await req.json() as UpdateCartInput;
+    console.log({ body })
     //lấy danh model theo user id;
     // kiểm tra model xem đã có trong database chưa
     const cartItem = await prisma.cart.findFirst({ // lấy ra bản ghi theo userid và product model id
       where: {
         user_id: data.id,
         // nếu không parseInt sẽ lỗi
-        product_model_id: parseInt(body.product_model_id, 10)
+        product_model_id: Number(body.product_model_id)
       }
     })
     let res = null
@@ -75,7 +86,7 @@ export const POST = async (req: NextRequest) => {
 
       res = await prisma.cart.update({ // update quantity cho cartItem
         data: {
-          quantity: (cartItem.quantity ?? 0) + Number(body.quantity ?? 0)
+          quantity: body.override ? Number(body.quantity) : (cartItem.quantity ?? 0) + Number(body.quantity ?? 0)
         },
         where: {
           id: cartItem.id
@@ -86,7 +97,7 @@ export const POST = async (req: NextRequest) => {
         data: {
           user_id: data.id,
           // nếu không parseInt sẽ lỗi
-          product_model_id: parseInt(body.product_model_id, 10),
+          product_model_id: Number(body.product_model_id),
           quantity: body.quantity,
         }
       })
@@ -95,7 +106,7 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(res)
 
   } catch (error) {
-    console.log({error})
+    console.log({ error })
     return NextResponse.json({
       code: "INTERNAL_SERVER_ERROR",
       message: "Lỗi hệ thống"
@@ -114,39 +125,7 @@ export const PUT = async (req: NextRequest) => {
   const body = await req.json();
 
   try {
-    const cart = await prisma.cart.findMany({
-      where: {
-        user: {
-          username: data.username
-        }
-      }
-    });
-    const modelsToCreate: { product_model_id: number; quantity: number; }[] = [];
 
-    body.forEach((a: any) => {
-      cart.forEach(async (b) => {
-        if (a.id = b.id) {
-          await prisma.cart.update({
-            where: { id: b.id },
-            data: {
-              product_model_id: Number(a.product_model_id),
-              quantity: Number(a.quantity)
-            }
-          })
-        } else {
-          await prisma.cart.create({
-            data: {
-              ...a,
-              id: undefined
-            }
-          })
-        }
-      })
-    });
-
-    // const createdCart = await prisma.cart.upsert({
-    //   data: modelsToCreate,
-    // });
 
 
     return NextResponse.json({})
