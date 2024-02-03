@@ -29,7 +29,7 @@ interface HeaderProps {
 const ListConfig = [
   {
     label: 'Về chúng tôi',
-    path: '/ve-chung-toi',
+    path: 'about-shop',
     children: [
       {
         label: 'Tầm nhìn-Sứ mệnh',
@@ -39,7 +39,7 @@ const ListConfig = [
   },
   {
     label: 'Bộ sưu tập',
-    path: '/bo-suu-tap',
+    path: 'look-book',
     children: [
       {
         label: "MONSOON 'S COMING",
@@ -61,7 +61,7 @@ const ListConfig = [
   },
   {
     label: 'Tin tức',
-    path: '/tin-tuc',
+    path: 'new',
     children: [
       {
         label: 'Thông tin BST mới',
@@ -83,7 +83,7 @@ const ListConfig = [
   },
   {
     label: 'Khuyến mãi',
-    path: '/khuyen-mai',
+    path: 'promotion',
     children: [
       {
         label: 'Sale từ 99k',
@@ -151,9 +151,11 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
             {
               ListConfig.map((item, idx) => (
                 <div key={idx} className="text-[1.6rem] font-semibold relative cursor-pointer list-container">
-                  <div className="font-semibold uppercase list-btn">
-                    {item.label}
-                  </div>
+                  <Link href={`/${item.path}`} key={idx}>
+                    <div className="font-semibold uppercase list-btn">
+                      {item.label}
+                    </div>
+                  </Link>
                   <div className="bg-white list-nav shadow-sm z-10 border-t border-[#BC0517] absolute top-full left-0 w-[35vw] max-h-[40rem] p-[2.4rem] gap-[3.2rem]">
                     <div className="grid grid-cols-2 gap-x-[2rem] flex-1">
                       {item.children?.map((subNar, idx) =>

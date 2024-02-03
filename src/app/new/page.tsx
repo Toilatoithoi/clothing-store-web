@@ -5,12 +5,13 @@ import { LuClock4 } from "react-icons/lu";
 import { FaPlus } from "react-icons/fa";
 
 import Post from '@/components/Post';
+import Link from 'next/link';
 
 const New = () => {
   return (
     <div>
       <div className='flex gap-1 text-gray-300 pl-8 h-[4rem] mb-4 items-center'>          
-        <div>Trang chủ</div>
+        <Link href={`/`}><div>Trang chủ</div></Link>
         <div>/</div>
         <div>Tin tức</div>
       </div>

@@ -5,7 +5,6 @@ import { CreatePostReq } from '@/interfaces/request';
 export const GET = async (req: NextRequest) => {
   try {
     const post = await prisma.post.findMany();
-
     return NextResponse.json(post);
   } catch (error) {
     console.log({error})

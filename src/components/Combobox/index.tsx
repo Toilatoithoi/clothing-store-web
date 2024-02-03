@@ -26,7 +26,7 @@ const Combobox = (props: ComboboxProps) => {
   const [query, setQuery] = useState('');
   // đề khi chọn một địa điểm thì như chọn city thì district và ward phải thay đổi theo
   useEffect(() => {
-
+    // .? nếu onChange tồn tại thì mới gọi 
     props.onChange?.(props.options[0] ?? { label: '', value: '' });
   }, [props.options])
 
@@ -40,6 +40,7 @@ const Combobox = (props: ComboboxProps) => {
         // nếu return true thì sẽ lấy phần tử đấy không thì sẽ không lấy
         return item.label.toLowerCase().includes(query.toLowerCase())
       })
+  // lấy option bằng giá trị truyền vào
   const selectedOption = props.options.find(item => item.value === props.selected);
   return (
     <div className={`input-container flex flex-col ${props.className}`}>
@@ -59,6 +60,7 @@ const Combobox = (props: ComboboxProps) => {
             ${props.hasError ? 'border-red-500' : ''}
            `}
                 onChange={(event) => setQuery(event.target.value)}
+                // hiển thị giá trị
                 displayValue={(selected: ComboboxOption) => selected?.label}
               />
               {/* dùng absolute để đè lên thẻ input */}

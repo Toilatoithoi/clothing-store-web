@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import anhBia from '@/assets/png/promotion.jpg'
 import anhBia2 from '@/assets/png/anhbai2.jpg'
 import anhBia3 from '@/assets/png/anhbai3.jpg'
@@ -7,8 +7,28 @@ import anhBia4 from '@/assets/png/anhbai4.jpg'
 import anhBia5 from '@/assets/png/anhbai5.jpg'
 import Image from 'next/image'
 import { LuClock4 } from "react-icons/lu";
+import { useParams, useRouter } from 'next/navigation'
+import { useSWRWrapper } from '@/store/custom'
+import {PostRes} from '@/interfaces/model'
+import Link from 'next/link'
 
-const Promotion = () => {
+const Promotion = (props: { promotionId?: string; }) => {
+  const [id, setId] = useState<string>('3'); // Sửa từ 'string | undefined' thành 'string'
+
+  useEffect(() => {
+    if(props.promotionId != null){
+      setId(props.promotionId || '3');
+    }
+ }, [props.promotionId])
+
+  const { data: postDetail } = useSWRWrapper<PostRes>(`/api/post/${id}`, {
+    url: `/api/post/${id}`,
+  })
+  const { data: postData } = useSWRWrapper<PostRes[]>('/api/post', {
+    url: '/api/post',
+  })
+   // Sử dụng hook useRouter để lấy đối tượng router
+   const route = useRouter();
   return (
     <div className='mt-6'>
       <div className="w-full">
@@ -17,7 +37,7 @@ const Promotion = () => {
             <div className='w-full p-[3rem] text-center border-b-2 mb-4 border-gray-950'>
               <div className="font-bold text-[1.8rem]">BÀI VIẾT MỚI</div>
             </div>
-            <div className='flex gap-1 mb-4'>
+            {/* <div className='flex gap-1 mb-4'>
               <Image className="object-contain mb-8" src={anhBia} alt="Ảnh bìa" width={80} />
               <div>
                 <div className='flex'>
@@ -66,13 +86,33 @@ const Promotion = () => {
                 </div>
                 <div className='text-[1rem] font-bold'>MONSOON’S COMING | 360® Fall Winter Collection 2023</div>
               </div>
-            </div>
+            </div> */}
+            {
+              postData?.map((item, idx) => (
+                <>
+                  <Link href={`/promotion/${item.id}`} key={idx}>
+                    <div className='flex gap-1 mb-4'>
+                      <Image className="object-contain mb-8" src={item.image} alt="Ảnh bìa" width={80} height={90} />
+                      <div>
+                        <div className='flex'>
+                          <LuClock4 className='m-1' />
+                          <div className='text-[1rem]'>
+                            {item.createAt.toString().split('T')[0]}
+                          </div>
+                        </div>
+                        <div className='text-[1rem] font-bold'>{item.title}</div>
+                      </div>
+                    </div>
+                  </Link>
+                </>
+              ))
+            }
           </div>
           {/* dùng grid chia làm 5 cột */}
           {/* box-sizing là tổng chiều dài của phần tử có tính thêm border, padding hay không */}
           {/* mã màu bg-[#f7f8fa] */}
           <div className="bg-[#f7f8fa] w-[70rem] h-fit">
-            <div className="font-bold text-[1.8rem] mb-2">ENJOY CHRISMAS | MUA 1 TẶNG 1 toàn bộ hệ thống</div>
+            {/* <div className="font-bold text-[1.8rem] mb-2">ENJOY CHRISMAS | MUA 1 TẶNG 1 toàn bộ hệ thống</div>
             <div className='mb-6 text-[1.2rem]'>20/12/2023</div>
             <Image className="object-contain mb-8" src={anhBia} alt="Ảnh bìa" width={700} />
             <div className='mb-6 text-[1.2rem]'>Mùa lễ hội đã tới, hệ thống thời trang nam 360®  gửi tới bạn chương trình ưu đãi lớn nhất mùa Noel này</div>
@@ -102,7 +142,10 @@ const Promotion = () => {
             </div>
             <div className='text-[1.2rem]'>
               <div>– Hotline: 1900 886 803 – 0973 285 886</div>
-            </div>
+            </div> */}
+            <div className="font-bold text-[1.8rem] mb-2">{postDetail?.title}</div>
+            <div className='mb-6 text-[1.2rem]'>{postDetail?.createAt.split('T')[0]}</div>
+            <div className="content" dangerouslySetInnerHTML={{ __html: postDetail?.content || '' }}></div>
           </div>
         </div>
       </div>

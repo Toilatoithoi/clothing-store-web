@@ -85,7 +85,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
       // 
       const sizes: string[] = [];
       // là một list các phần tử nên dùng object.key hay array vẫn giống nhau
-      // khác nhau array còn phải for còn object chỉ cần key dùng cho tìm kiểm hiệu qua rhown
+      // khác nhau array còn phải for còn object chỉ cần key dùng cho tìm kiểm hiệu qua hơn
       const colors: Record<string, ProductModel> = {};
 
       product?.product_model.forEach(model => {

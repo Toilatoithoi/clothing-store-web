@@ -54,6 +54,7 @@ model post {
   title    String?   @db.VarChar(255)
   content  String?   @db.LongText
   createAt DateTime? @db.Date
+  image    String?   @db.VarChar(255)
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

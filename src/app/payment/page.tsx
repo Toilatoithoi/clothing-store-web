@@ -41,7 +41,7 @@ interface AddressResponse {
 const Payment = () => {
   // tạo ra 3 state đại diện cho city, district, wards
   // nếu [] sẽ là mảng kiểu never chưa xác định mảng kiểu gì
-  //<Kiểu mảng>[
+  //<Kiểu mảng>[]
   const [cityOptions, setCityOptions] = useState<ComboboxOption[]>([])
   const [districtsOptions, setDistrictsOptions] = useState<Record<string, ComboboxOption[]>>({})
   const [wardsOptions, setWardsOptions] = useState<Record<string, ComboboxOption[]>>({})
@@ -66,6 +66,7 @@ const Payment = () => {
   // khi email thay đổi sẽ gọi hàm console.log(email)
   const getAddressOptions = async () => {
     try {
+      // public/address.json
       const res = await fetch('/address.json');
       const data: AddressResponse[] = await res.json();
       const cityOptions: ComboboxOption[] = [];
@@ -89,6 +90,9 @@ const Payment = () => {
       setCityOptions(cityOptions);
       setDistrictsOptions(districtsOptions);
       setWardsOptions(wardsOptions);
+      console.log({cityOptions})
+      console.log({districtsOptions})
+      console.log({wardsOptions})
 
     } catch (error) {
       console.log(error)
@@ -149,6 +153,7 @@ const Payment = () => {
                 <div className='font-bold mb-[1.6rem] text-[1.8rem]'>ĐỊA CHỈ GIAO HÀNG</div>
                 <div className='list-input grid grid-cols-2 gap-x-[2.4rem] gap-y-[1.6rem]'>
                   {/* valuedate form */}
+                  {/* value theo PaymentForm */}
                   <TextInput
                     name='name'
                     onBlur={handleBlur}
