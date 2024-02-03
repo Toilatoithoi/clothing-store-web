@@ -53,7 +53,7 @@ const images: ReactImageGalleryItem[] = [
 // do detail sẽ dùng chung cho mọi sản phẩm 
 // mỗi sản phẩm đấy phải phân biệt bởi productId (kiểu dùng này là dynamic router)
 // props là thuộc tính từ lớp cha truyền cho lớp con
-const Menu = () => {
+export const Menu = () => {
   // query data của product theo id
   // render data lên
   return (
@@ -99,14 +99,14 @@ const Menu = () => {
           </div>
         </div>
       </div>
-      <div className='mb-[8rem]'>
+      {/* <div className='mb-[8rem]'>
         <div className='text-[2rem] font-bold mb-[2.4rem] flex items-center justify-center'>NHỮNG SẢN PHẨM NHIỀU NGƯỜI MUA</div>
         <div><ProductSlider /></div>
       </div>
       <div className='mb-[8rem] border-t-[0.05rem] border-gray-200 pt-[1.6rem]'>
         <div className='text-[2rem] font-bold mb-[2.4rem] flex items-center justify-center'>KHUYẾN MÃI HÔM NAY</div>
         <div><ProductSlider /></div>
-      </div>
+      </div> */}
     </div>
   )
 }

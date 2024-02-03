@@ -30,7 +30,8 @@ export default function RootLayout({
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-
+  // lấy thông tin người dùng
+  // isLoading khi mới vào thì khi nhập url sẽ khởi tạo trang nên loading để người tao biết đang lấy data query từ server
   const { data: userInfo, isLoading } = useUserInfo();
   // state COMMON_SHOW_LOGIN kiểu boolean
   // state COMMON_SHOW_REGISTER kiểu boolean
@@ -98,6 +99,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ToastContainer autoClose={3000} />
         {
+        // nếu chưa lấy dữ liệu xong thì loading bằng true hiển thị preload
           isLoading ? <div className='h-full w-full flex items-center justify-center bg-white'><Preload /> </div> :
             <div className='flex flex-col h-screen w-screen'>
               <Header />

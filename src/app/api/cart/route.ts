@@ -60,11 +60,13 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
     }
     const body = await req.json();
-    //lấy danh   model theo user id;
+    //lấy danh model theo user id;
+    // kiểm tra model xem đã có trong database chưa
     const cartItem = await prisma.cart.findFirst({ // lấy ra bản ghi theo userid và product model id
       where: {
         user_id: data.id,
-        product_model_id: body.product_model_id
+        // nếu không parseInt sẽ lỗi
+        product_model_id: parseInt(body.product_model_id, 10)
       }
     })
     let res = null
@@ -83,7 +85,8 @@ export const POST = async (req: NextRequest) => {
       res = await prisma.cart.create({
         data: {
           user_id: data.id,
-          product_model_id: body.product_model_id,
+          // nếu không parseInt sẽ lỗi
+          product_model_id: parseInt(body.product_model_id, 10),
           quantity: body.quantity,
         }
       })
@@ -92,6 +95,7 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(res)
 
   } catch (error) {
+    console.log({error})
     return NextResponse.json({
       code: "INTERNAL_SERVER_ERROR",
       message: "Lỗi hệ thống"

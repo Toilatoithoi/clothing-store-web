@@ -30,3 +30,11 @@ export interface ProductDetail {
   description: string;
 }
 
+export interface PostRes {
+  id: number;
+  title: string;
+  content: string;
+  createAt: string;
+  image: string;
+}
+

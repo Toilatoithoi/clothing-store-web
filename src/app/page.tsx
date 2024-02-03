@@ -1,9 +1,10 @@
 import Header from '@/components/Header'
+import { Menu } from "@/components/Menu"
 import Image from 'next/image'
 
 export default function Home() {
   return <div>
-    Home Page
+    <Menu />
   </div>
 }
 // khi load sẽ load layout trước rồi mới load page

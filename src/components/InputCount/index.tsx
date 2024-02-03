@@ -3,16 +3,20 @@ import React, { useState } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa'
 
 interface InputCountProps {
+  // truyền value
   value?: number;
+  // thay đổi giá trị bên ngoài
   onChange?: (value: number) => void
 }
 const InputCount = (props: InputCountProps) => {
 
   const handleAdd = () => {
+    // nếu onChange khác null thì sẽ thực hiện
     props.onChange?.((props.value ?? 0) + 1)
   }
 
   const handleSub = () => {
+    // nếu onChange khác null thì sẽ thực hiện
     props.onChange?.((props.value ?? 0) - 1)
   }
 
