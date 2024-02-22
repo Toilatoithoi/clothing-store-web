@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import jwt from 'jsonwebtoken'
 import { User } from '@prisma/client';
-import { verifyToken } from '@/utils/service';
+import { RestError, verifyToken } from '@/utils/service';
+import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 
 // Update user info
 export const PUT = async (req: NextRequest, { params }: { params: { userId: string; } }) => {
@@ -38,10 +39,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { userId: stri
 
     return NextResponse.json({ id: res.id })
   } catch (error) {
-    return NextResponse.json({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Lỗi hệ thống"
-    }, { status: 500 })
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 }
 

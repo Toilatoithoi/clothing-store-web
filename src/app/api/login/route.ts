@@ -1,22 +1,15 @@
 import { isBlank } from '@/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { hashPassword } from '@/utils/service';
+import { RestError, hashPassword } from '@/utils/service';
 import jwt from 'jsonwebtoken';
+import { INPUT_INVALID } from '@/constants/errorCodes';
 
 export const POST = async (req: NextRequest) => {
   //validate input
   const body = await req.json();
   if (isBlank(body.username) || isBlank(body.password)) {
-    return NextResponse.json(
-      {
-        code: 'INPUT_INVALID',
-        message: 'Đầu vào không hợp lệ',
-      },
-      {
-        status: 400,
-      }
-    );
+    return NextResponse.json(new RestError(INPUT_INVALID));
   }
 
   // check username có tồn tại không

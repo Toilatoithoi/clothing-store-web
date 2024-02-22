@@ -57,7 +57,7 @@ export const Menu = () => {
   // query data của product theo id
   // render data lên
   return (
-    <div className="w-full h-full flex-1 menu-page">
+    <div className="w-full h-full flex-1 menu-page z-0">
       <div className="flex mb-[2rem]">
         <div className="flex-1 max-w-[100%] mr-[2.4rem]"><ImageGallery items={images} showBullets={true} /></div>
       </div>

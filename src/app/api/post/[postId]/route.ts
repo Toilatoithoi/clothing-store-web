@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { CreatePostReq } from '@/interfaces/request';
+import { RestError } from '@/utils/service';
+import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 
 export const PUT = async (req: NextRequest, { params }: { params: { postId: string; } }) => {
   const id = Number(params.postId);
@@ -30,10 +32,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { postId: stri
     return NextResponse.json({ id: res.id })
   } catch (error) {
     console.log({ error })
-    return NextResponse.json({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Lỗi hệ thống"
-    }, { status: 500 })
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 }
 
@@ -52,10 +51,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: { postId: s
     return NextResponse.json({})
   } catch (error) {
     console.log({ error })
-    return NextResponse.json({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Lỗi hệ thống"
-    }, { status: 500 })
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 }
 
@@ -75,10 +71,7 @@ export const GET = async (req: NextRequest, { params }: { params: { postId: stri
     return NextResponse.json(post);
   } catch (error) {
     console.log({ error })
-    return NextResponse.json({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Lỗi hệ thống"
-    }, { status: 500 })
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 
 }

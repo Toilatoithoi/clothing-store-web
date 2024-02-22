@@ -9,6 +9,7 @@ export interface CreateUserReq {
   gender?: string;
   phoneNumber: string;
   name: string;
+  role: string;
 }
 
 enum BILL_STATUS {
@@ -25,6 +26,8 @@ export interface CreateBillReq {
   address: string;
   note: string;
   status?: BILL_STATUS;
+  create_at: string;
+  update_at: string;
   bill_product: bill_product[];
 }
 

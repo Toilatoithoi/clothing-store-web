@@ -20,6 +20,7 @@ import { Category } from '@/interfaces/model';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import CartDropdown from '../CartDropdown';
+import { GoListUnordered } from "react-icons/go";
 
 interface HeaderProps {
 
@@ -135,8 +136,8 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
             {/* nếu đăng nhập rồi isAuthenticated là true sẽ show ra biểu tượng */}
             {appStatus?.isAuthenticated ? <div className="flex item-center gap-[1.6rem]">
               <div className="text-[2.4rem]"><FaRegUser /></div>
-              <div className="text-[2.8rem] cursor-pointer"><CartDropdown /></div>
-              <div className="text-[2.8rem]"><RiGlobalLine /></div>
+              <div className="text-[2.8rem] cursor-pointer z-10"><CartDropdown /></div>
+              <div className="text-[2.8rem]"><GoListUnordered /></div>
             </div> : <div className='flex gap-4'>
               <button type="button" className='font-bold' onClick={handleShowLogin}>Đăng nhập</button>
               <button type="button" className='text-[#BC0517]' onClick={handleShowRegister}>Đăng ký</button>

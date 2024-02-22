@@ -27,6 +27,9 @@ const CartDropdown = () => {
   const handleViewCartPage = () => {
     router.push('/user-cart')
   }
+  const handleViewPaymentPage = () => {
+    router.push('/payment')
+  }
 
   console.log({ data })
   return (
@@ -73,7 +76,7 @@ const CartDropdown = () => {
           )}
           {summary.totalPrice > 0 && (
             <div className='flex items-center justify-center'>
-              <button className='w-[25rem] flex items-center justify-center text-[1.6rem] font-bold p-4 uppercase bg-white cursor-pointer border-2 border-gray-300' type='button'>
+              <button onClick={handleViewPaymentPage} className='w-[25rem] flex items-center justify-center text-[1.6rem] font-bold p-4 uppercase bg-white cursor-pointer border-2 border-gray-300' type='button'>
                 Thanh toán
               </button>
             </div>

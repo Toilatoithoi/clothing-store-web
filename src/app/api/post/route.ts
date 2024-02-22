@@ -2,16 +2,15 @@ import prisma from '@/lib/db';
 import { isBlank } from '@/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { CreatePostReq } from '@/interfaces/request';
+import { RestError } from '@/utils/service';
+import { INPUT_INVALID, INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 export const GET = async (req: NextRequest) => {
   try {
     const post = await prisma.post.findMany();
     return NextResponse.json(post);
   } catch (error) {
     console.log({error})
-    return NextResponse.json({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Lỗi hệ thống"
-      }, { status: 500 })
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 
 }
@@ -22,12 +21,7 @@ export const POST = async (req: NextRequest) => {
     console.log(body)
 
     if (isBlank(body.title) || isBlank(body.content) || isBlank(body.createAt)) {
-      return NextResponse.json({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Đầu vào không hợp lệ'
-      }, {
-        status: 400
-      })
+      return NextResponse.json(new RestError(INPUT_INVALID));
     }
 
 
@@ -44,9 +38,6 @@ export const POST = async (req: NextRequest) => {
 
     } catch (error) {
         console.log({error})
-        return NextResponse.json({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Lỗi hệ thống"
-          }, { status: 500 })  
+        return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR)); 
     }
   }
