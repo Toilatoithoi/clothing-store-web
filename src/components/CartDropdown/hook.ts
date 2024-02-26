@@ -11,6 +11,13 @@ export interface ProductCart extends ProductModel {
 }
 
 export interface Payment extends BillProduct {
+  city: string;
+  district: string;
+  wards: string;
+  address: string;
+  note: string;
+  status: string;
+  created_at: string;
   bill: Bill;
 }
 
@@ -55,13 +62,14 @@ export const useCart = () => {
 
 export const useBill = () => {
   // lấy dữ liệu bill từ api
-  const { data, mutate } = useSWRWrapper<Payment[]>('/api/payment', {
-    url: '/api/payment',
+  const { data, mutate } = useSWRWrapper<Payment[]>('/api/bill', {
+    url: '/api/bill',
     method: METHOD.GET
   });
+
   // gọi trigger là dữ liệu nhập vào khi cần addToCart vừa craete vừa update
-  const { trigger } = useMutation<Payment[]>('/api/payment', {
-    url: '/api/payment',
+  const { trigger } = useMutation<Payment[]>('/api/bill', {
+    url: '/api/bill',
     method: METHOD.POST
   });
   
@@ -72,6 +80,7 @@ export const useBill = () => {
     trigger({
       quantity: model.quantity,
       product_model_id: model.product_model_id,
+      bill: model.bill.id
     })
 
   }

@@ -32,7 +32,7 @@ export const GET = async (req: NextRequest) => {
           select: {
             product: {
               select: {
-                name: true
+                name: true,          
               }
             },
             color: true,

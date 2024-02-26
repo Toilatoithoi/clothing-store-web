@@ -34,6 +34,7 @@ const UserCart = () => {
         totalQuantity: acc.totalQuantity + item.quantity,
       }), { totalPrice: 0, totalQuantity: 0 });
       setSummary(summaryQty)
+      // setValue cho formik
       formRef.current?.setValues({
         data
       })
@@ -43,10 +44,13 @@ const UserCart = () => {
   console.log({ data })
 
   const handleSubmit = (values: UserCartForm) => {
+    // value phải cùng kiểu với initialValues
     console.log(values)
   }
 
   const handleChangeQty = (qty: number, idx: number, item: ProductCart) => {
+    // setFieldValues cho field truyền value
+    // data[${idx}].quantity từng phần tử trong data.quantity truyền giá trị
     formRef.current?.setFieldValue(`data[${idx}].quantity`, qty)
     if (timer.current) {
       clearTimeout(timer.current)
@@ -64,6 +68,7 @@ const UserCart = () => {
         <div>Hoàn tất</div>
       </div>
       <Formik
+        // để điều khiển formik
         innerRef={(instance) => formRef.current = instance!}
         onSubmit={handleSubmit}
         initialValues={{ data: [] } as UserCartForm}
@@ -79,6 +84,7 @@ const UserCart = () => {
                 {
                   values.data.map((item, idx) => (
                     <>
+                    {/*  do đang dùng<> khi render ra no sẽ không có thằng này nếu không truyền key no sẽ có nhưng lỗi hiển thị ở console.log */}
                       <div key={idx + values.data.length} className='flex col-span-2'>
                         <Image src={item.image} className='object-contain mr-4' alt="product" width={80} height={100} />
                         <div>
@@ -88,7 +94,7 @@ const UserCart = () => {
                           <div className='cursor-pointer hover:text-red-500'>Xóa</div>
                         </div>
                       </div>
-                      <div key={idx + values.data.length + 2} className='text-center'>{item.price}</div>
+                      <div key={idx + values.data.length + 2} className='text-center'>{item.price}</div>   
                       <div key={idx + values.data.length + 3} className='flex justify-center'><InputCount value={item.quantity} onChange={(qty) => handleChangeQty(qty, idx, item)} /></div>
                       <div key={idx + values.data.length + 4} className='text-center'>{item.price}</div>
                     </>

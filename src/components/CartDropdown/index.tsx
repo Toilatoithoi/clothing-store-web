@@ -11,7 +11,7 @@ const CartDropdown = () => {
   const { data } = useCart();
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
 
-
+  // điều hướng route
   const router = useRouter();
 
   useEffect(() => {
@@ -25,9 +25,11 @@ const CartDropdown = () => {
   }, [data])
 
   const handleViewCartPage = () => {
+    // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
     router.push('/user-cart')
   }
   const handleViewPaymentPage = () => {
+    // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
     router.push('/payment')
   }
 

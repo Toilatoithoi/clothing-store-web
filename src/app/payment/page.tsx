@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import TextInput from '@/components/TextInput';
 import { formatNumber, isBlank } from '@/utils';
 import Combobox, { ComboboxOption } from '@/components/Combobox';
-import { ProductCart, useCart } from '@/components/CartDropdown/hook';
+import { ProductCart, useBill, useCart } from '@/components/CartDropdown/hook';
 
 interface PaymentForm {
   name: string;
@@ -44,8 +44,11 @@ const Payment = () => {
   // tạo ra 3 state đại diện cho city, district, wards
   // nếu [] sẽ là mảng kiểu never chưa xác định mảng kiểu gì
   //<Kiểu mảng>[]
+  // khi có data trả về thì nó sẽ formRef setvalue cho formit
   const formRef = useRef<FormikProps<PaymentForm>>()
-  const { addToCart, data } = useCart();
+  // lí do phải cho data vào initialValues vì initialValues chỉ nhận data lần đầu tiên còn ví dụ truyền state vào khi state update nó cũng không ăn
+  const { addToCart, data } = useCart()
+  const { addToBill, data: databill } = useBill()
   const [quantity, setQuantity] = useState(1);
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
   const timer = useRef<NodeJS.Timeout>()
@@ -68,7 +71,7 @@ const Payment = () => {
        totalPrice: acc.totalPrice + item.quantity * item.price,
        totalQuantity: acc.totalQuantity + item.quantity,
      }), { totalPrice: 0, totalQuantity: 0 });
-     setSummary(summaryQty)
+     setSummary(summaryQty)  
    }
  }, [data])
   // giá trị
@@ -280,10 +283,10 @@ const Payment = () => {
                     <>
                       <div key={idx + values.productCart.length} className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
                         <div>
-                          <div className="font-bold">{item.product.name}</div>
+                          <div className="font-bold">{item.product.name} X {item.quantity}</div>
                           <div>{item.color} : {item.size}</div>
                         </div>
-                        <div>{item.price} VND</div>
+                        <div className='text-[1.3rem] font-bold'>{formatNumber(item.price * item.quantity)} VND</div>
                       </div>             
                     </>
                   ))
