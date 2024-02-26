@@ -2,7 +2,8 @@ import prisma from '@/lib/db';
 import { CreateUserReq } from '@/interfaces/request';
 import { isBlank } from '@/utils';
 import { NextRequest, NextResponse } from 'next/server';
-import { hashPassword } from '@/utils/service';
+import { RestError, hashPassword } from '@/utils/service';
+import { INPUT_INVALID, INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 //Create user
 export const POST = async (req: NextRequest) => {
   const body: CreateUserReq = await req.json();
@@ -18,13 +19,7 @@ export const POST = async (req: NextRequest) => {
     isBlank(body.password) ||
     isBlank(body.phoneNumber)
   ) {
-    return NextResponse.json(
-      {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Input Invalid',
-      },
-      { status: 400 }
-    );
+    return NextResponse.json(new RestError(INPUT_INVALID));
   }
 
   try {
@@ -57,12 +52,6 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ id: createdUser.id });
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(
-      {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Lỗi hệ thống',
-      },
-      { status: 500 }
-    );
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 };

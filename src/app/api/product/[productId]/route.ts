@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { CreateProductReq } from '@/interfaces/request';
+import { RestError } from '@/utils/service';
+import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 
 export const PUT = async (
   req: NextRequest,
@@ -39,13 +41,7 @@ export const PUT = async (
     return NextResponse.json({ id: res.id });
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(
-      {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Lỗi hệ thống',
-      },
-      { status: 500 }
-    );
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 };
 
@@ -81,12 +77,6 @@ export const GET = async (
     return NextResponse.json(product);
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(
-      {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Lỗi hệ thống',
-      },
-      { status: 500 }
-    );
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 };

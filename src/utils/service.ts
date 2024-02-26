@@ -31,7 +31,7 @@ export const verifyToken = async (req: NextRequest) => {
 
 const mapCodeToMessage: Record<string, string> = {
   INTERNAL_SERVER_ERROR: 'Lỗi hệ thống',
-  INPUT_INVALID: 'Đầu vào không hợ lệ',
+  INPUT_INVALID: 'Đầu vào không hợp lệ',
 };
 export class RestError {
   code: string;

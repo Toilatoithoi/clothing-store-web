@@ -16,6 +16,7 @@ model User {
   phoneNumber String?   @map("phone_number") @db.VarChar(10)
   username    String?   @db.VarChar(50)
   password    String?   @db.VarChar(255)
+  role        String    @db.VarChar(255)
   bill        bill[]
   cart        cart[]
 

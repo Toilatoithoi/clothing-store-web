@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { verifyToken } from '@/utils/service';
+import { RestError, verifyToken } from '@/utils/service';
+import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 
 export const PUT = async (req: NextRequest, { params }: { params: { billId: string; } }) => {
     
@@ -33,17 +34,14 @@ export const PUT = async (req: NextRequest, { params }: { params: { billId: stri
         },
         data: {
           ...body,
-          user_id: undefined
+          user_id: undefined,
         }
       })
   
       return NextResponse.json({ id: res.id })
     } catch (error) {
         console.log({error})
-      return NextResponse.json({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Lỗi hệ thống"
-      }, { status: 500 })
+        return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
     }
   }
 
@@ -56,7 +54,19 @@ export const PUT = async (req: NextRequest, { params }: { params: { billId: stri
     try {
       const bill = await prisma.bill.findFirst({ where: { id, user:{
         username: data.username
-      } } });
+      } },
+      select: {
+        id: true,
+        city: true,
+        district: true,
+        wards: true,
+        address: true,
+        note: true,
+        created_at: true,
+        updated_at: true,
+        bill_product: true,
+      }
+     });
 
        // lây thông tin bill trên db -> nếu mà không có thông tin bill -> thông báo lỗi bill not exist
        if (bill == null) {
@@ -69,10 +79,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { billId: stri
       return NextResponse.json(bill);
     } catch (error) {
       console.log({error})
-      return NextResponse.json({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Lỗi hệ thống"
-        }, { status: 500 })
+      return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
     }
   
   }

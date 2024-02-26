@@ -1,12 +1,13 @@
 
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IoIosArrowForward } from "react-icons/io";
-import { Formik } from 'formik';
+import { Formik, FormikProps } from 'formik';
 import * as yup from 'yup';
 import TextInput from '@/components/TextInput';
-import { isBlank } from '@/utils';
+import { formatNumber, isBlank } from '@/utils';
 import Combobox, { ComboboxOption } from '@/components/Combobox';
+import { ProductCart, useBill, useCart } from '@/components/CartDropdown/hook';
 
 interface PaymentForm {
   name: string;
@@ -18,6 +19,7 @@ interface PaymentForm {
   wards?: string;
   address?: string;
   note?: string;
+  productCart: ProductCart[];
 }
 
 interface Wards {
@@ -42,6 +44,15 @@ const Payment = () => {
   // tạo ra 3 state đại diện cho city, district, wards
   // nếu [] sẽ là mảng kiểu never chưa xác định mảng kiểu gì
   //<Kiểu mảng>[]
+  // khi có data trả về thì nó sẽ formRef setvalue cho formit
+  const formRef = useRef<FormikProps<PaymentForm>>()
+  // lí do phải cho data vào initialValues vì initialValues chỉ nhận data lần đầu tiên còn ví dụ truyền state vào khi state update nó cũng không ăn
+  const { addToCart, data } = useCart()
+  const { addToBill, data: databill } = useBill()
+  const [quantity, setQuantity] = useState(1);
+  const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
+  const timer = useRef<NodeJS.Timeout>()
+
   const [cityOptions, setCityOptions] = useState<ComboboxOption[]>([])
   const [districtsOptions, setDistrictsOptions] = useState<Record<string, ComboboxOption[]>>({})
   const [wardsOptions, setWardsOptions] = useState<Record<string, ComboboxOption[]>>({})
@@ -50,6 +61,19 @@ const Payment = () => {
      // [] để chỉ chạy 1 lần đầu tiên 
     getAddressOptions();
   }, [])
+  useEffect(() => {
+    // [] để chỉ chạy 1 lần đầu tiên 
+   if (data) {
+     // reduce là một phương thức của JavaScript được sử dụng để tính toán một giá trị duy nhất từ các phần tử của mảng
+     // acc tham số này là giá trị tích lũy, nghĩa là giá trị tạm tính tính đến thời điểm hiện tại trong quá trình duyệt qua mảng
+     // item tham số này là phần tử hiện tại trong mảng, trong trường hợp này là một đối tượng sản phẩm
+     const summaryQty = data.reduce((acc, item) => ({
+       totalPrice: acc.totalPrice + item.quantity * item.price,
+       totalQuantity: acc.totalQuantity + item.quantity,
+     }), { totalPrice: 0, totalQuantity: 0 });
+     setSummary(summaryQty)  
+   }
+ }, [data])
   // giá trị
   // const [email, setEmail] = useState('')
   // lỗi
@@ -135,17 +159,18 @@ const Payment = () => {
           // chú ý cái tên trong initialValues phải giống kiểu và tên với values trong handlePayment do trong onSubmit
           name: '',
           email: '',
-          phone: ''
+          phone: '',
+          productCart: data || [],
         }}
 
         validationSchema={schema}
         // hàm sẽ được gọi khi submit
         onSubmit={handlePayment}
       >
-        {({ values, touched, errors, handleSubmit, handleBlur, handleChange, isValid, setFieldValue }) => // handleSubmit -> check isValid = true ? onSubmit(): null
+        {({ values, touched, errors, handleSubmit, handleBlur, handleChange, isValid, setFieldValue }) =>{ // handleSubmit -> check isValid = true ? onSubmit(): null
           // children hàm số trả về jsx là 1 component
           // value sẽ là state tổng chứa giá trị của cả form name, email
-          <form className='w-full' onSubmit={handleSubmit}>
+          return <form className='w-full' onSubmit={handleSubmit}>
             <div className='flex w-full gap-[3.2rem]'>
               {/* dùng grid chia làm 5 cột */}
               {/* box-sizing là tổng chiều dài của phần tử có tính thêm border, padding hay không */}
@@ -231,7 +256,6 @@ const Payment = () => {
                     rows={5}
                     label="Ghi chú đơn hàng (tuỳ chọn)" />
                 </div>
-
               </div>
               <div className='bg-[#f7f8fa] w-[40rem]  p-[3rem] border border-gray-950'>
                 <div className="font-bold text-[1.8rem]">ĐƠN HÀNG CỦA BẠN</div>
@@ -239,29 +263,49 @@ const Payment = () => {
                   <div className="font-bold uppercase">SẢN PHẨM</div>
                   <div className="font-bold uppercase">Tạm tính</div>
                 </div>
-                <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                {/* <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
                   <div>
                     <div className="font-bold">Áo nỉ nam ANHTK409  × 1</div>
                     <div>Màu sắc: Đen Cỡ:S</div>
                   </div>
                   <div>399.000 VND</div>
-
-                </div>
-                <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                </div> */}
+                {/* <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
                   <div className="font-bold">Tạm tính</div>
                   <div>399.000 VND</div>
                 </div>
                 <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
                   <div className="font-bold">Tổng</div>
                   <div className="font-bold">399.000 VND</div>
-                </div>
+                </div> */}
+                {
+                  values.productCart.map((item, idx) =>(
+                    <>
+                      <div key={idx + values.productCart.length} className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                        <div>
+                          <div className="font-bold">{item.product.name} X {item.quantity}</div>
+                          <div>{item.color} : {item.size}</div>
+                        </div>
+                        <div className='text-[1.3rem] font-bold'>{formatNumber(item.price * item.quantity)} VND</div>
+                      </div>             
+                    </>
+                  ))
+                }
+                 <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                        <div className="font-bold">Tạm tính</div>
+                        <div>{formatNumber(summary.totalPrice)} VND</div>
+                      </div>
+                      <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                        <div className="font-bold">Tổng</div>
+                        <div className="font-bold">{formatNumber(summary.totalPrice)} VND</div>
+                      </div>
                 <div className='font-semibold text-[1.4rem] mt-[1.6rem]'>Trả tiền mặt khi nhận hàng</div>
                 <div className='mb-[0.8rem] text-[1.4rem]'>Trả tiền mặt khi giao hàng</div>
                   {/* Khi không valid thì nút đặt hàng sẽ bị làm mờ  */}
                 <button disabled={!isValid} type="submit" className='bg-black disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center font-bold'>Đặt hàng</button>
               </div>
             </div>
-          </form>}
+          </form>}}
       </Formik>
     </div>
   )

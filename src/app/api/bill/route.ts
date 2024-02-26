@@ -2,8 +2,15 @@ import prisma from '@/lib/db';
 import { isBlank } from '@/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { CreateBillReq } from '@/interfaces/request';
-import { verifyToken } from '@/utils/service';
+import { RestError, verifyToken } from '@/utils/service';
+import { INPUT_INVALID, INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
+
+
 export const GET = async (req: NextRequest) => {
+  const url = new URL(req.url);
+  const firstDay = url.searchParams.get('firstDay')?.toString();
+  const lastDay = url.searchParams.get('lastDay')?.toString();
+  console.log({lastDay})
   try {
     // input fromDate, toDate, status
     // verify token
@@ -11,8 +18,6 @@ export const GET = async (req: NextRequest) => {
     if (data == null) {
       return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
     }
-
-    // filter
     const bill = await prisma.bill.findMany({
       where: {
         status: "SUCCESS", // nếu status != null thì mới cần truyền vào
@@ -20,12 +25,27 @@ export const GET = async (req: NextRequest) => {
           username: data.username
         },
         // dùng gte, lte để filter theo from date, to date
+        created_at: {
+          gte: firstDay,
+          lte: lastDay
+        }
+      },
+      select: {
+        id: true,
+        city: true,
+        district: true,
+        wards: true,
+        address: true,
+        note: true,
+        created_at: true,
+        updated_at: true,
+        bill_product: true,
       }
     });
 
-    if (bill == null) {
+    if (bill.length === 0) {
       return NextResponse.json({
-        code: 'Bill is false',
+        code: 'Bill not exist',
       }, {
         status: 404
       })
@@ -34,10 +54,7 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json(bill);
   } catch (error) {
     console.log({ error })
-    return NextResponse.json({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Lỗi hệ thống"
-    }, { status: 500 })
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 
 }
@@ -51,18 +68,11 @@ export const POST = async (req: NextRequest) => {
 
   //validate input 
   const body = await req.json();
-  const productids = body.product_id.split(',')
   if (isBlank(body.city) || isBlank(body.district) || isBlank(body.wards) || isBlank(body.address)) {
-    return NextResponse.json({
-      code: 'INTERNAL_SERVER_ERROR',
-      message: 'Đầu vào không hợp lệ'
-    }, {
-      status: 400
-    })
+    return NextResponse.json(new RestError(INPUT_INVALID));
   }
 
   //input address, note, name, phone..... billProducts: {} lấy tương tự cart
-
 
   try {
     // thêm vào db
@@ -76,23 +86,15 @@ export const POST = async (req: NextRequest) => {
         note: body.note,
         status: "SUCCESS",
         bill_product: {
-          // create:[
-          // {
-          //   // product_model_id,
-          //   // quantity,            
-          // }
-          // ]
-        }
+          create: body.bill_product,
+        },
       }
     })
 
-    return NextResponse.json({})
+    return NextResponse.json(createdBill)
 
   } catch (error) {
     console.log({ error })
-    return NextResponse.json({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Lỗi hệ thống"
-    }, { status: 500 })
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 }

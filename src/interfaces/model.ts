@@ -38,3 +38,25 @@ export interface PostRes {
   image: string;
 }
 
+export interface Bill{
+  id: number;
+  user_id: number;
+  city: string;
+  district: string;
+  wards: string;
+  address: string;
+  note: string;
+  status: string;
+  create_at: string;
+  update_at: string;
+  bill_product: BillProduct[];
+
+}
+
+export interface BillProduct {
+  product_model_id: number;
+  quantity: number;
+  id: number;
+}
+
+

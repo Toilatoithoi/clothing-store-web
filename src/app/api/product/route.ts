@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { isBlank } from '@/utils';
 import { category } from '@prisma/client';
+import { RestError } from '@/utils/service';
+import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 export const GET = async (request: NextRequest) => {
   // lấy từ link url api
   const url = new URL(request.url);
@@ -108,13 +110,7 @@ export const GET = async (request: NextRequest) => {
     });
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(
-      {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Lỗi hệ thống',
-      },
-      { status: 500 }
-    );
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 };
 
@@ -139,9 +135,6 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(product);
   } catch (error) {
     console.log({ error });
-    return NextResponse.json({
-      code: 'INTERNAL_SERVER_ERROR',
-      message: 'lỗi hệ thống',
-    });
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 };

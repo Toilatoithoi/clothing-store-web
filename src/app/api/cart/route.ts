@@ -2,7 +2,8 @@ import prisma from '@/lib/db';
 import { isBlank } from '@/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { CreateCartReq } from '@/interfaces/request';
-import { verifyToken } from '@/utils/service';
+import { RestError, verifyToken } from '@/utils/service';
+import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 
 
 interface UpdateCartInput {
@@ -31,7 +32,7 @@ export const GET = async (req: NextRequest) => {
           select: {
             product: {
               select: {
-                name: true
+                name: true,          
               }
             },
             color: true,
@@ -54,10 +55,7 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json(res);
   } catch (error) {
     console.log({ error })
-    return NextResponse.json({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Lỗi hệ thống"
-    }, { status: 500 })
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 }
 
@@ -107,10 +105,7 @@ export const POST = async (req: NextRequest) => {
 
   } catch (error) {
     console.log({ error })
-    return NextResponse.json({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Lỗi hệ thống"
-    }, { status: 500 })
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 }
 
@@ -132,9 +127,6 @@ export const PUT = async (req: NextRequest) => {
 
   } catch (error) {
     console.log({ error })
-    return NextResponse.json({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Lỗi hệ thống"
-    }, { status: 500 })
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 }
