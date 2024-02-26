@@ -70,13 +70,13 @@ const Combobox = (props: ComboboxProps) => {
               <FaChevronDown className="absolute right-[0.8rem] top-1/2 -translate-y-1/2" />
             </div>
 
-            <Transition 
+            <Transition
               show={open}
               // enter khi xuất hiện lên giao diện
               enter="transition duration-100 ease-out "
               enterFrom="transform scale-95 opacity-0"
               enterTo="transform scale-100 opacity-100 "
-               // leave khi ẩn trên giao diện
+              // leave khi ẩn trên giao diện
               leave="transition duration-75 ease-out"
               leaveFrom="transform scale-100 opacity-100"
               leaveTo="transform scale-95 opacity-0"

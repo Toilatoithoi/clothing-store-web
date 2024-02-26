@@ -3,7 +3,7 @@
 import { AgGridReact } from 'ag-grid-react'; // Component AG Grid
 import "ag-grid-community/styles/ag-grid.css"; // CSS bắt buộc được yêu cầu bởi grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Chủ đề tùy chọn được áp dụng cho grid
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { useBill } from '@/components/CartDropdown/hook';
 import { set } from 'date-fns';
 import { useRouter } from 'next/navigation';
@@ -24,12 +24,12 @@ const ListBill = () => {
     const router = useRouter();
     const handleViewBillProudtcPage = (value: number) => {
         // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
-        router.push('/list-bill/' +  value.toString())
-      }
+        router.push('/list-bill/' + value.toString())
+    }
     const CustomButtonComponent = ({ value }) => {
         return <button onClick={() => handleViewBillProudtcPage(value)}>Push Me!</button>;
     };
-    const { addToBill, data } = useBill();
+    const { addToBill, data } = useBill({});
     console.log(data)
     const [rowData, setRowData] = useState<List[]>([]);
     const [colDefs, setColDefs] = useState([
@@ -39,7 +39,7 @@ const ListBill = () => {
         { headerName: "Address", field: "address" },
         { headerName: "Note", field: "note" },
         { headerName: "Created At", field: "created_at" },
-        { headerName: "Bill Prodduct",field: 'bill_id', cellRenderer: CustomButtonComponent},
+        { headerName: "Bill Prodduct", field: 'bill_id', cellRenderer: CustomButtonComponent },
     ]);
 
     useEffect(() => {
@@ -47,7 +47,7 @@ const ListBill = () => {
         if (data) {
             for (const item of data) {
                 // Kiểm tra xem item có tồn tại và không rỗng không
-                if (item && Object.keys(item ).length > 0) {
+                if (item && Object.keys(item).length > 0) {
                     row.push({
                         city: item.city || '',
                         district: item.district || '',

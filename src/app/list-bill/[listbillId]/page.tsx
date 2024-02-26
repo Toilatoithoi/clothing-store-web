@@ -1,3 +1,4 @@
+'use client';
 import { METHOD } from '@/constants';
 import { BillProduct } from '@/interfaces/model';
 import { useSWRWrapper } from '@/store/custom';
