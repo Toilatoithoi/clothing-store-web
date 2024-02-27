@@ -71,7 +71,14 @@ const Payment = () => {
        totalPrice: acc.totalPrice + item.quantity * item.price,
        totalQuantity: acc.totalQuantity + item.quantity,
      }), { totalPrice: 0, totalQuantity: 0 });
-     setSummary(summaryQty)  
+     setSummary(summaryQty) 
+     // setValue cho formik
+     formRef.current?.setValues({
+      name: '',
+      email: '',
+      phone: '',
+      productCart: data
+    }) 
    }
  }, [data])
   // giá trị
@@ -154,6 +161,7 @@ const Payment = () => {
         <div>Hoàn tất</div>
       </div>
       <Formik
+        innerRef={(instance) => formRef.current = instance!}
         // giá trị khởi tạo ban đầu
         initialValues={{
           // chú ý cái tên trong initialValues phải giống kiểu và tên với values trong handlePayment do trong onSubmit

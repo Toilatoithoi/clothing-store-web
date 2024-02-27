@@ -3,6 +3,7 @@
 import { AgGridReact } from 'ag-grid-react'; // Component AG Grid
 import "ag-grid-community/styles/ag-grid.css"; // CSS bắt buộc được yêu cầu bởi grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Chủ đề tùy chọn được áp dụng cho grid
+import { ColDef } from 'ag-grid-community';
 import React, { useEffect, useState} from 'react'
 import { useBill } from '@/components/CartDropdown/hook';
 import { set } from 'date-fns';
@@ -26,13 +27,13 @@ const ListBill = () => {
         // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
         router.push('/list-bill/' +  value.toString())
       }
-    const CustomButtonComponent = ({ value }) => {
+    const CustomButtonComponent = ({ value }: any) => {
         return <button onClick={() => handleViewBillProudtcPage(value)}>Push Me!</button>;
     };
     const { addToBill, data } = useBill();
     console.log(data)
     const [rowData, setRowData] = useState<List[]>([]);
-    const [colDefs, setColDefs] = useState([
+    const [colDefs, setColDefs] = useState<Array<ColDef>>([
         { headerName: "City", field: "city" },
         { headerName: "District", field: "district" },
         { headerName: "Wards", field: "wards" },

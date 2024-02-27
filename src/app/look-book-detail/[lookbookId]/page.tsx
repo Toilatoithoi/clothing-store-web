@@ -2,7 +2,7 @@
 import Video from '@/components/Video';
 import React from 'react'
 
-const LookBookDetail = (props: { params: { productId: string; } }) => {
+const LookBookDetail = (props: { params: { lookbookId: string; } }) => {
   return (
       <div>
           <div className='h-[4.5rem] w-full'>
