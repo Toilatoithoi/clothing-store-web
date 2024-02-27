@@ -30,7 +30,7 @@ const ListBill = () => {
     const CustomButtonComponent = ({ value }: any) => {
         return <button onClick={() => handleViewBillProudtcPage(value)}>Push Me!</button>;
     };
-    const { addToBill, data } = useBill();
+    const { addToBill, data } = useBill({});
     console.log(data)
     const [rowData, setRowData] = useState<List[]>([]);
     const [colDefs, setColDefs] = useState<Array<ColDef>>([
