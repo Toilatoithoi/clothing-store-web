@@ -5,9 +5,10 @@ import { IoIosArrowForward } from "react-icons/io";
 import { Formik, FormikProps } from 'formik';
 import * as yup from 'yup';
 import TextInput from '@/components/TextInput';
-import { formatNumber, isBlank } from '@/utils';
+import { formatNumber, isBlank, uuid } from '@/utils';
 import Combobox, { ComboboxOption } from '@/components/Combobox';
 import { ProductCart, useBill, useCart } from '@/components/CartDropdown/hook';
+import Loader from '@/components/Loader';
 
 interface PaymentForm {
   name: string;
@@ -41,14 +42,21 @@ interface AddressResponse {
 }
 
 const Payment = () => {
+  const componentId = useRef(uuid())
   // tạo ra 3 state đại diện cho city, district, wards
   // nếu [] sẽ là mảng kiểu never chưa xác định mảng kiểu gì
   //<Kiểu mảng>[]
   // khi có data trả về thì nó sẽ formRef setvalue cho formit
   const formRef = useRef<FormikProps<PaymentForm>>()
   // lí do phải cho data vào initialValues vì initialValues chỉ nhận data lần đầu tiên còn ví dụ truyền state vào khi state update nó cũng không ăn
-  const { addToCart, data } = useCart()
-  const { addToBill, data: databill } = useBill()
+  const { addToCart, data, isLoading } = useCart()
+  const { addToBill } = useBill({
+    componentId: componentId.current,
+    onCreateSuccess: () => {
+      // TODO: redirect  qua màn bill detail
+      // clear cart
+    }
+  })
   const [quantity, setQuantity] = useState(1);
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
   const timer = useRef<NodeJS.Timeout>()
@@ -58,7 +66,7 @@ const Payment = () => {
   const [wardsOptions, setWardsOptions] = useState<Record<string, ComboboxOption[]>>({})
 
   useEffect(() => {
-     // [] để chỉ chạy 1 lần đầu tiên 
+    // [] để chỉ chạy 1 lần đầu tiên 
     getAddressOptions();
   }, [])
   useEffect(() => {
@@ -71,14 +79,7 @@ const Payment = () => {
        totalPrice: acc.totalPrice + item.quantity * item.price,
        totalQuantity: acc.totalQuantity + item.quantity,
      }), { totalPrice: 0, totalQuantity: 0 });
-     setSummary(summaryQty) 
-     // setValue cho formik
-     formRef.current?.setValues({
-      name: '',
-      email: '',
-      phone: '',
-      productCart: data
-    }) 
+     setSummary(summaryQty)  
    }
  }, [data])
   // giá trị
@@ -118,12 +119,14 @@ const Payment = () => {
           wardsOptions[district.Id] = district.Wards.map(ward => ({ label: ward.Name, value: ward.Id }))
         })
       })
+
+
       setCityOptions(cityOptions);
       setDistrictsOptions(districtsOptions);
       setWardsOptions(wardsOptions);
-      console.log({cityOptions})
-      console.log({districtsOptions})
-      console.log({wardsOptions})
+      console.log({ cityOptions })
+      console.log({ districtsOptions })
+      console.log({ wardsOptions })
 
     } catch (error) {
       console.log(error)
@@ -133,9 +136,9 @@ const Payment = () => {
   }
 
   const handlePayment = (values: PaymentForm) => {
-     // clg viết tắt 
+    // clg viết tắt 
     console.log('payment', values)
-
+    addToBill(values)
     // call api với values
   }
 
@@ -145,16 +148,16 @@ const Payment = () => {
     name: yup.string().label('Họ và tên').required(),
     // rỗng và email
     email: yup.string().label('Email').required().email('Email không hợp lệ'),
-     // rỗng và khớp với kiểu sđt
+    // rỗng và khớp với kiểu sđt
     phone: yup.string().label('Số điện thoại').required().matches(/^(?:[0-9] ?){6,14}[0-9]$/, 'Số điện thoại không hợp lệ'),
-    city: yup.string().label('Tỉnh/Thành phố').required(),
-    district: yup.string().label('Quận/huyện').required(),
-    wards: yup.string().label('Phường/xã').required(),
-    address: yup.string().label('Địa chỉ').required(),
+    // city: yup.string().label('Tỉnh/Thành phố').required(),
+    // district: yup.string().label('Quận/huyện').required(),
+    // wards: yup.string().label('Phường/xã').required(),
+    // address: yup.string().label('Địa chỉ').required(),
   })
 
   return (
-    <div>
+    <Loader id={componentId.current} loading={isLoading} >
       <div className='flex items-center justify-center my-[3.2rem]'>
         <div>Giỏ hàng</div><IoIosArrowForward />
         <div className='font-bold'>Thanh toán</div><IoIosArrowForward />
@@ -175,7 +178,7 @@ const Payment = () => {
         // hàm sẽ được gọi khi submit
         onSubmit={handlePayment}
       >
-        {({ values, touched, errors, handleSubmit, handleBlur, handleChange, isValid, setFieldValue }) =>{ // handleSubmit -> check isValid = true ? onSubmit(): null
+        {({ values, touched, errors, handleSubmit, handleBlur, handleChange, isValid, setFieldValue }) => { // handleSubmit -> check isValid = true ? onSubmit(): null
           // children hàm số trả về jsx là 1 component
           // value sẽ là state tổng chứa giá trị của cả form name, email
           return <form className='w-full' onSubmit={handleSubmit}>
@@ -222,7 +225,7 @@ const Payment = () => {
                     hasError={touched.city && !isBlank(errors.city)}
                     errorMessage={errors.city}
                   />
-                  <Combobox
+                  {/* <Combobox
                     options={districtsOptions[values.city ?? ''] ?? []}
                     // ?? là nếu null thì sẽ truyền cái đường sau thay thế không phải boolean
                     // || sẽ lấy cả null và boolean nghĩa là cái dk1 false thì sẽ lấy cái phía sau
@@ -244,7 +247,7 @@ const Payment = () => {
                     }}
                     hasError={touched.wards && !isBlank(errors.wards)}
                     errorMessage={errors.wards}
-                  />
+                  /> */}
 
                   <TextInput
                     name='address'
@@ -287,7 +290,7 @@ const Payment = () => {
                   <div className="font-bold">399.000 VND</div>
                 </div> */}
                 {
-                  values.productCart.map((item, idx) =>(
+                  values.productCart.map((item, idx) => (
                     <>
                       <div key={idx + values.productCart.length} className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
                         <div>
@@ -295,27 +298,29 @@ const Payment = () => {
                           <div>{item.color} : {item.size}</div>
                         </div>
                         <div className='text-[1.3rem] font-bold'>{formatNumber(item.price * item.quantity)} VND</div>
-                      </div>             
+                      </div>
                     </>
                   ))
                 }
-                 <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
-                        <div className="font-bold">Tạm tính</div>
-                        <div>{formatNumber(summary.totalPrice)} VND</div>
-                      </div>
-                      <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
-                        <div className="font-bold">Tổng</div>
-                        <div className="font-bold">{formatNumber(summary.totalPrice)} VND</div>
-                      </div>
+                <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                  <div className="font-bold">Tạm tính</div>
+                  <div>{formatNumber(summary.totalPrice)} VND</div>
+                </div>
+                <div className=" py-[0.8rem] text-[1.6rem] flex items-center justify-between border-b border-gray-200">
+                  <div className="font-bold">Tổng</div>
+                  <div className="font-bold">{formatNumber(summary.totalPrice)} VND</div>
+                </div>
                 <div className='font-semibold text-[1.4rem] mt-[1.6rem]'>Trả tiền mặt khi nhận hàng</div>
                 <div className='mb-[0.8rem] text-[1.4rem]'>Trả tiền mặt khi giao hàng</div>
-                  {/* Khi không valid thì nút đặt hàng sẽ bị làm mờ  */}
+                {/* Khi không valid thì nút đặt hàng sẽ bị làm mờ  */}
+                {JSON.stringify(errors)}
                 <button disabled={!isValid} type="submit" className='bg-black disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center font-bold'>Đặt hàng</button>
               </div>
             </div>
-          </form>}}
+          </form>
+        }}
       </Formik>
-    </div>
+    </Loader>
   )
 }
 

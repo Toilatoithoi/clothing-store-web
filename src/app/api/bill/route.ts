@@ -10,7 +10,7 @@ export const GET = async (req: NextRequest) => {
   const url = new URL(req.url);
   const firstDay = url.searchParams.get('firstDay')?.toString();
   const lastDay = url.searchParams.get('lastDay')?.toString();
-  console.log({lastDay})
+  console.log({ lastDay })
   try {
     // input fromDate, toDate, status
     // verify token
@@ -84,7 +84,7 @@ export const POST = async (req: NextRequest) => {
         wards: body.wards,
         address: body.address,
         note: body.note,
-        status: "SUCCESS",
+        status: "NEW",
         bill_product: {
           create: body.bill_product,
         },
@@ -95,6 +95,6 @@ export const POST = async (req: NextRequest) => {
 
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), { status: 300 });
   }
 }

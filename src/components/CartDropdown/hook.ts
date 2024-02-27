@@ -24,7 +24,7 @@ export interface Payment extends BillProduct {
 
 export const useCart = () => {
   // lấy dữ liệu cart từ api
-  const { data, mutate } = useSWRWrapper<ProductCart[]>('/api/cart', {
+  const { data, mutate, isLoading } = useSWRWrapper<ProductCart[]>('/api/cart', {
     url: '/api/cart',
     method: METHOD.GET
   });
@@ -56,11 +56,15 @@ export const useCart = () => {
     // data là dữ liệu của giỏ hàng lấy từ api
     data,
     updateCart,
-    addToCart
+    addToCart,
+    isLoading
   }
 }
 
-export const useBill = () => {
+export const useBill = (options: {
+  onCreateSuccess?: () => void;
+  componentId?: string;
+}) => {
   // lấy dữ liệu bill từ api
   const { data, mutate } = useSWRWrapper<Payment[]>('/api/bill', {
     url: '/api/bill',
@@ -70,17 +74,43 @@ export const useBill = () => {
   // gọi trigger là dữ liệu nhập vào khi cần addToCart vừa craete vừa update
   const { trigger } = useMutation<Payment[]>('/api/bill', {
     url: '/api/bill',
-    method: METHOD.POST
+    method: METHOD.POST,
+    loading: true,
+    componentId: options.componentId,
+    onSuccess() {
+      options.onCreateSuccess?.()
+    },
+    notification: {
+      title: 'Thanh toán đơn hàng',
+      content: 'Thanh toán đơn hàng thành công!'
+    }
   });
-  
+
   // global state dùng key để lấy gia 1 giá trị bất kì
   // key hiểu nôm na là id để lấy ra giá trị của state
 
-  const addToBill = (model: Payment) => {
+  const addToBill = (data: {
+    name: string;
+    email: string;
+    phone: string;
+    productCart: ProductCart[];
+    city?: string;
+    district?: string;
+    wards?: string;
+    address?: string;
+    note?: string;
+  }) => {
     trigger({
-      quantity: model.quantity,
-      product_model_id: model.product_model_id,
-      bill: model.bill.id
+      //đầu vào của api tạo bill 
+      bill_product: data.productCart,  // {product_mode_id: number, quantity: number},
+      city: data.city,
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      district: data.district,
+      wards: data.wards,
+      address: data.address,
+      note: data.note,
     })
 
   }
@@ -88,7 +118,7 @@ export const useBill = () => {
   return {
     // data là dữ liệu của giỏ hàng lấy từ api
     data,
-    addToBill
+    addToBill,
   }
 }
 
