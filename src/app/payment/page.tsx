@@ -80,6 +80,14 @@ const Payment = () => {
        totalQuantity: acc.totalQuantity + item.quantity,
      }), { totalPrice: 0, totalQuantity: 0 });
      setSummary(summaryQty)  
+     setSummary(summaryQty) 
+     // setValue cho formik
+     formRef.current?.setValues({
+      name: '',
+      email: '',
+      phone: '',
+      productCart: data
+    }) 
    }
  }, [data])
   // giá trị
