@@ -12,7 +12,7 @@ import Loader from '@/components/Loader';
 
 interface PaymentForm {
   name: string;
-  email: string;
+  username: string;
   phone: string;
   // ? là có hoặc không cũng được
   city?: string;
@@ -71,23 +71,25 @@ const Payment = () => {
   }, [])
   useEffect(() => {
     // [] để chỉ chạy 1 lần đầu tiên 
-    if (data) {
-      // reduce là một phương thức của JavaScript được sử dụng để tính toán một giá trị duy nhất từ các phần tử của mảng
-      // acc tham số này là giá trị tích lũy, nghĩa là giá trị tạm tính tính đến thời điểm hiện tại trong quá trình duyệt qua mảng
-      // item tham số này là phần tử hiện tại trong mảng, trong trường hợp này là một đối tượng sản phẩm
-      const summaryQty = data.reduce((acc, item) => ({
-        totalPrice: acc.totalPrice + item.quantity * item.price,
-        totalQuantity: acc.totalQuantity + item.quantity,
-      }), { totalPrice: 0, totalQuantity: 0 });
-      setSummary(summaryQty)
-      formRef.current?.setValues({
-        name: '',
-        email: '',
-        phone: '',
-        productCart: data
-      })
-    }
-  }, [data])
+   if (data) {
+     // reduce là một phương thức của JavaScript được sử dụng để tính toán một giá trị duy nhất từ các phần tử của mảng
+     // acc tham số này là giá trị tích lũy, nghĩa là giá trị tạm tính tính đến thời điểm hiện tại trong quá trình duyệt qua mảng
+     // item tham số này là phần tử hiện tại trong mảng, trong trường hợp này là một đối tượng sản phẩm
+     const summaryQty = data.reduce((acc, item) => ({
+       totalPrice: acc.totalPrice + item.quantity * item.price,
+       totalQuantity: acc.totalQuantity + item.quantity,
+     }), { totalPrice: 0, totalQuantity: 0 });
+     setSummary(summaryQty)  
+     setSummary(summaryQty) 
+     // setValue cho formik
+     formRef.current?.setValues({
+      name: '',
+      username: '',
+      phone: '',
+      productCart: data
+    }) 
+   }
+ }, [data])
   // giá trị
   // const [email, setEmail] = useState('')
   // lỗi
@@ -175,7 +177,7 @@ const Payment = () => {
         initialValues={{
           // chú ý cái tên trong initialValues phải giống kiểu và tên với values trong handlePayment do trong onSubmit
           name: '',
-          email: '',
+          username: '',
           phone: '',
           productCart: data || [],
         }}
@@ -214,11 +216,11 @@ const Payment = () => {
                     placeholder='Số điện thoại của bạn'
                     label="Số điện thoại" />
                   <TextInput
-                    name='email'
+                    name='username'
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    hasError={touched.email && !isBlank(errors.email)}
-                    errorMessage={errors.email}
+                    hasError={touched.username && !isBlank(errors.username)}
+                    errorMessage={errors.username}
                     placeholder='Email của bạn'
                     label="Email" />
                   <Combobox
@@ -231,7 +233,7 @@ const Payment = () => {
                     hasError={touched.city && !isBlank(errors.city)}
                     errorMessage={errors.city}
                   />
-                  {/* <Combobox
+                  <Combobox
                     options={districtsOptions[values.city ?? ''] ?? []}
                     // ?? là nếu null thì sẽ truyền cái đường sau thay thế không phải boolean
                     // || sẽ lấy cả null và boolean nghĩa là cái dk1 false thì sẽ lấy cái phía sau
@@ -253,7 +255,7 @@ const Payment = () => {
                     }}
                     hasError={touched.wards && !isBlank(errors.wards)}
                     errorMessage={errors.wards}
-                  /> */}
+                  />
 
                   <TextInput
                     name='address'

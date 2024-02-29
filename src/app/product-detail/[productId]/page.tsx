@@ -18,6 +18,7 @@ import { formatNumber } from '@/utils';
 import { useCart } from '@/components/CartDropdown/hook';
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip } from 'react-tooltip'
+import { useRouter } from 'next/navigation';
 const images = [
   {
     original: ProductImage.src,
@@ -78,6 +79,9 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   const { data: product } = useSWRWrapper<ProductDetail>(`/api/product/${props.params.productId}`, {
     url: `/api/product/${props.params.productId}`
   })
+
+  // điều hướng route
+  const router = useRouter();
   
   // bắt sự thay đổi của product
   useEffect(() => {
@@ -122,10 +126,28 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
       ...selectedModel,
       quantity,
       product: product!,
-      product_model_id: selectedModel.id
+      product_model_id: selectedModel.id,
+      productName: ''
     })
-
+    // sau khi thêm thành công sẽ set lại input là 1
     setQuantity(1);
+  }
+  const handleAddPayment = () => {
+    const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
+    addToCart({
+      // thêm vào chỉ lấy quantity và product_model_id
+      // lý do dùng global state là để các compoment không phụ thuộc
+      ...selectedModel,
+      quantity,
+      product: product!,
+      product_model_id: selectedModel.id,
+      productName: ''
+    })
+    // sau khi thêm thành công sẽ set lại input là 1
+    setQuantity(1);
+     // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+     router.push('/payment')
+    
   }
   console.log({ sizes, MapSizeColorToModel: MapSizeColorToModel.current })
   // chon product_model mong muốn bằng MapSizeColorToModel.current[key] lấy giá trị
@@ -194,7 +216,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
           </div>
           <div className='flex items-center py-[0.8rem]'>
             <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
-            <button className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button>
+            <button onClick={handleAddPayment} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button>
           </div>
           <div className='bg-[#F7F8FA] p-[1.6rem]'>
             <div className='flex items-center mb-[0.8rem]'>

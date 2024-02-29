@@ -5,20 +5,24 @@ import { useEffect, useState } from 'react';
 import useSWR from 'swr'
 
 export interface ProductCart extends ProductModel {
+  productName: string;
   product_model_id: number;
   quantity: number;
   product: ProductDetail
 }
 
-export interface Payment extends BillProduct {
-  city: string;
-  district: string;
-  wards: string;
-  address: string;
-  note: string;
-  status: string;
-  created_at: string;
-  bill: Bill;
+export interface Payment {
+    id: number;
+    created_at: any;
+    name: string;
+    username: string;
+    phone: string;
+    productCart: ProductCart[];
+    city?: string;
+    district?: string;
+    wards?: string;
+    address?: string;
+    note?: string;
 }
 
 
@@ -75,9 +79,11 @@ export const useBill = (options: {
   const { trigger } = useMutation<Payment[]>('/api/bill', {
     url: '/api/bill',
     method: METHOD.POST,
+    // thực hiện loading
     loading: true,
     componentId: options.componentId,
     onSuccess() {
+      // onCreateSuccess có thể undefine nên phải ? nếu undefine thì sẽ không thực hiện
       options.onCreateSuccess?.()
     },
     notification: {
@@ -91,7 +97,7 @@ export const useBill = (options: {
 
   const addToBill = (data: {
     name: string;
-    email: string;
+    username: string;
     phone: string;
     productCart: ProductCart[];
     city?: string;
@@ -105,7 +111,7 @@ export const useBill = (options: {
       bill_product: data.productCart,  // {product_mode_id: number, quantity: number},
       city: data.city,
       name: data.name,
-      email: data.email,
+      username: data.username,
       phone: data.phone,
       district: data.district,
       wards: data.wards,
