@@ -10,7 +10,6 @@ export const GET = async (req: NextRequest) => {
   const url = new URL(req.url);
   const firstDay = url.searchParams.get('firstDay')?.toString();
   const lastDay = url.searchParams.get('lastDay')?.toString();
-  console.log({ lastDay })
   try {
     // input fromDate, toDate, status
     // verify token
@@ -20,7 +19,6 @@ export const GET = async (req: NextRequest) => {
     }
     const bill = await prisma.bill.findMany({
       where: {
-        status: "SUCCESS", // nếu status != null thì mới cần truyền vào
         user: {
           username: data.username
         },
@@ -42,6 +40,7 @@ export const GET = async (req: NextRequest) => {
         created_at: true,
         updated_at: true,
         bill_product: true,
+        status: true,
       }
     });
 

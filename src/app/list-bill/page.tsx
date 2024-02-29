@@ -10,6 +10,10 @@ import { set } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { timeFormatterFromTimestamp } from '@/utils/grid';
 
+const BILL_STATUS_TRANSLATE: Record<string, string> = {
+    SUCCESS: 'Thành công', REJECT: 'Từ chối', CANCEL: 'Đã hủy', NEW: 'Đã đặt', CONFIRM: 'Đã xác nhận'
+}
+
 export interface List {
     sdt?: string;
     fullname: string;
@@ -57,6 +61,13 @@ const ListBill = () => {
         { headerName: "Quận/Huyện", field: "district" },
         { headerName: "Phường/Xã", field: "wards" },
         { headerName: "Địa chỉ", field: "address" },
+        {
+            headerName: "Trạng thái",
+            field: "status",
+            valueFormatter: (params) => {
+                return BILL_STATUS_TRANSLATE[params.value]
+            }
+        },
         { headerName: "Ghi chú", field: "note" },
         { headerName: "Xem", field: 'id', cellRenderer: CustomButtonComponent },
     ]);
