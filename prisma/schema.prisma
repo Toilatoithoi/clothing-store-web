@@ -29,6 +29,8 @@ model bill {
   user_id      Int
   city         String         @db.VarChar(255)
   district     String         @db.VarChar(255)
+  fullname     String?        @db.VarChar(255)
+  phoneNumber  String?        @map("phone_number") @db.VarChar(10)
   wards        String         @db.VarChar(255)
   address      String         @db.VarChar(255)
   note         String?        @db.VarChar(255)

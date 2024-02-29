@@ -54,7 +54,11 @@ export interface Bill{
 }
 
 export interface BillProduct {
-  product_detail: ProductDetail;
+  product_model: {
+    product: {
+      name: string;
+    }
+  };
   quantity: number;
   id: number;
 }

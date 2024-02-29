@@ -9,10 +9,11 @@ import { formatNumber, isBlank, uuid } from '@/utils';
 import Combobox, { ComboboxOption } from '@/components/Combobox';
 import { ProductCart, useBill, useCart } from '@/components/CartDropdown/hook';
 import Loader from '@/components/Loader';
+import { useRouter } from 'next/navigation';
 
 interface PaymentForm {
   name: string;
-  username: string;
+  email: string;
   phone: string;
   // ? là có hoặc không cũng được
   city?: string;
@@ -47,13 +48,15 @@ const Payment = () => {
   // nếu [] sẽ là mảng kiểu never chưa xác định mảng kiểu gì
   //<Kiểu mảng>[]
   // khi có data trả về thì nó sẽ formRef setvalue cho formit
+  const router = useRouter();
   const formRef = useRef<FormikProps<PaymentForm>>()
   // lí do phải cho data vào initialValues vì initialValues chỉ nhận data lần đầu tiên còn ví dụ truyền state vào khi state update nó cũng không ăn
   const { addToCart, data, isLoading } = useCart()
   const { addToBill } = useBill({
     componentId: componentId.current,
-    onCreateSuccess: () => {
+    onCreateSuccess: (data: Record<string, string>) => {
       // TODO: redirect  qua màn bill detail
+      router.push(`/list-bill/${data.id}`)
       // clear cart
     }
   })
@@ -71,25 +74,23 @@ const Payment = () => {
   }, [])
   useEffect(() => {
     // [] để chỉ chạy 1 lần đầu tiên 
-   if (data) {
-     // reduce là một phương thức của JavaScript được sử dụng để tính toán một giá trị duy nhất từ các phần tử của mảng
-     // acc tham số này là giá trị tích lũy, nghĩa là giá trị tạm tính tính đến thời điểm hiện tại trong quá trình duyệt qua mảng
-     // item tham số này là phần tử hiện tại trong mảng, trong trường hợp này là một đối tượng sản phẩm
-     const summaryQty = data.reduce((acc, item) => ({
-       totalPrice: acc.totalPrice + item.quantity * item.price,
-       totalQuantity: acc.totalQuantity + item.quantity,
-     }), { totalPrice: 0, totalQuantity: 0 });
-     setSummary(summaryQty)  
-     setSummary(summaryQty) 
-     // setValue cho formik
-     formRef.current?.setValues({
-      name: '',
-      username: '',
-      phone: '',
-      productCart: data
-    }) 
-   }
- }, [data])
+    if (data) {
+      // reduce là một phương thức của JavaScript được sử dụng để tính toán một giá trị duy nhất từ các phần tử của mảng
+      // acc tham số này là giá trị tích lũy, nghĩa là giá trị tạm tính tính đến thời điểm hiện tại trong quá trình duyệt qua mảng
+      // item tham số này là phần tử hiện tại trong mảng, trong trường hợp này là một đối tượng sản phẩm
+      const summaryQty = data.reduce((acc, item) => ({
+        totalPrice: acc.totalPrice + item.quantity * item.price,
+        totalQuantity: acc.totalQuantity + item.quantity,
+      }), { totalPrice: 0, totalQuantity: 0 });
+      setSummary(summaryQty)
+      setSummary(summaryQty)
+      // setValue cho formik
+      formRef.current?.setValues({
+        ...formRef.current.values,
+        productCart: data
+      })
+    }
+  }, [data])
   // giá trị
   // const [email, setEmail] = useState('')
   // lỗi
@@ -177,7 +178,7 @@ const Payment = () => {
         initialValues={{
           // chú ý cái tên trong initialValues phải giống kiểu và tên với values trong handlePayment do trong onSubmit
           name: '',
-          username: '',
+          email: '',
           phone: '',
           productCart: data || [],
         }}
@@ -216,14 +217,39 @@ const Payment = () => {
                     placeholder='Số điện thoại của bạn'
                     label="Số điện thoại" />
                   <TextInput
-                    name='username'
+                    name='email'
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    hasError={touched.username && !isBlank(errors.username)}
-                    errorMessage={errors.username}
+                    hasError={touched.email && !isBlank(errors.email)}
+                    errorMessage={errors.email}
                     placeholder='Email của bạn'
                     label="Email" />
-                  <Combobox
+
+                  <TextInput
+                    name='city'
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    hasError={touched.city && !isBlank(errors.city)}
+                    errorMessage={errors.city}
+                    placeholder='Tỉnh/Thành phố'
+                    label="Tỉnh/Thành phố" />
+                  <TextInput
+                    name='district'
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    hasError={touched.district && !isBlank(errors.district)}
+                    errorMessage={errors.district}
+                    placeholder='Quận/huyện'
+                    label="Quận/huyện" />
+                  <TextInput
+                    name='wards'
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    hasError={touched.wards && !isBlank(errors.wards)}
+                    errorMessage={errors.wards}
+                    placeholder='Phường/xã'
+                    label="Phường/xã" />
+                  {/* <Combobox
                     options={cityOptions}
                     label='Tỉnh/thành phố'
                     selected={values.city}
@@ -255,7 +281,7 @@ const Payment = () => {
                     }}
                     hasError={touched.wards && !isBlank(errors.wards)}
                     errorMessage={errors.wards}
-                  />
+                  /> */}
 
                   <TextInput
                     name='address'

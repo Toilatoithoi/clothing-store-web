@@ -36,6 +36,8 @@ export const GET = async (req: NextRequest) => {
         district: true,
         wards: true,
         address: true,
+        phoneNumber: true,
+        fullname: true,
         note: true,
         created_at: true,
         updated_at: true,
@@ -72,13 +74,6 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(new RestError(INPUT_INVALID));
   }
 
-  //input address, note, name, phone..... billProducts: {} lấy tương tự cart
-  if(body.productCart.product_mode_id){
-    console.log("tồn tại: ", body.productCart.product_mode_id)
-  }else{
-    console.log("không tôn tại")
-  }
-
   try {
     // thêm vào db
     const createdBill = await prisma.bill.create({
@@ -89,12 +84,14 @@ export const POST = async (req: NextRequest) => {
         wards: body.wards,
         address: body.address,
         note: body.note,
+        fullname: body.name,
+        phoneNumber: body.phone,
         status: "NEW",
         bill_product: {
-          create: {
-            product_model_id: body.productCart.product_mode_id,
-            quantity: body.ProductCart.quantity
-          },
+          create: body.bill_product.map((item: Record<string, string>) => ({
+            quantity: item.quantity,
+            product_model_id: item.product_model_id,
+          })),
         },
       }
     })

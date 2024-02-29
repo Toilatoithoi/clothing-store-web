@@ -12,49 +12,56 @@ import React, { use, useEffect, useState } from 'react'
 import { Payment, ProductCart } from '@/components/CartDropdown/hook';
 
 export interface Product {
- name: string,
- quantity: number
+  name: string,
+  quantity: number
 }
 
 
 
-const ListBillDetail = (props: { params: { listbillId: string; } }) => {
-  const { data } = useSWRWrapper<Bill>(`/api/bill/${props.params.listbillId}`, {
-    url: `/api/bill/${props.params.listbillId}`,
+const ListBillDetail = (props: { params: { billId: string; } }) => {
+  const { data } = useSWRWrapper<Bill>(`/api/bill/${props.params.billId}`, {
+    url: `/api/bill/${props.params.billId}`,
     method: METHOD.GET
   })
-  console.log({data})
+  console.log({ data })
   const router = useRouter();
   const [rowData, setRowData] = useState<Product[]>([]);
-    const [colDefs, setColDefs] = useState<Array<ColDef>>([
-        { headerName: "Name", field: "name" },
-        { headerName: "Quantity", field: "quantity" },
-    ]);
-    useEffect(() => {
-      const row: Product[] = [];
-      if (data) {
-        if (data.bill_product && Object.keys(data.bill_product).length > 0) {
-          for (const p of data.bill_product) {
-            if (p && Object.keys(p).length > 0) {
-              row.push({
-                name: p.product_detail.name || '',
-                quantity: p.quantity || 0,
-              });
-            } else {
-              console.error("Product or productCart is empty:", p);
-            }
-          }
-        }
-      } else {
-        console.error("Data is not an array:", data);
-        // Handle the case where data is not an array
-      }
-    
-      setRowData(row);
-    }, [data]);
-    
-    
-    
+  const [colDefs, setColDefs] = useState<Array<ColDef>>([
+    { headerName: "Name", field: "name", flex: 1 },
+    { headerName: "Quantity", field: "quantity", cellClass: 'text-end' },
+  ]);
+  useEffect(() => {
+    const row: Product[] = [];
+    if (data) {
+
+      data.bill_product.forEach((product) => {
+        row.push({
+          name: product.product_model?.product.name,
+          quantity: product.quantity,
+        })
+      })
+      // if (data.bill_product && Object.keys(data.bill_product).length > 0) {
+      //   for (const p of data.bill_product) {
+      //     if (p && Object.keys(p).length > 0) {
+      //       row.push({
+      //         name: p.product_detail?.name || '',
+      //         quantity: p.quantity || 0,
+      //       });
+      //     } else {
+      //       console.error("Product or productCart is empty:", p);
+      //     }
+      //   }
+      // }
+    } else {
+      console.error("Data is not an array:", data);
+      // Handle the case where data is not an array
+    }
+
+    setRowData(row);
+  }, [data]);
+
+
+
   return (
     <div>
       <div className='h-[4.5rem] w-full mb-2'>

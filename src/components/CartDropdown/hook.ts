@@ -12,17 +12,17 @@ export interface ProductCart extends ProductModel {
 }
 
 export interface Payment {
-    id: number;
-    created_at: any;
-    name: string;
-    username: string;
-    phone: string;
-    productCart: ProductCart[];
-    city?: string;
-    district?: string;
-    wards?: string;
-    address?: string;
-    note?: string;
+  id: number;
+  created_at: any;
+  name: string;
+  username: string;
+  phone: string;
+  productCart: ProductCart[];
+  city?: string;
+  district?: string;
+  wards?: string;
+  address?: string;
+  note?: string;
 }
 
 
@@ -66,7 +66,7 @@ export const useCart = () => {
 }
 
 export const useBill = (options: {
-  onCreateSuccess?: () => void;
+  onCreateSuccess?: (data: Record<string, string>) => void;
   componentId?: string;
 }) => {
   // lấy dữ liệu bill từ api
@@ -76,15 +76,15 @@ export const useBill = (options: {
   });
 
   // gọi trigger là dữ liệu nhập vào khi cần addToCart vừa craete vừa update
-  const { trigger } = useMutation<Payment[]>('/api/bill', {
+  const { trigger } = useMutation<Record<string, string>>('/api/bill', {
     url: '/api/bill',
     method: METHOD.POST,
     // thực hiện loading
     loading: true,
     componentId: options.componentId,
-    onSuccess() {
+    onSuccess(data) {
       // onCreateSuccess có thể undefine nên phải ? nếu undefine thì sẽ không thực hiện
-      options.onCreateSuccess?.()
+      options.onCreateSuccess?.(data)
     },
     notification: {
       title: 'Thanh toán đơn hàng',
@@ -97,7 +97,7 @@ export const useBill = (options: {
 
   const addToBill = (data: {
     name: string;
-    username: string;
+    email: string;
     phone: string;
     productCart: ProductCart[];
     city?: string;
@@ -111,7 +111,7 @@ export const useBill = (options: {
       bill_product: data.productCart,  // {product_mode_id: number, quantity: number},
       city: data.city,
       name: data.name,
-      username: data.username,
+      email: data.email,
       phone: data.phone,
       district: data.district,
       wards: data.wards,
