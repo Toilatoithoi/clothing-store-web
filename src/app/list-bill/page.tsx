@@ -10,6 +10,9 @@ import { set } from 'date-fns';
 import { useRouter } from 'next/navigation';
 
 export interface List {
+    sdt?: string;
+    name: string;
+    username: string;
     city?: string;
     district?: string;
     wards?: string;
@@ -40,6 +43,9 @@ const ListBill = () => {
         { headerName: "Address", field: "address" },
         { headerName: "Note", field: "note" },
         { headerName: "Created At", field: "created_at" },
+        { headerName: "Số điện thoại", field: "sdt"},
+        { headerName: "Email", field: "username"},
+        { headerName: "Name", field: "name"},
         { headerName: "Bill Prodduct",field: 'bill_id', cellRenderer: CustomButtonComponent},
     ]);
 
@@ -56,6 +62,9 @@ const ListBill = () => {
                         address: item.address || '',
                         note: item.note || '',
                         created_at: item.created_at.split('T')[0] || '',
+                        sdt: item.phone,
+                        name: item.name,
+                        username: item.username,              
                         bill_id: item.id
                     });
                 } else {

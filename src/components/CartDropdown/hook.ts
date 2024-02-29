@@ -15,7 +15,7 @@ export interface Payment {
     id: number;
     created_at: any;
     name: string;
-    email: string;
+    username: string;
     phone: string;
     productCart: ProductCart[];
     city?: string;
@@ -95,7 +95,7 @@ export const useBill = (options: {
 
   const addToBill = (data: {
     name: string;
-    email: string;
+    username: string;
     phone: string;
     productCart: ProductCart[];
     city?: string;
@@ -109,7 +109,7 @@ export const useBill = (options: {
       bill_product: data.productCart,  // {product_mode_id: number, quantity: number},
       city: data.city,
       name: data.name,
-      email: data.email,
+      username: data.username,
       phone: data.phone,
       district: data.district,
       wards: data.wards,
