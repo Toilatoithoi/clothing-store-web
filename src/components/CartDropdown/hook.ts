@@ -5,20 +5,24 @@ import { useEffect, useState } from 'react';
 import useSWR from 'swr'
 
 export interface ProductCart extends ProductModel {
+  productName: string;
   product_model_id: number;
   quantity: number;
   product: ProductDetail
 }
 
-export interface Payment extends BillProduct {
-  city: string;
-  district: string;
-  wards: string;
-  address: string;
-  note: string;
-  status: string;
-  created_at: string;
-  bill: Bill;
+export interface Payment {
+    id: number;
+    created_at: any;
+    name: string;
+    email: string;
+    phone: string;
+    productCart: ProductCart[];
+    city?: string;
+    district?: string;
+    wards?: string;
+    address?: string;
+    note?: string;
 }
 
 

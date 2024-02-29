@@ -73,6 +73,11 @@ export const POST = async (req: NextRequest) => {
   }
 
   //input address, note, name, phone..... billProducts: {} lấy tương tự cart
+  if(body.productCart.product_mode_id){
+    console.log("tồn tại: ", body.productCart.product_mode_id)
+  }else{
+    console.log("không tôn tại")
+  }
 
   try {
     // thêm vào db
@@ -86,7 +91,10 @@ export const POST = async (req: NextRequest) => {
         note: body.note,
         status: "NEW",
         bill_product: {
-          create: body.bill_product,
+          create: {
+            product_model_id: body.productCart.product_mode_id,
+            quantity: body.ProductCart.quantity
+          },
         },
       }
     })

@@ -233,7 +233,7 @@ const Payment = () => {
                     hasError={touched.city && !isBlank(errors.city)}
                     errorMessage={errors.city}
                   />
-                  {/* <Combobox
+                  <Combobox
                     options={districtsOptions[values.city ?? ''] ?? []}
                     // ?? là nếu null thì sẽ truyền cái đường sau thay thế không phải boolean
                     // || sẽ lấy cả null và boolean nghĩa là cái dk1 false thì sẽ lấy cái phía sau
@@ -255,7 +255,7 @@ const Payment = () => {
                     }}
                     hasError={touched.wards && !isBlank(errors.wards)}
                     errorMessage={errors.wards}
-                  /> */}
+                  />
 
                   <TextInput
                     name='address'

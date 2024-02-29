@@ -64,7 +64,20 @@ export const PUT = async (req: NextRequest, { params }: { params: { billId: stri
         note: true,
         created_at: true,
         updated_at: true,
-        bill_product: true,
+        bill_product: {
+          select:{
+            product_model:{
+              select: {
+                product: {
+                  select: {
+                    name: true,
+                  }
+                },
+              }
+            },
+            quantity: true,
+          }
+        },
       }
      });
 
