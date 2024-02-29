@@ -79,9 +79,11 @@ export const useBill = (options: {
   const { trigger } = useMutation<Payment[]>('/api/bill', {
     url: '/api/bill',
     method: METHOD.POST,
+    // thực hiện loading
     loading: true,
     componentId: options.componentId,
     onSuccess() {
+      // onCreateSuccess có thể undefine nên phải ? nếu undefine thì sẽ không thực hiện
       options.onCreateSuccess?.()
     },
     notification: {

@@ -12,7 +12,7 @@ import Loader from '@/components/Loader';
 
 interface PaymentForm {
   name: string;
-  email: string;
+  username: string;
   phone: string;
   // ? là có hoặc không cũng được
   city?: string;
@@ -84,7 +84,7 @@ const Payment = () => {
      // setValue cho formik
      formRef.current?.setValues({
       name: '',
-      email: '',
+      username: '',
       phone: '',
       productCart: data
     }) 
@@ -177,7 +177,7 @@ const Payment = () => {
         initialValues={{
           // chú ý cái tên trong initialValues phải giống kiểu và tên với values trong handlePayment do trong onSubmit
           name: '',
-          email: '',
+          username: '',
           phone: '',
           productCart: data || [],
         }}
@@ -216,11 +216,11 @@ const Payment = () => {
                     placeholder='Số điện thoại của bạn'
                     label="Số điện thoại" />
                   <TextInput
-                    name='email'
+                    name='username'
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    hasError={touched.email && !isBlank(errors.email)}
-                    errorMessage={errors.email}
+                    hasError={touched.username && !isBlank(errors.username)}
+                    errorMessage={errors.username}
                     placeholder='Email của bạn'
                     label="Email" />
                   <Combobox
