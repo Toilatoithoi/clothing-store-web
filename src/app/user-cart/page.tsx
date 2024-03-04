@@ -60,6 +60,16 @@ const UserCart = () => {
       addToCart({ ...item, quantity: qty }, true);
     }, 500);
   }
+
+  const handledelete= (item: ProductCart) => {
+    // setFieldValues cho field truyền value
+    // data[${idx}].quantity từng phần tử trong data.quantity truyền giá trị
+    // call api để update value của user-cart
+    timer.current = setTimeout(() => {
+      const { deleteToCart } = useCart(item);
+      deleteToCart({ ...item});
+    }, 500);
+  }
   return (
     <div>
       <div className='flex items-center justify-center my-[3.2rem]'>
@@ -91,7 +101,7 @@ const UserCart = () => {
                           <div>{item.product.name}</div>
                           <div>{item.size}</div>
                           <div>{item.color}</div>
-                          <div className='cursor-pointer hover:text-red-500'>Xóa</div>
+                          <button type='button' onClick={() => handledelete(item)}className='cursor-pointer hover:text-red-500'>Xóa</button>
                         </div>
                       </div>
                       <div key={idx + values.data.length + 2} className='text-center'>{item.price}</div>   

@@ -95,6 +95,14 @@ export const POST = async (req: NextRequest) => {
       }
     })
 
+    const deleteCart = await prisma.cart.deleteMany({
+      where:{
+        user: {
+          username: data.username
+        },
+      }
+    })
+
     return NextResponse.json(createdBill)
 
   } catch (error) {

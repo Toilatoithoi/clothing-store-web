@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import useSWR from 'swr'
 
 export interface ProductCart extends ProductModel {
-  productName: string;
+  // productName: string;
   product_model_id: number;
   quantity: number;
   product: ProductDetail
@@ -26,7 +26,9 @@ export interface Payment {
 }
 
 
-export const useCart = () => {
+export const useCart = (options?: {
+  product_model_id?: number;
+}) => {
   // lấy dữ liệu cart từ api
   const { data, mutate, isLoading } = useSWRWrapper<ProductCart[]>('/api/cart', {
     url: '/api/cart',
@@ -36,6 +38,11 @@ export const useCart = () => {
   const { trigger } = useMutation<ProductCart[]>('/api/cart', {
     url: '/api/cart',
     method: METHOD.POST
+  });
+
+  const { trigger: product  } = useMutation<ProductCart[]>(`/api/cart/${options?.product_model_id}`, {
+    url: `/api/cart/${options?.product_model_id}`,
+    method: METHOD.DELETE
   });
   const updateCart = (cart: ProductCart[]) => {
     // hiểu là truyền value cho global state /api/cart
@@ -55,12 +62,20 @@ export const useCart = () => {
     })
 
   }
+  
+  const deleteToCart = (model: ProductCart) => {
+    product({
+      product_model_id: model.product_model_id,
+    })
+
+  }
 
   return {
     // data là dữ liệu của giỏ hàng lấy từ api
     data,
     updateCart,
     addToCart,
+    deleteToCart,
     isLoading
   }
 }

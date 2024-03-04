@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { formatNumber } from '@/utils';
+import { formatNumber, uuid } from '@/utils';
 import Logo from '@/assets/svg/logo.svg';
 import { FaHeadset } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa6";
@@ -14,13 +14,16 @@ import './style.scss';
 import { config } from 'process';
 import { useAppStatus } from '@/store/globalSWR';
 import { mutate } from 'swr';
-import { COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER } from '@/store/key';
+import { APP_STATUS, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '@/store/key';
 import { useSWRWrapper } from '@/store/custom';
 import { Category } from '@/interfaces/model';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import CartDropdown from '../CartDropdown';
 import { GoListUnordered } from "react-icons/go";
+import { setKey } from '@/utils/localStorage';
+import ToastNotification from '../ToastNotification';
+import { toast } from 'react-toastify';
 
 interface HeaderProps {
 
@@ -107,6 +110,27 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
     mutate(COMMON_SHOW_LOGIN, true);
   }
 
+  const handleShowLogout = () => {
+    // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
+    setKey('access_token', '');
+    mutate(USER_INFO, '');
+    // thành công sẽ cập nhật APP_STATUS là true 
+    mutate(APP_STATUS, { isAuthenticated: false });
+    toast(
+      <ToastNotification
+        type="success"
+        title="Đăng xuất"
+        content="Đăng xuất thành công"
+      />,
+      {
+        toastId: uuid(),
+        position: 'bottom-right',
+        hideProgressBar: true,
+        theme: 'light',
+      },
+    );
+  }
+
   const handleShowRegister = () => {
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng kí
     mutate(COMMON_SHOW_REGISTER, true);
@@ -138,6 +162,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
               <div className="text-[2.4rem]"><FaRegUser /></div>
               <div className="text-[2.8rem] cursor-pointer z-10"><CartDropdown /></div>
               <div className="text-[2.8rem]"><Link href={'/list-bill'}><GoListUnordered /></Link></div>
+              <button type="button" className='font-bold' onClick={handleShowLogout}>Đăng xuất</button>
             </div> : <div className='flex gap-4'>
               <button type="button" className='font-bold' onClick={handleShowLogin}>Đăng nhập</button>
               <button type="button" className='text-[#BC0517]' onClick={handleShowRegister}>Đăng ký</button>

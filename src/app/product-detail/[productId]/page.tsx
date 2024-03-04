@@ -19,6 +19,7 @@ import { useCart } from '@/components/CartDropdown/hook';
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip } from 'react-tooltip'
 import { useRouter } from 'next/navigation';
+import { useAppStatus } from '@/store/globalSWR';
 const images = [
   {
     original: ProductImage.src,
@@ -75,6 +76,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   // trả về quantity và product_model
   // khi nào cần addToCart thì dùng useCart()
   const { addToCart } = useCart()
+  const { data: appStatus } = useAppStatus();
   // lấy thông tin sản phẩm từ api product-detail
   const { data: product } = useSWRWrapper<ProductDetail>(`/api/product/${props.params.productId}`, {
     url: `/api/product/${props.params.productId}`
@@ -127,7 +129,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
       quantity,
       product: product!,
       product_model_id: selectedModel.id,
-      productName: ''
+      // productName: ''
     })
     // sau khi thêm thành công sẽ set lại input là 1
     setQuantity(1);
@@ -141,13 +143,20 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
       quantity,
       product: product!,
       product_model_id: selectedModel.id,
-      productName: ''
+      // productName: ''
     })
-    // sau khi thêm thành công sẽ set lại input là 1
+    if(appStatus?.isAuthenticated){
+      // sau khi thêm thành công sẽ set lại input là 1
     setQuantity(1);
-     // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
-     router.push('/payment')
-    
+    // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+    router.push('/payment')
+    }
+    // sau khi thêm thành công sẽ set lại input là 1
+    if(appStatus?.isAuthenticated){
+      setQuantity(1);
+      // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+      router.push('/payment')
+    }  
   }
   console.log({ sizes, MapSizeColorToModel: MapSizeColorToModel.current })
   // chon product_model mong muốn bằng MapSizeColorToModel.current[key] lấy giá trị

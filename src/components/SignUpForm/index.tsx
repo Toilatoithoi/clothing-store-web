@@ -1,3 +1,4 @@
+'use client'
 import { Formik } from 'formik'
 import Link from 'next/link';
 import React, { useRef } from 'react';
@@ -11,6 +12,13 @@ import { useMutation } from '@/store/custom';
 import Loader from '../Loader';
 import { mutate } from 'swr';
 import { COMMON_SHOW_REGISTER } from '@/store/key';
+import MomentUtils from '@date-io/moment';
+import DateFnsUtils from '@date-io/date-fns';
+import LuxonUtils from '@date-io/luxon';
+import {MuiPickersUtilsProvider} from '@material-ui/pickers';
+import { TextField } from "@material-ui/core";
+import  DatePicker from '../DatePicker';
+import { formatDateToString } from '@/utils/datetime';
 
 interface SingUpPayload {
   surname: string;
@@ -18,6 +26,9 @@ interface SingUpPayload {
   phoneNumber: string;
   username: string;
   password: string;
+  gender: string;
+  address: string;
+  dob: string;
 }
 
 const registerFetcher = (key: string,) => {
@@ -58,6 +69,9 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
     phoneNumber: yup.string().label('Số điện thoại').required().matches(/^(?:[0-9] ?){6,14}[0-9]$/, 'Số điện thoại không hợp lệ'),
     username: yup.string().label('Email').required().email('Phải nhập đúng định dạng'),
     password: yup.string().label('Mật khẩu').required(),
+    address: yup.string().label('Địa chỉ').required(),
+    gender: yup.string().label('Giới tính').required(),
+    
   })
 
   const handleSignUp = (values: SingUpPayload) => {
@@ -67,7 +81,10 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
       name: values.surname + values.name,
       username: values.username,
       password: values.password,
-      phoneNumber: values.phoneNumber
+      phoneNumber: values.phoneNumber,
+      address: values.address,
+      gender: values.gender,
+      dob: values.dob
     })
   }
 
@@ -82,7 +99,10 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
           name: '',
           surname: '',
           phoneNumber: '',
-          username: ''
+          username: '',
+          gender: '',
+          address: '',
+          dob: ''
         }}
         validationSchema={schema}
       >
@@ -145,6 +165,29 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
               hasError={!isBlank(errors.password) && touched.password}
               errorMessage={errors.password}
             />
+             <TextInput
+              label='Địa chỉ'
+              value={values.address}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              name="address"
+              hasError={!isBlank(errors.address) && touched.address}
+              errorMessage={errors.address}
+            />
+             <TextInput
+              label='Giới tính'
+              value={values.gender}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              name="gender"
+              hasError={!isBlank(errors.gender) && touched.gender}
+              errorMessage={errors.gender}
+            />
+            <DatePicker 
+              label="Năm sinh"
+              value={values.dob}
+              name="dob"
+              onChange={handleChange} />
             <button type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Đăng ký</button>
           </form>}
       </Formik>
