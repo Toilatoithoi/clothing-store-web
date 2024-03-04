@@ -74,7 +74,7 @@ const LoginForm = (props: { onShowRegister(): void }) => {
             {error?.message && <div className='text-red-500 text-center w-full'>{error.message}</div>}
 
             <TextInput
-              label='Số điện thoại / Tên người dùng'
+              label='Tên người dùng'
               value={values.username}
               onBlur={handleBlur}
               onChange={handleChange}
