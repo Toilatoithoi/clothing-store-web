@@ -35,7 +35,7 @@ export const GET = async (req: NextRequest) => {
         wards: true,
         address: true,
         phoneNumber: true,
-        fullname: true,
+        full_name: true,
         note: true,
         created_at: true,
         updated_at: true,
@@ -69,7 +69,7 @@ export const POST = async (req: NextRequest) => {
 
   //validate input 
   const body = await req.json();
-  if (isBlank(body.city) || isBlank(body.district) || isBlank(body.wards) || isBlank(body.address)) {
+  if (isBlank(body.city) || isBlank(body.district) || isBlank(body.wards) || isBlank(body.address) ||isBlank(body.name) || isBlank(body.phone)) {
     return NextResponse.json(new RestError(INPUT_INVALID));
   }
 
@@ -83,10 +83,12 @@ export const POST = async (req: NextRequest) => {
         wards: body.wards,
         address: body.address,
         note: body.note,
-        fullname: body.name,
+        full_name: body.name,
         phoneNumber: body.phone,
         status: "NEW",
         bill_product: {
+          // do bill_product là một mảng nên phải map
+          // ({object}) tương dương return {object}
           create: body.bill_product.map((item: Record<string, string>) => ({
             quantity: item.quantity,
             product_model_id: item.product_model_id,

@@ -54,6 +54,7 @@ const Payment = () => {
   const { addToCart, data, isLoading } = useCart()
   const { addToBill } = useBill({
     componentId: componentId.current,
+    // ??? tại sao dùng record mày không dùng mảng payment[]
     onCreateSuccess: (data: Record<string, string>) => {
       // TODO: redirect  qua màn bill detail
       router.push(`/list-bill/${data.id}`)

@@ -16,7 +16,7 @@ const BILL_STATUS_TRANSLATE: Record<string, string> = {
 
 export interface List {
     sdt?: string;
-    fullname: string;
+    full_name: string;
     email: string;
     phoneNumber: string;
     username: string;
@@ -33,10 +33,10 @@ export interface List {
 const ListBill = () => {
     // điều hướng route
     const router = useRouter();
-    const handleViewBillProudtcPage = (value: number) => {
-        // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
-        router.push('/list-bill/' + value.toString())
-    }
+    // const handleViewBillProudtcPage = (value: number) => {
+    //     // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+    //     router.push('/list-bill/' + value.toString())
+    // }
     const CustomButtonComponent = ({ data }: ICellRendererParams) => {
         const handleClick = () => {
             router.push(`/list-bill/${data.id}`)
@@ -54,7 +54,7 @@ const ListBill = () => {
             minWidth: 120,
             valueFormatter: timeFormatterFromTimestamp
         },
-        { headerName: "Tên", field: "fullname" },
+        { headerName: "Tên", field: "full_name" },
         { headerName: "Email", field: "username" },
         { headerName: "Số điện thoại", field: "phoneNumber" },
         { headerName: "Tỉnh/Thành phố", field: "city" },

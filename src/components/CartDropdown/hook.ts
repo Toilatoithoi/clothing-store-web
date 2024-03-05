@@ -26,9 +26,7 @@ export interface Payment {
 }
 
 
-export const useCart = (options?: {
-  product_model_id?: number;
-}) => {
+export const useCart = () => {
   // lấy dữ liệu cart từ api
   const { data, mutate, isLoading } = useSWRWrapper<ProductCart[]>('/api/cart', {
     url: '/api/cart',
@@ -39,9 +37,10 @@ export const useCart = (options?: {
     url: '/api/cart',
     method: METHOD.POST
   });
-
-  const { trigger: product  } = useMutation<ProductCart[]>(`/api/cart/${options?.product_model_id}`, {
-    url: `/api/cart/${options?.product_model_id}`,
+  
+  // truyền {id} trong hàm api có cơ chế replance string id thay bằng giá trị tương ứng
+  const { trigger: product  } = useMutation<ProductCart[]>(`/api/cart/{product_model_id}`, {
+    url: `/api/cart/{product_model_id}`,
     method: METHOD.DELETE
   });
   const updateCart = (cart: ProductCart[]) => {

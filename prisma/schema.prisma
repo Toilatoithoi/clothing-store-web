@@ -35,7 +35,7 @@ model bill {
   status       String?        @default("\u0000") @db.VarChar(255)
   created_at   DateTime?      @default(now()) @db.Timestamp(0)
   updated_at   DateTime?      @default(now()) @db.Timestamp(0)
-  fullname     String?        @db.VarChar(255)
+  full_name    String?        @db.VarChar(255)
   phoneNumber  String?        @map("phone_number") @db.VarChar(10)
   user         User           @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "fk_bill_user")
   bill_product bill_product[]

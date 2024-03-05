@@ -20,7 +20,7 @@ interface UserCartForm {
 const UserCart = () => {
 
   const formRef = useRef<FormikProps<UserCartForm>>()
-  const { addToCart, data } = useCart();
+  const { addToCart, deleteToCart,  data } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
   const timer = useRef<NodeJS.Timeout>()
@@ -66,7 +66,6 @@ const UserCart = () => {
     // data[${idx}].quantity từng phần tử trong data.quantity truyền giá trị
     // call api để update value của user-cart
     timer.current = setTimeout(() => {
-      const { deleteToCart } = useCart(item);
       deleteToCart({ ...item});
     }, 500);
   }
