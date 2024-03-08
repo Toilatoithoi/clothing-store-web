@@ -99,14 +99,14 @@ export const Menu = () => {
           </div>
         </div>
       </div>
-      {/* <div className='mb-[8rem]'>
+      <div className='mb-[8rem]'>
         <div className='text-[2rem] font-bold mb-[2.4rem] flex items-center justify-center'>NHỮNG SẢN PHẨM NHIỀU NGƯỜI MUA</div>
         <div><ProductSlider /></div>
       </div>
       <div className='mb-[8rem] border-t-[0.05rem] border-gray-200 pt-[1.6rem]'>
         <div className='text-[2rem] font-bold mb-[2.4rem] flex items-center justify-center'>KHUYẾN MÃI HÔM NAY</div>
         <div><ProductSlider /></div>
-      </div> */}
+      </div>
     </div>
   )
 }

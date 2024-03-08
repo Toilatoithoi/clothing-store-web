@@ -25,6 +25,7 @@ import { setKey } from '@/utils/localStorage';
 import ToastNotification from '../ToastNotification';
 import { toast } from 'react-toastify';
 import Loader from '../Loader';
+import { useRouter } from 'next/navigation';
 
 interface HeaderProps {
 
@@ -101,6 +102,8 @@ const ListConfig = [
 
 const Header = (props: HeaderProps) => { //jsx, không phai html 
   const { data: appStatus } = useAppStatus();
+  // điều hướng route
+  const router = useRouter();
   // tại sao lại phải dùng useRef vì compomentId sẽ chỉ lấy 1 lần nếu để uuid() sẽ mỗi lần chạy lại sẽ lấy id mới
   const componentId = useRef(uuid())
   const { categoryId } = useParams();
@@ -112,6 +115,16 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
     mutate(COMMON_SHOW_LOGIN, true);
   }
+
+  const handleHome = () => {
+     // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+     router.push('/')
+  }
+
+  const handleUser = () => {
+    // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+    router.push('/user')
+ }
 
   const handleShowLogout = () => {
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
@@ -155,7 +168,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
                 ))
               }
             </div>
-            <div className="h-[6rem] w-[6rem]"><Logo /></div>
+            <button type="button" onClick={handleHome} className="h-[6rem] w-[6rem] cursor-pointer"><Logo /></button>
             <div className="flex items-center">
               <div className="flex items-center mr-[1.6rem]">
                 <strong className="flex items-center mr-[0.4rem] text-[#BC0517]"><FaHeadset className="text-[2.8rem]  mr-[0.4rem]" /> Tư vấn bán hàng:</strong>
@@ -163,7 +176,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
               </div>
               {/* nếu đăng nhập rồi isAuthenticated là true sẽ show ra biểu tượng */}
               {appStatus?.isAuthenticated ? <div className="flex item-center gap-[1.6rem]">
-                <div className="text-[2.4rem]"><FaRegUser /></div>
+                <button type="button" onClick={handleUser} className="text-[2.4rem]"><FaRegUser /></button>
                 <div className="text-[2.8rem] cursor-pointer z-10"><CartDropdown /></div>
                 <div className="text-[2.8rem]"><Link href={'/list-bill'}><GoListUnordered /></Link></div>
                 <button type="button" className='font-bold' onClick={handleShowLogout}>Đăng xuất</button>

@@ -81,6 +81,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { billId: stri
                     name: true,
                   }
                 },
+                price: true,
               }
             },
             quantity: true,

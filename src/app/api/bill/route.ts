@@ -36,6 +36,7 @@ export const GET = async (req: NextRequest) => {
         address: true,
         phoneNumber: true,
         full_name: true,
+        email: true,
         note: true,
         created_at: true,
         updated_at: true,
@@ -69,7 +70,7 @@ export const POST = async (req: NextRequest) => {
 
   //validate input 
   const body = await req.json();
-  if (isBlank(body.city) || isBlank(body.district) || isBlank(body.wards) || isBlank(body.address) ||isBlank(body.name) || isBlank(body.phone)) {
+  if (isBlank(body.city) || isBlank(body.district) || isBlank(body.wards) || isBlank(body.address) ||isBlank(body.name) || isBlank(body.phone) || isBlank(body.email)) {
     return NextResponse.json(new RestError(INPUT_INVALID));
   }
 
@@ -85,6 +86,7 @@ export const POST = async (req: NextRequest) => {
         note: body.note,
         full_name: body.name,
         phoneNumber: body.phone,
+        email: body.email,
         status: "NEW",
         bill_product: {
           // do bill_product là một mảng nên phải map
@@ -96,14 +98,16 @@ export const POST = async (req: NextRequest) => {
         },
       }
     })
-
-    const deleteCart = await prisma.cart.deleteMany({
-      where:{
-        user: {
-          username: data.username
-        },
-      }
-    })
+    
+    if(createdBill){
+      const deleteCart = await prisma.cart.deleteMany({
+        where:{
+          user: {
+            username: data.username
+          },
+        }
+      })
+    }
 
     return NextResponse.json(createdBill)
 

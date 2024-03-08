@@ -52,10 +52,12 @@ const ListBill = () => {
             headerName: "Thời gian",
             field: "created_at",
             minWidth: 120,
+            // có 2 hàm hay dùng 
+            // valueGetter và valueFormatter hai cái này hoạt động giống nhau đều trả về giá trị để render ra cell fleid
             valueFormatter: timeFormatterFromTimestamp
         },
         { headerName: "Tên", field: "full_name" },
-        { headerName: "Email", field: "username" },
+        { headerName: "Email", field: "email" },
         { headerName: "Số điện thoại", field: "phoneNumber" },
         { headerName: "Tỉnh/Thành phố", field: "city" },
         { headerName: "Quận/Huyện", field: "district" },
@@ -89,6 +91,11 @@ const ListBill = () => {
                 <AgGridReact
                     rowData={rowData}
                     columnDefs={colDefs}
+                    rowSelection="multiple"
+                    suppressRowClickSelection={true}
+                    pagination={true}
+                    paginationPageSize={10}
+                    paginationPageSizeSelector={[10, 50, 100]}
                 />
             </div>
         </div>

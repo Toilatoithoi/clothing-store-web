@@ -12,6 +12,7 @@ import { useMutation, useSWRWrapper } from '@/store/custom';
 import { METHOD } from '@/constants';
 import { formatNumber } from '@/utils';
 import { Formik, FormikProps } from 'formik';
+import { useRouter } from 'next/navigation';
 
 interface UserCartForm {
   data: ProductCart[]
@@ -20,6 +21,8 @@ interface UserCartForm {
 const UserCart = () => {
 
   const formRef = useRef<FormikProps<UserCartForm>>()
+  // điều hướng route
+  const router = useRouter();
   const { addToCart, deleteToCart,  data } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
@@ -46,6 +49,8 @@ const UserCart = () => {
   const handleSubmit = (values: UserCartForm) => {
     // value phải cùng kiểu với initialValues
     console.log(values)
+    // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+    router.push('/payment')
   }
 
   const handleChangeQty = (qty: number, idx: number, item: ProductCart) => {
