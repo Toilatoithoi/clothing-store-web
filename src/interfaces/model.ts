@@ -6,6 +6,10 @@ export interface ProductRes {
     priceMin: number;
     priceMax: number;
   };
+  product_model?:{
+    color?: string;
+    size?: string;
+  }
 }
 export interface Category {
   id: number;

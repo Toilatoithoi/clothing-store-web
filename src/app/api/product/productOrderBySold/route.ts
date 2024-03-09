@@ -25,16 +25,7 @@ export const GET = async (request: NextRequest) => {
       const [products, count] = await prisma.$transaction([
         prisma.product.findMany({
           select: {
-            product_model: {
-              select:{
-                sold: true,
-                price: true,
-                image: true,  
-              },
-              orderBy:{
-                sold: 'asc'
-              }
-            },
+            product_model: true,
             name: true,
             status: true,
             category: true,
@@ -70,12 +61,24 @@ export const GET = async (request: NextRequest) => {
             price.priceMin = mode.price;
           }
         });
-  
+
+        let maxSold = product?.product_model[0]?.sold ?? 0;
+        let i = 0;
+        let index = 0;
+        product.product_model.forEach((mode) => {
+          if(mode.sold && mode.sold > maxSold){
+            maxSold = mode.sold;
+            index = i;
+          }
+          i = i++;
+        })
+
         return {
           name: product.name,
           status: product.status,
           category: product.category,
           price,
+          product_model: product.product_model[index],
           image: product.product_model[0]?.image,
           id: product.id,
         };
