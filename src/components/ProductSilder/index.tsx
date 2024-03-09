@@ -5,14 +5,20 @@ import 'keen-slider/keen-slider.min.css'
 import ProductCard from '../ProductCard'
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
+import { useSWRWrapper } from '@/store/custom'
+import { PaginationRes } from '@/interfaces'
+import { ProductRes } from '@/interfaces/model'
 
 const ProductSlider = () => {
   const [currentSlide, setCurrentSlide] = React.useState(0)
   const [loaded, setLoaded] = useState(false);
 
+  const { data } = useSWRWrapper<PaginationRes<ProductRes>>('/api/product/productOrderBySold', {
+    url: '/api/product/productOrderBySold',
+  })
+  console.log(data)
 
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
-
     slides: {
       perView: 5,
       spacing: 15,
@@ -31,6 +37,7 @@ const ProductSlider = () => {
   return (
     <div className='w-full relative'>
       <div ref={sliderRef} className="keen-slider">
+        {data?.items.map(item => <div className="keen-slider__slide number-slide1"><ProductCard data={item} key={item.id} /></div>)}
         {/* <div className="keen-slider__slide number-slide1"><ProductCard /></div>
         <div className="keen-slider__slide number-slide1"><ProductCard /></div>
         <div className="keen-slider__slide number-slide1"><ProductCard /></div>

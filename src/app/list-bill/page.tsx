@@ -16,7 +16,7 @@ const BILL_STATUS_TRANSLATE: Record<string, string> = {
 
 export interface List {
     sdt?: string;
-    fullname: string;
+    full_name: string;
     email: string;
     phoneNumber: string;
     username: string;
@@ -33,10 +33,10 @@ export interface List {
 const ListBill = () => {
     // điều hướng route
     const router = useRouter();
-    const handleViewBillProudtcPage = (value: number) => {
-        // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
-        router.push('/list-bill/' + value.toString())
-    }
+    // const handleViewBillProudtcPage = (value: number) => {
+    //     // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+    //     router.push('/list-bill/' + value.toString())
+    // }
     const CustomButtonComponent = ({ data }: ICellRendererParams) => {
         const handleClick = () => {
             router.push(`/list-bill/${data.id}`)
@@ -52,10 +52,12 @@ const ListBill = () => {
             headerName: "Thời gian",
             field: "created_at",
             minWidth: 120,
+            // có 2 hàm hay dùng 
+            // valueGetter và valueFormatter hai cái này hoạt động giống nhau đều trả về giá trị để render ra cell fleid
             valueFormatter: timeFormatterFromTimestamp
         },
-        { headerName: "Tên", field: "fullname" },
-        { headerName: "Email", field: "username" },
+        { headerName: "Tên", field: "full_name" },
+        { headerName: "Email", field: "email" },
         { headerName: "Số điện thoại", field: "phoneNumber" },
         { headerName: "Tỉnh/Thành phố", field: "city" },
         { headerName: "Quận/Huyện", field: "district" },
@@ -89,6 +91,11 @@ const ListBill = () => {
                 <AgGridReact
                     rowData={rowData}
                     columnDefs={colDefs}
+                    rowSelection="multiple"
+                    suppressRowClickSelection={true}
+                    pagination={true}
+                    paginationPageSize={10}
+                    paginationPageSizeSelector={[10, 50, 100]}
                 />
             </div>
         </div>

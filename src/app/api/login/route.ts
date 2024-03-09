@@ -33,7 +33,6 @@ export const POST = async (req: NextRequest) => {
   }
 
   // check password
-
   const currPassword = user.password;
   const comparePassword = hashPassword(body.password);
 

@@ -40,12 +40,14 @@ export const POST = async (req: NextRequest) => {
     // hash password
 
     const hash = hashPassword(body.password);
-
+    const dobDate = new Date(body.dob);
     // thêm vào db
     const createdUser = await prisma.user.create({
       data: {
         ...body,
         password: hash,
+        role: "user",
+        dob: dobDate
       },
     });
 

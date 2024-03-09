@@ -34,6 +34,9 @@ export const PUT = async (req: NextRequest, { params }: { params: { userId: stri
         name: body.name,
         dob: body.dob,
         phoneNumber: body.phoneNumber,
+        address: body.address,
+        gender: body.gender,
+        password: body.password
       }
     })
 

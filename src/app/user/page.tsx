@@ -1,15 +1,15 @@
 'use client'
-import { Formik } from 'formik'
+import { Formik, FormikProps } from 'formik'
 import Link from 'next/link';
-import React, { useRef } from 'react';
-import TextInput from '../TextInput';
+import React, { useEffect, useRef } from 'react';
+import TextInput from '@/components/TextInput';
 import { isBlank, uuid } from '@/utils';
-import Checkbox from '../CheckBox';
+import Checkbox from '@/components/CheckBox';
 import * as yup from 'yup';
 import { fetcher } from '@/utils/fetcher';
 import { METHOD } from '@/constants';
-import { useMutation } from '@/store/custom';
-import Loader from '../Loader';
+import { useMutation, useSWRWrapper } from '@/store/custom';
+import Loader from '@/components/Loader';
 import { mutate } from 'swr';
 import { COMMON_SHOW_REGISTER } from '@/store/key';
 import MomentUtils from '@date-io/moment';
@@ -17,14 +17,13 @@ import DateFnsUtils from '@date-io/date-fns';
 import LuxonUtils from '@date-io/luxon';
 import {MuiPickersUtilsProvider} from '@material-ui/pickers';
 import { TextField } from "@material-ui/core";
-import  DatePicker from '../DatePicker';
+import  DatePicker from '@/components/DatePicker';
 import { formatDateToString } from '@/utils/datetime';
+import { useUserInfo } from '@/store/globalSWR';
 
-interface SingUpPayload {
-  surname: string;
+interface UserPayload {
   name: string;
   phoneNumber: string;
-  username: string;
   password: string;
   gender: string;
   address: string;
@@ -32,22 +31,21 @@ interface SingUpPayload {
 }
 
 const registerFetcher = (key: string,) => {
-  return fetcher(key, METHOD.POST)
+  return fetcher(key, METHOD.PUT)
 }
 
-const SignUpForm = (props: { onShowLogin(): void }) => {
+const User = () => {
   const componentId = useRef(uuid())
+  const formRef = useRef<FormikProps<UserPayload>>()
   // gửi dữ liệu từ form và chỉ kích hoạt khi có trigger và khi có trigger mình sẽ truyền data xuống server
   // khác với useSWR useMutation có trigger mình có thể truyền data xuông server rồi mình respone
   // Giá trị trigger là useMutation trả ra nó sẽ gửi xuống server thông qua url
   // Phân biệt giữa useMutation và useSWR
-  const { trigger, data, error } = useMutation('/api/register', {
-    url: '/api/register',
-    method: METHOD.POST,
+  const { trigger, data, error } = useMutation('/api/verifyToken', {
+    url: '/api/verifyToken',
+    method: METHOD.PUT,
     onSuccess(data, key, config) {
       console.log(data)
-      // ẩn form đăng kí
-      mutate(COMMON_SHOW_REGISTER, false)
     },
     // thực hiện loading
     componentId: componentId.current,
@@ -55,17 +53,41 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
     notification: {
       // config thông báo
       // title dùng chung cho thành công và thấT bại
-      title: 'Đăng ký tài khoản',
+      title: 'Cập nhật tài khoản',
       // chỉ dùng cho thành công
-      content: 'Đăng ký tài khoản thành công',
+      content: 'Cập nhật tài khoản thành công',
       // không show thông báo lỗi lên
       ignoreError: true,
     }
   })
 
+  const { data: userInfo, isLoading } = useUserInfo();
+  console.log(userInfo)
+
+  const {data: userData  } = useSWRWrapper<UserPayload>('/api/user', {
+    url: '/api/user',
+    method: METHOD.GET
+  })
+
+
+  useEffect(() =>{
+    if(userData){
+      if(formRef.current){
+        console.log("1111111")
+      }
+      formRef.current?.setValues({
+        name: userData.name , 
+        phoneNumber:userData.phoneNumber,
+        password: userData.password,
+        gender: userData.gender,
+        address:  userData.address,
+        dob: userData.dob,
+      })
+    }
+  }, [userData])
+
   const schema = yup.object().shape({
-    surname: yup.string().label('Họ').required(),
-    name: yup.string().label('Tên').required(),
+    name: yup.string().label('Họ tên').required(),
     phoneNumber: yup.string().label('Số điện thoại').required().matches(/^(?:[0-9] ?){6,14}[0-9]$/, 'Số điện thoại không hợp lệ'),
     username: yup.string().label('Email').required().email('Phải nhập đúng định dạng'),
     password: yup.string().label('Mật khẩu').required(),
@@ -74,12 +96,11 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
     
   })
 
-  const handleSignUp = (values: SingUpPayload) => {
+  const handleUpdate = (values: UserPayload) => {
     console.log({ values })
     // chứa data
     trigger({
-      name: values.surname + values.name,
-      username: values.username,
+      name: values.name,
       password: values.password,
       phoneNumber: values.phoneNumber,
       address: values.address,
@@ -91,18 +112,17 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
   console.log({ data, error })
 
   return (
-    <Loader id={componentId.current} className='w-screen max-w-xl'>
+    <Loader id={componentId.current} className='flex items-center justify-center'>
       <Formik
-        onSubmit={handleSignUp}
+        innerRef={(instance) => formRef.current = instance!}
+        onSubmit={handleUpdate}
         initialValues={{
-          password: '',
-          name: '',
-          surname: '',
-          phoneNumber: '',
-          username: '',
-          gender: '',
-          address: '',
-          dob: ''
+          name: userData?.name || '', 
+          phoneNumber:userData?.phoneNumber || '',
+          password: userData?.password || '',
+          gender: userData?.gender || '',
+          address:  userData?.address || '',
+          dob: userData?.dob || '',
         }}
         validationSchema={schema}
       >
@@ -114,29 +134,19 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
           touched,
           errors,
           setFieldValue
-        }) => <form className='flex flex-col gap-8' onSubmit={handleSubmit} >
-            <div className='w-full text-center text-[3rem] font-bold text-black'>Đăng ký</div>
-            <div>Bạn đã có tài khoản? <strong className='text-blue-500 cursor-pointer' onClick={props.onShowLogin}>Đăng nhập ngay</strong></div>
+        }) => <form className='w-full flex flex-col gap-8 m-4 p-4 border border-gray-800 ' onSubmit={handleSubmit} >
+            <div className='w-full text-center text-[3rem] font-bold text-black'>Thông tin khách hàng</div>
             {/* kiểm tra có lỗi hay không */}
             {error?.message && <div className='text-red-500 text-center w-full'>{error.message}</div>}
             <TextInput
-              label='Họ'
-              value={values.surname}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              name="surname"
-              hasError={!isBlank(errors.surname) && touched.surname}
-              errorMessage={errors.surname}
-            />
-            <TextInput
-              label='Tên'
+              label='Họ tên'
               value={values.name}
               onBlur={handleBlur}
               onChange={handleChange}
               name="name"
               hasError={!isBlank(errors.name) && touched.name}
               errorMessage={errors.name}
-            />
+            /> 
             <TextInput
               label='Số điện thoại'
               value={values.phoneNumber}
@@ -145,17 +155,8 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
               name="phoneNumber"
               hasError={!isBlank(errors.phoneNumber) && touched.phoneNumber}
               errorMessage={errors.phoneNumber}
-            />
-            <TextInput
-              label='Email'
-              value={values.username}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              name="username"
-              hasError={!isBlank(errors.username) && touched.username}
-              errorMessage={errors.username}
-            />
-            <TextInput
+            /> 
+            {/* <TextInput
               label='Mật khẩu'
               value={values.password}
               onBlur={handleBlur}
@@ -164,7 +165,7 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
               type='password'
               hasError={!isBlank(errors.password) && touched.password}
               errorMessage={errors.password}
-            />
+            /> */}
              <TextInput
               label='Địa chỉ'
               value={values.address}
@@ -195,4 +196,4 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
   )
 }
 
-export default SignUpForm
+export default User

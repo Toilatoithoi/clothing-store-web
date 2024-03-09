@@ -12,6 +12,7 @@ export const timeFormatterFromTimestamp = (params: ValueFormatterParams) => {
   return params.value;
 }
 
+// format tiền
 export const integerFormatter = (params: ValueFormatterParams) => {
   return formatNumber(params.value, 0, undefined, false, params.value ?? '');
 };

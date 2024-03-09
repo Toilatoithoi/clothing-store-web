@@ -54,6 +54,7 @@ const Payment = () => {
   const { addToCart, data, isLoading } = useCart()
   const { addToBill } = useBill({
     componentId: componentId.current,
+    // ??? tại sao dùng record mày không dùng mảng payment[]
     onCreateSuccess: (data: Record<string, string>) => {
       // TODO: redirect  qua màn bill detail
       router.push(`/list-bill/${data.id}`)
@@ -82,7 +83,6 @@ const Payment = () => {
         totalPrice: acc.totalPrice + item.quantity * item.price,
         totalQuantity: acc.totalQuantity + item.quantity,
       }), { totalPrice: 0, totalQuantity: 0 });
-      setSummary(summaryQty)
       setSummary(summaryQty)
       // setValue cho formik
       formRef.current?.setValues({
@@ -347,7 +347,7 @@ const Payment = () => {
                 <div className='font-semibold text-[1.4rem] mt-[1.6rem]'>Trả tiền mặt khi nhận hàng</div>
                 <div className='mb-[0.8rem] text-[1.4rem]'>Trả tiền mặt khi giao hàng</div>
                 {/* Khi không valid thì nút đặt hàng sẽ bị làm mờ  */}
-                {JSON.stringify(errors)}
+                {/* {JSON.stringify(errors)} */}
                 <button disabled={!isValid} type="submit" className='bg-black disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center font-bold'>Đặt hàng</button>
               </div>
             </div>

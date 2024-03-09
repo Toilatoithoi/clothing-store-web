@@ -6,6 +6,10 @@ export interface ProductRes {
     priceMin: number;
     priceMax: number;
   };
+  product_model?:{
+    color?: string;
+    size?: string;
+  }
 }
 export interface Category {
   id: number;
@@ -39,6 +43,7 @@ export interface PostRes {
 }
 
 export interface Bill{
+  [x: string]: any;
   id: number;
   user_id: number;
   city: string;
@@ -57,7 +62,8 @@ export interface BillProduct {
   product_model: {
     product: {
       name: string;
-    }
+    },
+    price: number;
   };
   quantity: number;
   id: number;

@@ -12,6 +12,7 @@ import { useMutation, useSWRWrapper } from '@/store/custom';
 import { METHOD } from '@/constants';
 import { formatNumber } from '@/utils';
 import { Formik, FormikProps } from 'formik';
+import { useRouter } from 'next/navigation';
 
 interface UserCartForm {
   data: ProductCart[]
@@ -20,7 +21,9 @@ interface UserCartForm {
 const UserCart = () => {
 
   const formRef = useRef<FormikProps<UserCartForm>>()
-  const { addToCart, data } = useCart();
+  // điều hướng route
+  const router = useRouter();
+  const { addToCart, deleteToCart,  data } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
   const timer = useRef<NodeJS.Timeout>()
@@ -46,6 +49,8 @@ const UserCart = () => {
   const handleSubmit = (values: UserCartForm) => {
     // value phải cùng kiểu với initialValues
     console.log(values)
+    // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+    router.push('/payment')
   }
 
   const handleChangeQty = (qty: number, idx: number, item: ProductCart) => {
@@ -58,6 +63,15 @@ const UserCart = () => {
     // call api để update value của user-cart
     timer.current = setTimeout(() => {
       addToCart({ ...item, quantity: qty }, true);
+    }, 500);
+  }
+
+  const handledelete= (item: ProductCart) => {
+    // setFieldValues cho field truyền value
+    // data[${idx}].quantity từng phần tử trong data.quantity truyền giá trị
+    // call api để update value của user-cart
+    timer.current = setTimeout(() => {
+      deleteToCart({ ...item});
     }, 500);
   }
   return (
@@ -91,7 +105,7 @@ const UserCart = () => {
                           <div>{item.product.name}</div>
                           <div>{item.size}</div>
                           <div>{item.color}</div>
-                          <div className='cursor-pointer hover:text-red-500'>Xóa</div>
+                          <button type='button' onClick={() => handledelete(item)}className='cursor-pointer hover:text-red-500'>Xóa</button>
                         </div>
                       </div>
                       <div key={idx + values.data.length + 2} className='text-center'>{item.price}</div>   
