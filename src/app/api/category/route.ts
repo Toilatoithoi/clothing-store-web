@@ -41,6 +41,7 @@ export const POST = async (req: NextRequest) => {
       },
     });
 
+
     return NextResponse.json({ createdCategory });
   } catch (error) {
     console.log({ error });

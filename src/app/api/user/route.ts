@@ -6,7 +6,7 @@ export const GET = async (req: NextRequest) => {
   if (data == null) {
     return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
   }
-  const user = await prisma.user.findMany({ where: { id: data.id } });
+  const user = await prisma.user.findFirst({ where: { id: data.id } });
 
   return NextResponse.json(user);
 }

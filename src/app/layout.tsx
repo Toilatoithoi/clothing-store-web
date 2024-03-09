@@ -17,8 +17,9 @@ import { APP_STATUS, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER } from '@/store/key
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify'
 import { getKey } from '@/utils/localStorage'
-import { useUserInfo } from '@/store/globalSWR'
+import { useAppStatus, useUserInfo } from '@/store/globalSWR'
 import Preload from '@/components/Preload'
+import { usePathname, useRouter } from 'next/navigation'
 
 
 export default function RootLayout({
@@ -26,10 +27,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
+  const pathname = usePathname();
+  const router = useRouter()
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const { data: appStatus } = useAppStatus();
+
   // lấy thông tin người dùng
   // isLoading khi mới vào thì khi nhập url sẽ khởi tạo trang nên loading để người tao biết đang lấy data query từ server
   const { data: userInfo, isLoading } = useUserInfo();
@@ -46,6 +50,17 @@ export default function RootLayout({
   const { data: triggerShowLogin } = useSWR<boolean>(COMMON_SHOW_LOGIN);
   const { data: triggerShowRegister } = useSWR<boolean>(COMMON_SHOW_REGISTER);
 
+  useEffect(() => {
+    const privateRoute = ['/list-bill', '/user-cart']
+    if (appStatus) {
+      if (!appStatus.isAuthenticated) {
+        const inPrivate = privateRoute.some(item => pathname.startsWith(item));
+        if (inPrivate) {
+          router.push('/')
+        }
+      }
+    }
+  }, [appStatus?.isAuthenticated])
 
   useEffect(() => {
     yup.setLocale({
@@ -57,10 +72,10 @@ export default function RootLayout({
   }, []);
 
   useEffect(() => {
-      // để thay đổi giá trị của state global dùng mutate
-      // nếu userInfo == null  thì APP_STATUS set bằng false
-      // APP_STATUS bằng true là đã login
-      mutate(APP_STATUS, { isAuthenticated: userInfo != null })
+    // để thay đổi giá trị của state global dùng mutate
+    // nếu userInfo == null  thì APP_STATUS set bằng false
+    // APP_STATUS bằng true là đã login
+    mutate(APP_STATUS, { isAuthenticated: userInfo != null && String(userInfo) != '' })
   }, [userInfo])
 
   useEffect(() => {
@@ -99,7 +114,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ToastContainer autoClose={3000} />
         {
-        // nếu chưa lấy dữ liệu xong thì loading bằng true hiển thị preload
+          // nếu chưa lấy dữ liệu xong thì loading bằng true hiển thị preload
           isLoading ? <div className='h-full w-full flex items-center justify-center bg-white'><Preload /> </div> :
             <div className='flex flex-col h-screen w-screen'>
               <Header />

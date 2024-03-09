@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { CreateBillReq } from '@/interfaces/request';
 import { RestError, verifyToken } from '@/utils/service';
 import { INPUT_INVALID, INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
+import { bill_product } from '@prisma/client';
 
 
 export const GET = async (req: NextRequest) => {
@@ -70,38 +71,87 @@ export const POST = async (req: NextRequest) => {
 
   //validate input 
   const body = await req.json();
-  if (isBlank(body.city) || isBlank(body.district) || isBlank(body.wards) || isBlank(body.address) ||isBlank(body.name) || isBlank(body.phone) || isBlank(body.email)) {
+  if (isBlank(body.city) || isBlank(body.district) || isBlank(body.wards) || isBlank(body.address) || isBlank(body.name) || isBlank(body.phone) || isBlank(body.email)) {
     return NextResponse.json(new RestError(INPUT_INVALID));
   }
 
   try {
     // thêm vào db
-    const createdBill = await prisma.bill.create({
-      data: {
-        user_id: data.id,
-        city: body.city,
-        district: body.district,
-        wards: body.wards,
-        address: body.address,
-        note: body.note,
-        full_name: body.name,
-        phoneNumber: body.phone,
-        email: body.email,
-        status: "NEW",
-        bill_product: {
-          // do bill_product là một mảng nên phải map
-          // ({object}) tương dương return {object}
-          create: body.bill_product.map((item: Record<string, string>) => ({
-            quantity: item.quantity,
-            product_model_id: item.product_model_id,
-          })),
+    // const createdBill = await prisma.bill.create({
+    //   data: {
+    //     user_id: data.id,
+    //     city: body.city,
+    //     district: body.district,
+    //     wards: body.wards,
+    //     address: body.address,
+    //     note: body.note,
+    //     full_name: body.name,
+    //     phoneNumber: body.phone,
+    //     email: body.email,
+    //     status: "NEW",
+    //     bill_product: {
+    //       // do bill_product là một mảng nên phải map
+    //       // ({object}) tương dương return {object}
+    //       create: body.bill_product.map((item: Record<string, string>) => ({
+    //         quantity: item.quantity,
+    //         product_model_id: item.product_model_id,
+    //       })),
+    //     },
+    //   }
+    // })
+    // tính toán lại sold và stock
+
+    const [createBill] = await prisma.$transaction([
+      prisma.bill.create({
+        data: {
+          user_id: data.id,
+          city: body.city,
+          district: body.district,
+          wards: body.wards,
+          address: body.address,
+          note: body.note,
+          full_name: body.name,
+          phoneNumber: body.phone,
+          email: body.email,
+          status: "NEW",
+          bill_product: {
+            // do bill_product là một mảng nên phải map
+            // ({object}) tương dương return {object}
+            create: body.bill_product.map((item: Record<string, string>) => ({
+              quantity: item.quantity,
+              product_model_id: item.product_model_id,
+            })),
+          },
+        }
+      }),
+      ...body.bill_product.map((item: bill_product) => prisma.product_model.update({
+        where: {
+          id: item.product_model_id
         },
-      }
-    })
-    
-    if(createdBill){
-      const deleteCart = await prisma.cart.deleteMany({
-        where:{
+        data: {
+          sold: {
+            increment: item.quantity
+          },
+          stock: {
+            decrement: item.quantity,
+          }
+        }
+      }))
+    ])
+
+
+    // await prisma.product_model.updateMany(body.bill_product.map((item: Record<string, string>) => ({
+    //   where: {
+    //     id: item.product_model_id
+    //   },
+    //   data: {
+
+    //   }
+    // })))
+
+    if (createBill) {
+      await prisma.cart.deleteMany({
+        where: {
           user: {
             username: data.username
           },
@@ -109,7 +159,7 @@ export const POST = async (req: NextRequest) => {
       })
     }
 
-    return NextResponse.json(createdBill)
+    return NextResponse.json(createBill)
 
   } catch (error) {
     console.log({ error })

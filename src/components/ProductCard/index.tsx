@@ -24,7 +24,7 @@ const ProductCard = (props: { data: ProductRes }) => {
       {
         props.data.image ? <Image className='aspect-[290/386] max-w-sm' src={props.data.image} alt="" width={400} height={600} /> : <Image className='aspect-[290/386] max-w-sm' src={product} alt="" />
       }
-      <div className='text-[1.6rem]'>{props.data.name + ' ' + props.data.product_model?.size + ' ' + props.data.product_model?.color}</div>
+      <div className='text-[1.6rem]'>{props.data.name ?? '' + ' ' + props.data.product_model?.size ?? '' + ' ' + props.data.product_model?.color ?? ''}</div>
       <div className='text-[1.6rem]'>{formatPrice}</div>
     </div>
   )

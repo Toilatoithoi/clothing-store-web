@@ -15,9 +15,9 @@ import { COMMON_SHOW_REGISTER } from '@/store/key';
 import MomentUtils from '@date-io/moment';
 import DateFnsUtils from '@date-io/date-fns';
 import LuxonUtils from '@date-io/luxon';
-import {MuiPickersUtilsProvider} from '@material-ui/pickers';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { TextField } from "@material-ui/core";
-import  DatePicker from '@/components/DatePicker';
+import DatePicker from '@/components/DatePicker';
 import { formatDateToString } from '@/utils/datetime';
 import { useUserInfo } from '@/store/globalSWR';
 
@@ -62,25 +62,24 @@ const User = () => {
   })
 
   const { data: userInfo, isLoading } = useUserInfo();
-  console.log(userInfo)
 
-  const {data: userData  } = useSWRWrapper<UserPayload>('/api/user', {
+  const { data: userData } = useSWRWrapper<UserPayload>('/api/user', {
     url: '/api/user',
     method: METHOD.GET
   })
 
 
-  useEffect(() =>{
-    if(userData){
-      if(formRef.current){
+  useEffect(() => {
+    if (userData) {
+      if (formRef.current) {
         console.log("1111111")
       }
       formRef.current?.setValues({
-        name: userData.name , 
-        phoneNumber:userData.phoneNumber,
+        name: userData.name,
+        phoneNumber: userData.phoneNumber,
         password: userData.password,
         gender: userData.gender,
-        address:  userData.address,
+        address: userData.address,
         dob: userData.dob,
       })
     }
@@ -93,7 +92,7 @@ const User = () => {
     password: yup.string().label('Mật khẩu').required(),
     address: yup.string().label('Địa chỉ').required(),
     gender: yup.string().label('Giới tính').required(),
-    
+
   })
 
   const handleUpdate = (values: UserPayload) => {
@@ -117,11 +116,11 @@ const User = () => {
         innerRef={(instance) => formRef.current = instance!}
         onSubmit={handleUpdate}
         initialValues={{
-          name: userData?.name || '', 
-          phoneNumber:userData?.phoneNumber || '',
+          name: userData?.name || '',
+          phoneNumber: userData?.phoneNumber || '',
           password: userData?.password || '',
           gender: userData?.gender || '',
-          address:  userData?.address || '',
+          address: userData?.address || '',
           dob: userData?.dob || '',
         }}
         validationSchema={schema}
@@ -146,7 +145,7 @@ const User = () => {
               name="name"
               hasError={!isBlank(errors.name) && touched.name}
               errorMessage={errors.name}
-            /> 
+            />
             <TextInput
               label='Số điện thoại'
               value={values.phoneNumber}
@@ -155,7 +154,7 @@ const User = () => {
               name="phoneNumber"
               hasError={!isBlank(errors.phoneNumber) && touched.phoneNumber}
               errorMessage={errors.phoneNumber}
-            /> 
+            />
             {/* <TextInput
               label='Mật khẩu'
               value={values.password}
@@ -166,7 +165,7 @@ const User = () => {
               hasError={!isBlank(errors.password) && touched.password}
               errorMessage={errors.password}
             /> */}
-             <TextInput
+            <TextInput
               label='Địa chỉ'
               value={values.address}
               onBlur={handleBlur}
@@ -175,16 +174,17 @@ const User = () => {
               hasError={!isBlank(errors.address) && touched.address}
               errorMessage={errors.address}
             />
-             <TextInput
+            <TextInput
               label='Giới tính'
-              value={values.gender}
+              value={formatDateToString(new Date(values.dob), 'yyyy-MM-dd')!}
               onBlur={handleBlur}
               onChange={handleChange}
               name="gender"
+              type='date'
               hasError={!isBlank(errors.gender) && touched.gender}
               errorMessage={errors.gender}
             />
-            <DatePicker 
+            <DatePicker
               label="Năm sinh"
               value={values.dob}
               name="dob"

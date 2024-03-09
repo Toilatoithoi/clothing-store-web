@@ -14,7 +14,7 @@ import './style.scss';
 import { config } from 'process';
 import { useAppStatus } from '@/store/globalSWR';
 import { mutate } from 'swr';
-import { APP_STATUS, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '@/store/key';
+import { APP_STATUS, COMMON_LOADING, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '@/store/key';
 import { useSWRWrapper } from '@/store/custom';
 import { Category } from '@/interfaces/model';
 import Link from 'next/link';
@@ -102,6 +102,7 @@ const ListConfig = [
 
 const Header = (props: HeaderProps) => { //jsx, không phai html 
   const { data: appStatus } = useAppStatus();
+  console.log(appStatus)
   // điều hướng route
   const router = useRouter();
   // tại sao lại phải dùng useRef vì compomentId sẽ chỉ lấy 1 lần nếu để uuid() sẽ mỗi lần chạy lại sẽ lấy id mới
@@ -117,18 +118,18 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
   }
 
   const handleHome = () => {
-     // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
-     router.push('/')
+    // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+    router.push('/')
   }
 
   const handleUser = () => {
     // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
     router.push('/user')
- }
+  }
 
   const handleShowLogout = () => {
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
-    setKey('access_token', '');
+    setKey('access_token', null);
     mutate(USER_INFO, '');
     // thành công sẽ cập nhật APP_STATUS là true 
     mutate(APP_STATUS, { isAuthenticated: false });

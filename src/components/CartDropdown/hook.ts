@@ -37,9 +37,9 @@ export const useCart = () => {
     url: '/api/cart',
     method: METHOD.POST
   });
-  
+
   // truyền {id} trong hàm api có cơ chế replance string id thay bằng giá trị tương ứng
-  const { trigger: product  } = useMutation<ProductCart[]>(`/api/cart/{product_model_id}`, {
+  const { trigger: product } = useMutation<ProductCart[]>(`/api/cart/{product_model_id}`, {
     url: `/api/cart/{product_model_id}`,
     method: METHOD.DELETE
   });
@@ -61,7 +61,7 @@ export const useCart = () => {
     })
 
   }
-  
+
   const deleteToCart = (model: ProductCart) => {
     product({
       product_model_id: model.product_model_id,
@@ -75,7 +75,8 @@ export const useCart = () => {
     updateCart,
     addToCart,
     deleteToCart,
-    isLoading
+    isLoading,
+    mutate
   }
 }
 

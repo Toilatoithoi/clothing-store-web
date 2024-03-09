@@ -51,14 +51,15 @@ const Payment = () => {
   const router = useRouter();
   const formRef = useRef<FormikProps<PaymentForm>>()
   // lí do phải cho data vào initialValues vì initialValues chỉ nhận data lần đầu tiên còn ví dụ truyền state vào khi state update nó cũng không ăn
-  const { addToCart, data, isLoading } = useCart()
+  const { addToCart, data, isLoading, mutate } = useCart()
   const { addToBill } = useBill({
     componentId: componentId.current,
     // ??? tại sao dùng record mày không dùng mảng payment[]
     onCreateSuccess: (data: Record<string, string>) => {
       // TODO: redirect  qua màn bill detail
       router.push(`/list-bill/${data.id}`)
-      // clear cart
+      // clear cart -> call api clear cart
+      mutate() // -> muate key /api/cart  để useSWR query lại api/cart
     }
   })
   const [quantity, setQuantity] = useState(1);
