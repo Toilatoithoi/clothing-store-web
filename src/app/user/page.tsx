@@ -19,6 +19,7 @@ import {MuiPickersUtilsProvider} from '@material-ui/pickers';
 import { TextField } from "@material-ui/core";
 import  DatePicker from '@/components/DatePicker';
 import { formatDateToString } from '@/utils/datetime';
+import { useUserInfo } from '@/store/globalSWR';
 
 interface UserPayload {
   name: string;
@@ -60,14 +61,20 @@ const User = () => {
     }
   })
 
+  const { data: userInfo, isLoading } = useUserInfo();
+  console.log(userInfo)
+
   const {data: userData  } = useSWRWrapper<UserPayload>('/api/user', {
     url: '/api/user',
     method: METHOD.GET
   })
-  console.log(userData)
+
 
   useEffect(() =>{
     if(userData){
+      if(formRef.current){
+        console.log("1111111")
+      }
       formRef.current?.setValues({
         name: userData.name , 
         phoneNumber:userData.phoneNumber,

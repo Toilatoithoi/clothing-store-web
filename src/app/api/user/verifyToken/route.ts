@@ -23,7 +23,6 @@ export const GET = async (req: NextRequest) => {
         gender: true,
       },
     });
-    console.log(user)
     return NextResponse.json(user);
   } catch (error) {
     return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
