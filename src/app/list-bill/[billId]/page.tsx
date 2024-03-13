@@ -48,7 +48,7 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
         row.push({
           name: product.product_model?.product.name,
           quantity: product.quantity,
-          price: (product.product_model.price * product.quantity).toString() + ' ' + 'VND'
+          price: (formatNumber(product.product_model.price * product.quantity)).toString() + ' ' + 'VND'
         })
         total = Number(total + product.product_model.price * product.quantity)
       })

@@ -24,6 +24,7 @@ export const useMutation = <T = Record<string, unknown>,>(
     method?: METHOD;
     // thêm notification, componentId, loading
     notification?: NotificationConfig;
+    // 
     componentId?: string;
     loading?: boolean;
   } & SWRMutationConfiguration<T, Record<string, unknown>>,
@@ -40,6 +41,7 @@ export const useMutation = <T = Record<string, unknown>,>(
       { arg: body }: { arg?: Record<string, unknown> | FormData },
     ) => {
       return new Promise<T>((resolve, reject) => {
+        // bắt đầu fetcher thì sẽ set lại COMMON_LOADING để bằng true show loading
         if (options.loading) {
           mutate(COMMON_LOADING, {
             componentId: options.componentId,
@@ -56,12 +58,16 @@ export const useMutation = <T = Record<string, unknown>,>(
             Authorization: `Bearer ${accessToken}`,
           },
         )
+          // lúc call api thành công
           .then(data => resolve(data))
+          // lúc  call api thất bại
           .catch(err => reject(err))
+          // khi thực hiện qua hai cái trên thì sẽ chạy vào 
           .finally(() => {
             {
               if (options.loading) {
                 mutate(COMMON_LOADING, {
+                  // disable COMMON_LOADING để nó không loading nữa
                   componentId: options.componentId,
                   loading: false,
                 });

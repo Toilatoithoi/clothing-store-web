@@ -23,6 +23,7 @@ export interface ProductModel {
   size: string;
   image: string;
   stock: number;
+  sold: number;
   id: number;
 }
 

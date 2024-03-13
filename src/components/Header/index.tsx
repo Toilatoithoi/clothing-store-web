@@ -151,10 +151,14 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
   const handleShowRegister = () => {
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng kí
     mutate(COMMON_SHOW_REGISTER, true);
+    // nếu làm thế này thì sẽ luôn loading ở đúng phải tử này
+    mutate(COMMON_LOADING,{
+      componentId: componentId.current,
+      loading: true
+    })
   }
 
   return (
-    <Loader id={componentId.current} className='w-screen'>
       <header className="header flex flex-col bg-white border border-blue-100">
         <div className="pt-[3rem] flex-1 shadow-sm">
           <div className="h-[7rem] max-w-screen-xl m-auto px-[1.6rem] flex justify-between items-center">
@@ -220,7 +224,6 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
           </div>
         </div>
       </header>
-    </Loader>
   )
 }
 

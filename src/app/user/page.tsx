@@ -20,11 +20,13 @@ import { TextField } from "@material-ui/core";
 import DatePicker from '@/components/DatePicker';
 import { formatDateToString } from '@/utils/datetime';
 import { useUserInfo } from '@/store/globalSWR';
+import Combobox, { ComboboxOption } from '@/components/Combobox';
+import { useUser } from '@/components/CartDropdown/hook';
 
-interface UserPayload {
+export interface UserPayload {
   name: string;
   phoneNumber: string;
-  password: string;
+  // password: string;
   gender: string;
   address: string;
   dob: string;
@@ -37,78 +39,76 @@ const registerFetcher = (key: string,) => {
 const User = () => {
   const componentId = useRef(uuid())
   const formRef = useRef<FormikProps<UserPayload>>()
+  const genderOptions: ComboboxOption[] = [{ label: 'Nam', value: 'Nam' }, { label: 'Nữ', value: 'Nữ' }];
   // gửi dữ liệu từ form và chỉ kích hoạt khi có trigger và khi có trigger mình sẽ truyền data xuống server
   // khác với useSWR useMutation có trigger mình có thể truyền data xuông server rồi mình respone
   // Giá trị trigger là useMutation trả ra nó sẽ gửi xuống server thông qua url
   // Phân biệt giữa useMutation và useSWR
-  const { trigger, data, error } = useMutation('/api/verifyToken', {
-    url: '/api/verifyToken',
-    method: METHOD.PUT,
-    onSuccess(data, key, config) {
-      console.log(data)
-    },
-    // thực hiện loading
-    componentId: componentId.current,
-    loading: true,
-    notification: {
-      // config thông báo
-      // title dùng chung cho thành công và thấT bại
-      title: 'Cập nhật tài khoản',
-      // chỉ dùng cho thành công
-      content: 'Cập nhật tài khoản thành công',
-      // không show thông báo lỗi lên
-      ignoreError: true,
-    }
-  })
+  // const { trigger, data, error } = useMutation('/api/verifyToken', {
+  //   url: '/api/verifyToken',
+  //   method: METHOD.PUT,
+  //   onSuccess(data) {
+  //     console.log(data)
+  //   },
+  //   // thực hiện loading
+  //   componentId: componentId.current,
+  //   loading: true,
+  //   notification: {
+  //     // config thông báo
+  //     // title dùng chung cho thành công và thấT bại
+  //     title: 'Cập nhật tài khoản',
+  //     // chỉ dùng cho thành công
+  //     content: 'Cập nhật tài khoản thành công',
+  //     // không show thông báo lỗi lên
+  //     ignoreError: true,
+  //   }
+  // })
 
-  const { data: userInfo, isLoading } = useUserInfo();
+  // const { data: userData } = useSWRWrapper<UserPayload>('/api/user', {
+  //   url: '/api/user',
+  //   method: METHOD.GET
+  // })
 
-  const { data: userData } = useSWRWrapper<UserPayload>('/api/user', {
-    url: '/api/user',
-    method: METHOD.GET
-  })
+  const { data, updateToUser } = useUser({})
 
 
   useEffect(() => {
-    if (userData) {
-      if (formRef.current) {
-        console.log("1111111")
-      }
+    if (data) {
       formRef.current?.setValues({
-        name: userData.name,
-        phoneNumber: userData.phoneNumber,
-        password: userData.password,
-        gender: userData.gender,
-        address: userData.address,
-        dob: userData.dob,
+        name: data.name,
+        phoneNumber: data.phoneNumber,
+        // password: data.password,
+        gender: data.gender,
+        address: data.address,
+        dob: data.dob,
       })
     }
-  }, [userData])
+  }, [data])
 
   const schema = yup.object().shape({
     name: yup.string().label('Họ tên').required(),
     phoneNumber: yup.string().label('Số điện thoại').required().matches(/^(?:[0-9] ?){6,14}[0-9]$/, 'Số điện thoại không hợp lệ'),
-    username: yup.string().label('Email').required().email('Phải nhập đúng định dạng'),
-    password: yup.string().label('Mật khẩu').required(),
+    // username: yup.string().label('Email').required().email('Phải nhập đúng định dạng'),
+    // password: yup.string().label('Mật khẩu').required(),
     address: yup.string().label('Địa chỉ').required(),
     gender: yup.string().label('Giới tính').required(),
 
   })
 
   const handleUpdate = (values: UserPayload) => {
-    console.log({ values })
     // chứa data
-    trigger({
-      name: values.name,
-      password: values.password,
-      phoneNumber: values.phoneNumber,
-      address: values.address,
-      gender: values.gender,
-      dob: values.dob
-    })
+    // trigger({
+    //   name: values.name,
+    //   // password: values.password,
+    //   phoneNumber: values.phoneNumber,
+    //   address: values.address,
+    //   gender: values.gender,
+    //   dob: values.dob
+    // })
+    updateToUser(values)
   }
 
-  console.log({ data, error })
+  console.log({ data})
 
   return (
     <Loader id={componentId.current} className='flex items-center justify-center'>
@@ -116,14 +116,15 @@ const User = () => {
         innerRef={(instance) => formRef.current = instance!}
         onSubmit={handleUpdate}
         initialValues={{
-          name: userData?.name || '',
-          phoneNumber: userData?.phoneNumber || '',
-          password: userData?.password || '',
-          gender: userData?.gender || '',
-          address: userData?.address || '',
-          dob: userData?.dob || '',
+          name: data?.name || '',
+          phoneNumber: data?.phoneNumber || '',
+          // password: usedatarData?.password || '',
+          gender: data?.gender || '',
+          address: data?.address || '',
+          dob: data?.dob || '',
         }}
         validationSchema={schema}
+        // hàm sẽ được gọi khi submit
       >
         {({
           values,
@@ -136,7 +137,7 @@ const User = () => {
         }) => <form className='w-full flex flex-col gap-8 m-4 p-4 border border-gray-800 ' onSubmit={handleSubmit} >
             <div className='w-full text-center text-[3rem] font-bold text-black'>Thông tin khách hàng</div>
             {/* kiểm tra có lỗi hay không */}
-            {error?.message && <div className='text-red-500 text-center w-full'>{error.message}</div>}
+            {/* {error?.message && <div className='text-red-500 text-center w-full'>{error.message}</div>} */}
             <TextInput
               label='Họ tên'
               value={values.name}
@@ -174,22 +175,33 @@ const User = () => {
               hasError={!isBlank(errors.address) && touched.address}
               errorMessage={errors.address}
             />
-            <TextInput
+            <Combobox
+              options={genderOptions}
               label='Giới tính'
-              value={formatDateToString(new Date(values.dob), 'yyyy-MM-dd')!}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              name="gender"
-              type='date'
-              hasError={!isBlank(errors.gender) && touched.gender}
+              selected={values.gender}
+              onChange={(option) => {
+                setFieldValue('gender', option.value);
+              }}
+              hasError={touched.gender && !isBlank(errors.gender)}
               errorMessage={errors.gender}
             />
-            <DatePicker
+            <TextInput
+              label='Ngày sinh'
+              value={values.dob.split('T')[0]}
+              className='w-[15rem]'
+              onBlur={handleBlur}
+              onChange={handleChange}
+              name="dob"
+              type='date'
+              hasError={!isBlank(errors.dob) && touched.dob}
+              errorMessage={errors.dob}
+            />
+            {/* <DatePicker
               label="Năm sinh"
               value={values.dob}
               name="dob"
-              onChange={handleChange} />
-            <button type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Đăng ký</button>
+              onChange={handleChange} /> */}
+            <button type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Lưu</button>
           </form>}
       </Formik>
     </Loader>

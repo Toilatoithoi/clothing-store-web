@@ -221,7 +221,8 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
           <div className='text-[#bc0516] text-[1.6rem] py-[0.8rem] cursor-pointer'>Hướng dẫn kích thước</div>
           <div className='flex items-center'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Số lượng</div>
-            <div><InputCount value={quantity} onChange={setQuantity} /></div>
+
+            <div><InputCount value={quantity} onChange={setQuantity} min={0} max={selectedModel?.stock} /></div>
           </div>
           <div className='flex items-center py-[0.8rem]'>
             <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>

@@ -13,7 +13,7 @@ import ModalProvider from '@/components/ModalProvider'
 import LoginForm from '@/components/LoginForm'
 import SignUpForm from '@/components/SignUpForm'
 import useSWR, { mutate } from 'swr'
-import { APP_STATUS, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER } from '@/store/key'
+import { APP_STATUS, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '@/store/key'
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify'
 import { getKey } from '@/utils/localStorage'
@@ -27,6 +27,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // pathname lấy ra từ loacalhost:3000/
   const pathname = usePathname();
   const router = useRouter()
 
@@ -51,9 +52,12 @@ export default function RootLayout({
   const { data: triggerShowRegister } = useSWR<boolean>(COMMON_SHOW_REGISTER);
 
   useEffect(() => {
-    const privateRoute = ['/list-bill', '/user-cart']
+    // khi đăng xuất thì khi ở những trang này sẽ quay về trang home
+    const privateRoute = ['/list-bill', '/user-cart', '/payment', '/user']
     if (appStatus) {
       if (!appStatus.isAuthenticated) {
+        // nếu một trong những item này trả về true thì inPrivate trả về true
+        // every thì tất cả item này trả về true thì inPrivate mới trả về true
         const inPrivate = privateRoute.some(item => pathname.startsWith(item));
         if (inPrivate) {
           router.push('/')
@@ -75,7 +79,7 @@ export default function RootLayout({
     // để thay đổi giá trị của state global dùng mutate
     // nếu userInfo == null  thì APP_STATUS set bằng false
     // APP_STATUS bằng true là đã login
-    mutate(APP_STATUS, { isAuthenticated: userInfo != null && String(userInfo) != '' })
+      // mutate(APP_STATUS, { isAuthenticated: userInfo != null || String(userInfo) != '' })   
   }, [userInfo])
 
   useEffect(() => {

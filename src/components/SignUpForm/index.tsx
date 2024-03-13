@@ -19,6 +19,7 @@ import {MuiPickersUtilsProvider} from '@material-ui/pickers';
 import { TextField } from "@material-ui/core";
 import  DatePicker from '../DatePicker';
 import { formatDateToString } from '@/utils/datetime';
+import Combobox, { ComboboxOption } from '../Combobox';
 
 interface SingUpPayload {
   surname: string;
@@ -36,6 +37,7 @@ const registerFetcher = (key: string,) => {
 }
 
 const SignUpForm = (props: { onShowLogin(): void }) => {
+  const genderOptions: ComboboxOption[] = [{ label: 'Nam', value: 'Nam' }, { label: 'Nữ', value: 'Nữ' }];
   const componentId = useRef(uuid())
   // gửi dữ liệu từ form và chỉ kích hoạt khi có trigger và khi có trigger mình sẽ truyền data xuống server
   // khác với useSWR useMutation có trigger mình có thể truyền data xuông server rồi mình respone
@@ -174,20 +176,32 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
               hasError={!isBlank(errors.address) && touched.address}
               errorMessage={errors.address}
             />
-             <TextInput
+             <Combobox
+              options={genderOptions}
               label='Giới tính'
-              value={values.gender}
-              onBlur={handleBlur}
-              onChange={handleChange}
-              name="gender"
-              hasError={!isBlank(errors.gender) && touched.gender}
+              selected={values.gender}
+              onChange={(option) => {
+                setFieldValue('gender', option.value);
+              }}
+              hasError={touched.gender && !isBlank(errors.gender)}
               errorMessage={errors.gender}
             />
-            <DatePicker 
+            <TextInput
+              label='Ngày sinh'
+              value={values.dob.split('T')[0]}
+              className='w-[15rem]'
+              onBlur={handleBlur}
+              onChange={handleChange}
+              name="dob"
+              type='date'
+              hasError={!isBlank(errors.dob) && touched.dob}
+              errorMessage={errors.dob}
+            />
+            {/* <DatePicker 
               label="Năm sinh"
               value={values.dob}
               name="dob"
-              onChange={handleChange} />
+              onChange={handleChange} /> */}
             <button type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Đăng ký</button>
           </form>}
       </Formik>
