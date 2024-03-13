@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import anhBia from '@/assets/png/promotion.jpg'
 import Image from 'next/image'
@@ -6,8 +7,19 @@ import { FaPlus } from "react-icons/fa";
 
 import Post from '@/components/Post';
 import Link from 'next/link';
+import { useSWRWrapper } from '@/store/custom';
+import { PostRes } from '@/interfaces/model';
+import { useRouter } from 'next/navigation';
 
 const New = () => {
+  const { data: postData } = useSWRWrapper<PostRes[]>('/api/post', {
+    url: '/api/post',
+  })
+  const route = useRouter();
+  const handleClickDetail = () => {
+    route.push(`/promotion/4`)
+  }
+
   return (
     <div>
       <div className='flex gap-1 text-gray-300 pl-8 h-[4rem] mb-4 items-center'>          
@@ -22,13 +34,13 @@ const New = () => {
               <LuClock4 className='my-1' />
               <div className=''>20/12/2023</div>
             </div>
-            <div className='text-[1.2rem] font-bold'>ENJOY CHRISMAS | MUA 1 TẶNG 1 toàn bộ hệ thống</div>
+            <div className='text-[1.2rem] font-bold'>ENJOY CHRISMAS | 2023 Holidays</div>
           </div>
           <div className='text-[1rem] font-medium mb-6 cursor-pointer'>
-            Mùa lễ hội đã tới, hệ thống thời trang nam 360®  gửi tới bạn chương trình ưu đãi lớn nhất mùa Noel này – MUA 1 TẶNG 1 hàng ngàn sản phẩm thu đông --{'>'} Link các sản phẩm tại đây – Giảm đến 50% các sản phẩm áo khoác,...					
+             Mùa lễ Giáng sinh đã rất cận kề, tín đồ thời trang hẳn không thể bỏ lỡ các gam màu đặc trưng của mùa lễ hội, 360® tung ra BST đậm màu sắc Noel, mở ra một bữa tiệc cuối năm trọn vị cảm xúc.					
           </div>
           <div className='flex cursor-pointer text-red-700 hover:text-green-700'>
-            <button type='button' className='font-bold text-[1.2rem] mr-1'>Xem thêm</button>
+            <button onClick={handleClickDetail} type='button' className='font-bold text-[1.2rem] mr-1'>Xem thêm</button>
             <FaPlus className='text-[1rem] mt-[0.45rem]' />
           </div>    
         </div>
@@ -38,23 +50,11 @@ const New = () => {
       </div>
       <div className='flex flex-1 pl-8 mb-8'>
         <div className="flex flex-1 gap-8 flex-wrap items-start">
-          <div className='h-full'>
-            <Post />
-            <Post />
-            <Post />
-          </div>    
-
-          <div className='h-full'>
-            <Post />
-            <Post />
-            <Post />
-          </div>
-
-          <div className='h-full'>
-            <Post />
-            <Post />
-            <Post />
-          </div> 
+          {
+              postData?.map((item, idx) => (
+                <Post data={item} key={item.id} />
+              ))
+            }    
         </div>
       </div>
       <div className='w-full flex items-center justify-center mb-14'>
