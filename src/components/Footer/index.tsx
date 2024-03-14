@@ -1,11 +1,7 @@
 'use client'
 import React from 'react'
 import './style.scss'
-import { FaFacebookF } from "react-icons/fa6";
-import { FaInstagram } from "react-icons/fa";
-import { FaTiktok } from "react-icons/fa6";
-import { FaYoutube } from "react-icons/fa6";
-import { SiShopee } from "react-icons/si";
+import Video from '@/assets/svg/video.svg'
 
 const Footer = () => {
   return (
@@ -17,40 +13,40 @@ const Footer = () => {
         <div className="flex gap-5 justify-between mb-7">
           {/* Thương hiệu */}
           <div className="flex flex-col">
-               {/* tiêu đề */}
-               <span className="font-bold mb-2 text-[1.2rem]">
-                    Về thương hiệu
-               </span>
-               {/*nội dung  */}
-               <ul>
-                <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Giới thiệu 360</li>
-                <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Hệ thống cửa hàng</li>
-                <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Khuyến mãi</li>
-                <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Tuyển dụng</li>
-               </ul>
+            {/* tiêu đề */}
+            <span className="font-bold mb-2 text-[1.2rem]">
+              Về thương hiệu
+            </span>
+            {/*nội dung  */}
+            <ul>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Giới thiệu 360</li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Hệ thống cửa hàng</li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Khuyến mãi</li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Tuyển dụng</li>
+            </ul>
           </div>
           {/* hộ trợ khách hàng */}
           <div className="flex flex-col">
-              {/* tiêu để */}
-              <span className="font-bold mb-2 text-[1.2rem]">
-                  Hộ trợ khách hàng
-              </span>
-              {/* nội dung */}
-              <ul>
-                <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Chính sách bảo mật thông tin</li>
-                <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Chính sách đổi trả</li>
-                <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Hướng dẫn đặt hàng</li>
-                <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Chính sách vận chuyển</li>
-              </ul>
-            </div>
-            {/* dịch vụ */}
+            {/* tiêu để */}
+            <span className="font-bold mb-2 text-[1.2rem]">
+              Hộ trợ khách hàng
+            </span>
+            {/* nội dung */}
+            <ul>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Chính sách bảo mật thông tin</li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Chính sách đổi trả</li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Hướng dẫn đặt hàng</li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Chính sách vận chuyển</li>
+            </ul>
+          </div>
+          {/* dịch vụ */}
           <div className="flex flex-col">
-              {/* tiêu đề */}
-              <span className="font-bold mb-2 text-[1.2rem]">
-                  Dịch vụ khách hàng
-              </span>
-              {/* nội dung */}
-              <span className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Liên hệ chúng tôi</span>
+            {/* tiêu đề */}
+            <span className="font-bold mb-2 text-[1.2rem]">
+              Dịch vụ khách hàng
+            </span>
+            {/* nội dung */}
+            <span className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Liên hệ chúng tôi</span>
           </div>
         </div>
 
@@ -58,7 +54,7 @@ const Footer = () => {
         <div className="flex flex-col">
           {/* tiêu đề */}
           <span className="font-bold mb-2 text-[1.2rem]">
-              Công ty cổ phần thời trang 360
+            Công ty cổ phần thời trang 360
           </span>
           {/* nội dung */}
           <ul>
@@ -77,11 +73,12 @@ const Footer = () => {
           Kết nối 360 cập nhật những thông tin mới nhất
         </span>
         <ul className="flex ml-2 mb-4 align-middle items-center gap-5">
-          <li><FaFacebookF /></li>
+          <li><Video /></li>
+          {/* <li><FaFacebookF /></li>
           <li><FaInstagram /></li>
           <li><FaTiktok /></li>
           <li><FaYoutube /></li>
-          <li><SiShopee /></li>
+          <li><SiShopee /></li> */}
         </ul>
         {/* <span className="font-bold mb-5 text-[1.2rem]">
           Đăng kí nhận tin từ 360

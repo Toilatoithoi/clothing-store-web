@@ -23,7 +23,7 @@ const UserCart = () => {
   const formRef = useRef<FormikProps<UserCartForm>>()
   // điều hướng route
   const router = useRouter();
-  const { addToCart, deleteToCart,  data } = useCart();
+  const { addToCart, deleteToCart, data } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
   const timer = useRef<NodeJS.Timeout>()
@@ -44,11 +44,9 @@ const UserCart = () => {
     }
   }, [data])
 
-  console.log({ data })
 
   const handleSubmit = (values: UserCartForm) => {
     // value phải cùng kiểu với initialValues
-    console.log(values)
     // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
     router.push('/payment')
   }
@@ -61,18 +59,14 @@ const UserCart = () => {
       clearTimeout(timer.current)
     }
     // call api để update value của user-cart
-    timer.current = setTimeout(() => {
-      addToCart({ ...item, quantity: qty }, true);
-    }, 500);
+    addToCart({ ...item, quantity: qty }, true);
   }
 
-  const handledelete= (item: ProductCart) => {
+  const handledelete = (item: ProductCart) => {
     // setFieldValues cho field truyền value
     // data[${idx}].quantity từng phần tử trong data.quantity truyền giá trị
     // call api để update value của user-cart
-    timer.current = setTimeout(() => {
-      deleteToCart({ ...item});
-    }, 500);
+    deleteToCart({ ...item });
   }
   return (
     <div>
@@ -98,20 +92,17 @@ const UserCart = () => {
                 {
                   values.data.map((item, idx) => (
                     <>
-                    {/*  do đang dùng<> khi render ra no sẽ không có thằng này nếu không truyền key no sẽ có nhưng lỗi hiển thị ở console.log */}
+                      {/*  do đang dùng<> khi render ra no sẽ không có thằng này nếu không truyền key no sẽ có nhưng lỗi hiển thị ở console.log */}
                       <div key={idx + values.data.length} className='flex col-span-2'>
                         <Image src={item.image} className='object-contain mr-4' alt="product" width={80} height={100} />
                         <div>
                           <div>{item.product.name}</div>
                           <div>{item.size}</div>
                           <div>{item.color}</div>
-                          <button type='button' onClick={() => handledelete(item)}className='cursor-pointer hover:text-red-500'>Xóa</button>
+                          <button type='button' onClick={() => handledelete(item)} className='cursor-pointer hover:text-red-500'>Xóa</button>
                         </div>
                       </div>
-                      <div key={idx + values.data.length + 2} className='text-center'>{item.price}</div>   
-                      {
-                        console.log(item.stock)
-                      }
+                      <div key={idx + values.data.length + 2} className='text-center'>{item.price}</div>
                       <div key={idx + values.data.length + 3} className='flex justify-center'><InputCount min={0} max={item.stock} value={item.quantity} onChange={(qty) => handleChangeQty(qty, idx, item)} /></div>
                       <div key={idx + values.data.length + 4} className='text-center'>{item.price}</div>
                     </>
