@@ -10,9 +10,10 @@ import Link from 'next/link';
 import { useSWRWrapper } from '@/store/custom';
 import { PostRes } from '@/interfaces/model';
 import { useRouter } from 'next/navigation';
+import { PaginationRes } from '@/interfaces';
 
 const New = () => {
-  const { data: postData } = useSWRWrapper<PostRes[]>('/api/post', {
+  const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post', {
     url: '/api/post',
   })
   const route = useRouter();
@@ -51,7 +52,7 @@ const New = () => {
       <div className='flex flex-1 pl-8 mb-8'>
         <div className="flex flex-1 gap-8 flex-wrap items-start">
           {
-              postData?.map((item, idx) => (
+              postData?.items.map((item, idx) => (
                 <Post data={item} key={item.id} />
               ))
             }    

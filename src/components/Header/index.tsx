@@ -49,19 +49,19 @@ const ListConfig = [
     children: [
       {
         label: "MONSOON 'S COMING",
-        path: '/look-book-detail/1',
+        path: 'look-book-detail/1',
       },
       {
         label: 'NEW SEASON BEGINS',
-        path: '/look-book-detail/2',
+        path: 'look-book-detail/2',
       },
       {
         label: 'THE COMPLETELY PERFECT',
-        path: '/look-book-detail/3',
+        path: 'look-book-detail/3',
       },
       {
         label: 'AUTUMN COMING',
-        path: '/look-book-detail/4',
+        path: 'look-book-detail/4',
       },
     ]
   },
