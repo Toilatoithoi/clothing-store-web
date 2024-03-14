@@ -60,18 +60,12 @@ const Payment = () => {
       router.push(`/list-bill/${data.id}`)
       // clear cart -> call api clear cart
       mutate() // -> muate key /api/cart  để useSWR query lại api/cart
-      
+
     }
   })
-  const [quantity, setQuantity] = useState(1);
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
-  const timer = useRef<NodeJS.Timeout>()
 
-  const [cityOptions, setCityOptions] = useState<ComboboxOption[]>([])
-  const [districtsOptions, setDistrictsOptions] = useState<Record<string, ComboboxOption[]>>({})
-  const [wardsOptions, setWardsOptions] = useState<Record<string, ComboboxOption[]>>({})
   const { data: userData } = useUser({})
-  console.log(userData)
 
   useEffect(() => {
     // [] để chỉ chạy 1 lần đầu tiên 
@@ -137,12 +131,10 @@ const Payment = () => {
       })
 
 
-      setCityOptions(cityOptions);
-      setDistrictsOptions(districtsOptions);
-      setWardsOptions(wardsOptions);
-      console.log({ cityOptions })
-      console.log({ districtsOptions })
-      console.log({ wardsOptions })
+      // setCityOptions(cityOptions);
+      // setDistrictsOptions(districtsOptions);
+      // setWardsOptions(wardsOptions);
+
 
     } catch (error) {
       console.log(error)
@@ -151,7 +143,6 @@ const Payment = () => {
 
   const handlePayment = (values: PaymentForm) => {
     // clg viết tắt 
-    console.log('payment', values)
     addToBill(values)
     // call api với values
   }
@@ -169,7 +160,6 @@ const Payment = () => {
     // wards: yup.string().label('Phường/xã').required(),
     // address: yup.string().label('Địa chỉ').required(),
   })
-
   return (
     <Loader id={componentId.current} loading={isLoading} >
       <div className='flex items-center justify-center my-[3.2rem]'>
@@ -206,6 +196,7 @@ const Payment = () => {
                   {/* value theo PaymentForm */}
                   <TextInput
                     name='name'
+                    value={values.name}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     hasError={touched.name && !isBlank(errors.name)}
@@ -215,6 +206,7 @@ const Payment = () => {
                     label="Họ và tên" />
                   <TextInput
                     name='phone'
+                    value={values.phone}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     hasError={touched.phone && !isBlank(errors.phone)}
@@ -223,6 +215,7 @@ const Payment = () => {
                     label="Số điện thoại" />
                   <TextInput
                     name='email'
+                    value={values.email}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     hasError={touched.email && !isBlank(errors.email)}
@@ -234,12 +227,14 @@ const Payment = () => {
                     name='city'
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    value={values.city}
                     hasError={touched.city && !isBlank(errors.city)}
                     errorMessage={errors.city}
                     placeholder='Tỉnh/Thành phố'
                     label="Tỉnh/Thành phố" />
                   <TextInput
                     name='district'
+                    value={values.district}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     hasError={touched.district && !isBlank(errors.district)}
@@ -249,6 +244,7 @@ const Payment = () => {
                   <TextInput
                     name='wards'
                     onBlur={handleBlur}
+                    value={values.wards}
                     onChange={handleChange}
                     hasError={touched.wards && !isBlank(errors.wards)}
                     errorMessage={errors.wards}
@@ -290,6 +286,7 @@ const Payment = () => {
 
                   <TextInput
                     name='address'
+                    value={values.address}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     hasError={touched.address && !isBlank(errors.address)}
@@ -298,6 +295,7 @@ const Payment = () => {
                     label="Địa chỉ" />
                   <TextInput
                     name='note'
+                    value={values.note}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     placeholder='Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn.'

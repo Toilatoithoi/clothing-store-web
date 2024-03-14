@@ -16,7 +16,6 @@ import useSWR, { mutate } from 'swr'
 import { APP_STATUS, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '@/store/key'
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify'
-import { getKey } from '@/utils/localStorage'
 import { useAppStatus, useUserInfo } from '@/store/globalSWR'
 import Preload from '@/components/Preload'
 import { usePathname, useRouter } from 'next/navigation'
@@ -53,7 +52,8 @@ export default function RootLayout({
 
   useEffect(() => {
     // khi đăng xuất thì khi ở những trang này sẽ quay về trang home
-    const privateRoute = ['/list-bill', '/user-cart', '/payment', '/user']
+    const privateRoute = ['/list-bill', '/user-cart', '/payment', '/user'];
+    console.log(appStatus)
     if (appStatus) {
       if (!appStatus.isAuthenticated) {
         // nếu một trong những item này trả về true thì inPrivate trả về true
@@ -79,7 +79,8 @@ export default function RootLayout({
     // để thay đổi giá trị của state global dùng mutate
     // nếu userInfo == null  thì APP_STATUS set bằng false
     // APP_STATUS bằng true là đã login
-      // mutate(APP_STATUS, { isAuthenticated: userInfo != null || String(userInfo) != '' })   
+    console.log({ userInfo })
+    mutate(APP_STATUS, { isAuthenticated: userInfo?.username != null })
   }, [userInfo])
 
   useEffect(() => {

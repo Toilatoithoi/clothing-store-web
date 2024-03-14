@@ -30,8 +30,6 @@ export const useMutation = <T = Record<string, unknown>,>(
   } & SWRMutationConfiguration<T, Record<string, unknown>>,
 ) => {
   const { mutate } = useSWRConfig();
-  // lấy ra accessToken
-  const accessToken = getKey('access_token') as string;
   // trả về một hook useSWRMutation thư viện
   return useSWRMutation(
     key,
@@ -42,6 +40,8 @@ export const useMutation = <T = Record<string, unknown>,>(
     ) => {
       return new Promise<T>((resolve, reject) => {
         // bắt đầu fetcher thì sẽ set lại COMMON_LOADING để bằng true show loading
+        const accessToken = getKey('access_token') as string;
+
         if (options.loading) {
           mutate(COMMON_LOADING, {
             componentId: options.componentId,
@@ -140,13 +140,14 @@ export function useSWRWrapper<T = Record<string, unknown>>(
 ) {
   let keyParse = typeof key === 'string' ? key : key?.();
   // lấy ra accessToken
-  const accessToken = getKey('access_token') as string;
   // trả về một hook useSWRMutation thư viện
   return useSWR<T>(
     isBlank(keyParse!) ? null : (keyParse as any),
     () => {
       return new Promise((resolve, reject) => {
         // thêm fetcher để mỗi khi dùng không phải thêm mà map sẵn vào useMution
+        const accessToken = getKey('access_token') as string;
+
         fetcher<T>(
           url ?? (typeof key === 'string' ? key : key?.()) ?? '',
           method ?? METHOD.GET,

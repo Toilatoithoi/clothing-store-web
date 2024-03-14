@@ -180,7 +180,6 @@ export const useUser = (options: {
       content: 'Cập nhật tài khoản thành công',
     }
   })
-  console.log(trigger)
   // global state dùng key để lấy gia 1 giá trị bất kì
   // key hiểu nôm na là id để lấy ra giá trị của state
 
