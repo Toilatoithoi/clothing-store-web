@@ -1,29 +1,35 @@
 'use client'
 import Video from '@/components/Video';
-import React from 'react'
+import { LookBookRes } from '@/interfaces/model';
+import { useSWRWrapper } from '@/store/custom';
+import React, { useEffect } from 'react'
 
 const LookBookDetail = (props: { params: { lookBookId: string; } }) => {
-  return (
-      <div>
-          <div className='h-[4.5rem] w-full'>
-              <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center flex gap-[0.4rem] font-thin text-[1.2rem]'>
-                  <div className='text-gray-500'>Trang chủ</div>
-                  <div className='text-gray-500'>/</div>
-                  <div className='text-gray-500'>LookBook</div>
-                  <div className='text-gray-500'>/</div>
-                  <div className='text-gray-500'> ENJOY CHRISTMAS | 2023 Holidays</div>
-              </div>
-          </div>
-          <div>
-              <div className='h-[44.5rem] pl-8 flex mb-5'>
-                  <div className='flex-1'>
-                     <Video url='bw7I65kzG_Q' />
-                  </div>
-                  <div className='bg-[#f7f8fa] h-[44.5rem] w-[60rem] px-[1.6rem] py-[1.6rem] flex flex-col items-start justify-center cursor-pointer'>
-                      <div className='h-fit pb-4 mb-4 border-b-[0.05rem] border-gray-300 cursor-pointer'>   
-                          <div className='text-[1.8rem] font-bold'>ENJOY CHRISMAS | MUA 1 TẶNG 1 toàn bộ hệ thống</div>
-                      </div>
-                      <div className='text-[1rem] font-medium mb-6 cursor-pointer'>
+    const { data: lookbookDetail } = useSWRWrapper<LookBookRes>(`/api/lookbook/${props.params.lookBookId}`, {
+        url: `/api/lookbook/${props.params.lookBookId}`,
+    })
+    console.log(lookbookDetail)
+    return (
+        <div>
+            <div className='h-[4.5rem] w-full'>
+                <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center flex gap-[0.4rem] font-thin text-[1.2rem]'>
+                    <div className='text-gray-500'>Trang chủ</div>
+                    <div className='text-gray-500'>/</div>
+                    <div className='text-gray-500'>LookBook</div>
+                    <div className='text-gray-500'>/</div>
+                    <div className='text-gray-500'> {lookbookDetail?.title}</div>
+                </div>
+            </div>
+            <div>
+                <div className='h-[44.5rem] pl-8 flex mb-5'>
+                    <div className='flex-1'>
+                        <Video url={`${lookbookDetail?.url}`} />
+                    </div>
+                    <div className='content bg-[#f7f8fa] h-[44.5rem] w-[60rem] px-[1.6rem] py-[1.6rem] flex flex-col items-start justify-center cursor-pointer'>
+                        <div className='h-fit pb-4 mb-4 border-b-[0.05rem] border-gray-300 cursor-pointer'>
+                            <div className='text-[1.8rem] font-bold'>{lookbookDetail?.title}</div>
+                        </div>
+                        {/* <div className='text-[1rem] font-medium mb-6 cursor-pointer'>
                           Mùa lễ Giáng sinh đã rất cận kề, tín đồ thời trang hẳn không thể bỏ lỡ các gam màu đặc trưng của mùa lễ hội, 360® tung ra BST đậm màu sắc Noel, mở ra một bữa tiệc cuối năm trọn vị cảm xúc.
                       </div>
                       <div className='text-[1rem] font-medium mb-6 cursor-pointer'>
@@ -32,12 +38,13 @@ const LookBookDetail = (props: { params: { lookBookId: string; } }) => {
                       </div>
                       <div className='text-[1rem] font-medium mb-6 cursor-pointer'>
                       Tận hưởng mùa lễ hội bằng những thiết kế trending trong BST Giáng sinh mới nhất từ 360®. Hãy sở hữu ngay những items này để chiếm trọn spotlight mùa lễ hội bạn nhé!
-                      </div>
-                  </div>           
-              </div>
-          </div>
-      </div>
-  )
+                      </div>     */}
+                        <div className="content text-[1rem] font-medium mb-6 cursor-pointer" dangerouslySetInnerHTML={{ __html: lookbookDetail?.content || '' }}></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 export default LookBookDetail

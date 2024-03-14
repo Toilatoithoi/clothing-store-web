@@ -1,7 +1,7 @@
 import prisma from '@/lib/db';
 import { isBlank } from '@/utils';
 import { NextRequest, NextResponse } from 'next/server';
-import { CreatePostReq } from '@/interfaces/request';
+import { CreateLookBookReq, CreatePostReq } from '@/interfaces/request';
 import { RestError } from '@/utils/service';
 import { INPUT_INVALID, INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 import { Select } from '@material-ui/core';
@@ -16,8 +16,8 @@ export const GET = async (req: NextRequest) => {
     page = 0;
   }
   try {
-    const [post, count] = await prisma.$transaction([
-      prisma.post.findMany({
+    const [lookbook, count] = await prisma.$transaction([
+      prisma.look_book.findMany({
         orderBy: {
           createAt: 'asc',
         },
@@ -27,12 +27,12 @@ export const GET = async (req: NextRequest) => {
         }),
       }
       ),
-      prisma.post.count({
+      prisma.look_book.count({
         
       })
     ])
     return NextResponse.json({
-      items: post,
+      items: lookbook,
       // phân trang
       pagination: {
         totalCount: count,
@@ -49,7 +49,7 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (req: NextRequest) => {
     //validate input 
-    const body : CreatePostReq = await req.json();
+    const body : CreateLookBookReq = await req.json();
     console.log(body)
 
     if (isBlank(body.title) || isBlank(body.content) || isBlank(body.createAt)) {
@@ -60,13 +60,13 @@ export const POST = async (req: NextRequest) => {
     try {
 
       // thêm vào db
-        const createdPost = await prisma.post.create({
+        const createdLookBook = await prisma.look_book.create({
         data: {
           ...body,
         }
       })
     
-      return NextResponse.json({createdPost})
+      return NextResponse.json({createdLookBook})
 
     } catch (error) {
         console.log({error})

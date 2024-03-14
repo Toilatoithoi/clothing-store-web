@@ -44,8 +44,8 @@ const New = () => {
             <FaPlus className='text-[1rem] mt-[0.45rem]' />
           </div>    
         </div>
-        <div className='flex-1'>
-          <Image className="object-contain" src={anhBia} alt="Ảnh bìa" width={850}/>
+        <div className=''>
+          <Image className="object-contain overflow-hidden" src={anhBia} alt="Ảnh bìa" width={850} height={200}/>
         </div>
       </div>
       <div className='flex flex-1 pl-8 mb-8'>

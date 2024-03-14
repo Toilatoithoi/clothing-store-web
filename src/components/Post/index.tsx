@@ -13,8 +13,8 @@ const Post = (props: { data: PostRes }) => {
     route.push(`/promotion/${props.data.id}`)
   }
   return (
-    <div className="h-fit flex flex-col items-start mb-4 border border-gray-300">
-        <Image className="object-contain" src={props.data.image} alt="Ảnh sản phẩm" width={404} height={200}/>
+    <div className="h-[30rem] flex flex-col items-start justify-center mb-4 border border-gray-300">
+        <Image className="object-contain overflow-hidden text-ellipsis" src={props.data.image} alt="Ảnh sản phẩm" width={404} height={200}/>
         <div className='h-fit w-[40rem] px-[1.6rem] py-[1.6rem] flex flex-col items-start justify-center cursor-pointer'>
           <div className='h-fit pb-8 mb-2 border-b-[0.05rem] border-gray-300 cursor-pointer'>
             <div className='flex text-[1rem] gap-1'>

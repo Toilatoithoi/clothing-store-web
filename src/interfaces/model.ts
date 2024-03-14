@@ -43,6 +43,14 @@ export interface PostRes {
   image: string;
 }
 
+export interface LookBookRes {
+  id: number;
+  title: string;
+  content: string;
+  createAt: string;
+  url: string;
+}
+
 export interface Bill{
   [x: string]: any;
   id: number;

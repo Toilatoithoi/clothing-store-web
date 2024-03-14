@@ -58,6 +58,14 @@ export interface CreatePostReq {
   title: string;
   content: string;
   createAt: string;
+  image: string;
+}
+
+export interface CreateLookBookReq {
+  title: string;
+  content: string;
+  createAt: string;
+  url: string;
 }
 
 export enum PRODUCT_STATUS {

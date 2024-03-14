@@ -39,7 +39,7 @@ const ListConfig = [
     children: [
       {
         label: 'Tầm nhìn-Sứ mệnh',
-        path: '/tam-nhin-su-menh',
+        path: 'about-shop',
       },
     ]
   },
@@ -49,19 +49,19 @@ const ListConfig = [
     children: [
       {
         label: "MONSOON 'S COMING",
-        path: '/bo-suu-tap',
+        path: '/look-book-detail/1',
       },
       {
         label: 'NEW SEASON BEGINS',
-        path: '/bo-suu-tap',
+        path: '/look-book-detail/2',
       },
       {
         label: 'THE COMPLETELY PERFECT',
-        path: '/bo-suu-tap',
+        path: '/look-book-detail/3',
       },
       {
-        label: 'CAREFREE',
-        path: '/bo-suu-tap',
+        label: 'AUTUMN COMING',
+        path: '/look-book-detail/4',
       },
     ]
   },
@@ -207,7 +207,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
                     <div className="bg-white list-nav shadow-sm z-10 border-t border-[#BC0517] absolute top-full left-0 w-[35vw] max-h-[40rem] p-[2.4rem] gap-[3.2rem]">
                       <div className="grid grid-cols-2 gap-x-[2rem] flex-1">
                         {item.children?.map((subNar, idx) =>
-                          <div key={idx} className="hover:text-black cursor-pointer text-[1.6rem] h-[4.8rem] flex items-center border-b border-gray-200">{subNar.label}</div>
+                          <div key={idx} className="hover:text-black cursor-pointer text-[1.6rem] h-[4.8rem] flex items-center border-b border-gray-200"><Link href={`/${item.children[idx].path}`}>{subNar.label}</Link></div>
                         )}
                       </div>
                     </div>
