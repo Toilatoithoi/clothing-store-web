@@ -26,6 +26,15 @@ export interface Payment {
   note?: string;
 }
 
+export interface UserPayMENT {
+  name: string;
+  phoneNumber: string;
+  // password: string;
+  gender: string;
+  address: string;
+  dob: string;
+  username: string;
+}
 
 export const useCart = () => {
   // lấy dữ liệu cart từ api
@@ -148,7 +157,7 @@ export const useUser = (options: {
   componentId?: string;
 }) => {
   // lấy dữ liệu user từ api
-  const { data } = useSWRWrapper<UserPayload>('/api/user', {
+  const { data } = useSWRWrapper<UserPayMENT>('/api/user', {
     url: '/api/user',
     method: METHOD.GET
   })
