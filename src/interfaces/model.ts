@@ -23,6 +23,7 @@ export interface ProductModel {
   size: string;
   image: string;
   stock: number;
+  sold: number;
   id: number;
 }
 
@@ -40,6 +41,14 @@ export interface PostRes {
   content: string;
   createAt: string;
   image: string;
+}
+
+export interface LookBookRes {
+  id: number;
+  title: string;
+  content: string;
+  createAt: string;
+  url: string;
 }
 
 export interface Bill{

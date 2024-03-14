@@ -1,3 +1,4 @@
+import { UserPayload } from '@/app/user/page';
 import { METHOD } from '@/constants';
 import { Bill, BillProduct, ProductDetail, ProductModel } from '@/interfaces/model';
 import { useMutation, useSWRWrapper } from '@/store/custom';
@@ -25,6 +26,15 @@ export interface Payment {
   note?: string;
 }
 
+export interface UserPayMENT {
+  name: string;
+  phoneNumber: string;
+  // password: string;
+  gender: string;
+  address: string;
+  dob: string;
+  username: string;
+}
 
 export const useCart = () => {
   // lấy dữ liệu cart từ api
@@ -142,6 +152,58 @@ export const useBill = (options: {
     addToBill,
   }
 }
+
+export const useUser = (options: {
+  componentId?: string;
+}) => {
+  // lấy dữ liệu user từ api
+  const { data } = useSWRWrapper<UserPayMENT>('/api/user', {
+    url: '/api/user',
+    method: METHOD.GET
+  })
+
+  // gọi trigger là dữ liệu nhập vào khi cần updateToUser sẽ update
+  const { trigger } = useMutation<UserPayload>('/api/user/verifyToken', {
+    url: '/api/user/verifyToken',
+    method: METHOD.PUT,
+    onSuccess(data) {
+      console.log(data)
+    },
+    // thực hiện loading
+    componentId: options.componentId,
+    loading: true,
+    notification: {
+      // config thông báo
+      // title dùng chung cho thành công và thấT bại
+      title: 'Cập nhật tài khoản',
+      // chỉ dùng cho thành công
+      content: 'Cập nhật tài khoản thành công',
+    }
+  })
+  console.log(trigger)
+  // global state dùng key để lấy gia 1 giá trị bất kì
+  // key hiểu nôm na là id để lấy ra giá trị của state
+
+  const updateToUser = (data: UserPayload) => {
+    trigger({
+      //đầu vào của api tạo bill 
+      name: data.name,
+      phoneNumber: data.phoneNumber,
+      // password: string;
+      gender: data.gender,
+      address: data.address,
+      dob: data.dob,
+    })
+  }
+
+  return {
+    // data là dữ liệu của giỏ hàng lấy từ api
+    data,
+    updateToUser,
+  }
+}
+
+
 
 
 

@@ -100,7 +100,8 @@ export const POST = async (req: NextRequest) => {
     //   }
     // })
     // tính toán lại sold và stock
-
+    
+    // transaction là để đồng bộ các câu lệnh sql không liên quan theo tuần tự khi một cái không thành công các cái còn lại sẽ rollback
     const [createBill] = await prisma.$transaction([
       prisma.bill.create({
         data: {
@@ -124,15 +125,18 @@ export const POST = async (req: NextRequest) => {
           },
         }
       }),
+      // cập nhật lại stock và sold
       ...body.bill_product.map((item: bill_product) => prisma.product_model.update({
         where: {
           id: item.product_model_id
         },
         data: {
           sold: {
+            // công thêm item.quantity
             increment: item.quantity
           },
           stock: {
+            // trừ đi item.quantity
             decrement: item.quantity,
           }
         }

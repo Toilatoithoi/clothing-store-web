@@ -39,6 +39,8 @@ export const GET = async (req: NextRequest) => {
             price: true,
             size: true,
             image: true,
+            sold: true,
+            stock: true
           },
         },
       }

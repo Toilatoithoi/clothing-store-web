@@ -2,6 +2,7 @@ import { RestError, hashPassword, verifyToken } from '@/utils/service';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { INTERNAL_SERVER_ERROR, UNAUTHORIZED } from '@/constants/errorCodes';
+import { UserPayload } from '@/app/user/page';
 
 export const GET = async (req: NextRequest) => {
   // verify token
@@ -34,36 +35,24 @@ export const PUT = async (req: NextRequest) => {
   if (data == null) {
     return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
   }
-  const body = await req.json();
+  const body: UserPayload = await req.json();
   // validate data: phoneNumber có hợp lệ k? .....
 
   try {
-    const userData = await prisma.user.findFirst({ where: {username: data.username } });
-    // lây thông tin user trên db -> nếu mà không có thông tin user -> thông báo lỗi user not exist
-    if (userData == null) {
-      return NextResponse.json({
-        code: "USER_NOT_EXIST",
-        message: "User không tồn tại"
-      }, { status: 403 })
-    }
-    // hash password
-    const hash = hashPassword(body.password);
     // update data vào hệ thống
     const res = await prisma.user.update({
       where: {
-        id: userData.id
+        id: data.id
       },
       data: {
         name: body.name,
-        dob: body.dob,
+        dob: new Date(body.dob).toISOString(),
         phoneNumber: body.phoneNumber,
         address: body.address,
-        gender: body.gender,
-        password: hash
+        gender: body.gender      
       }
     })
-
-    return NextResponse.json({ id: res.id })
+    return NextResponse.json({ res })
   } catch (error) {
     return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }

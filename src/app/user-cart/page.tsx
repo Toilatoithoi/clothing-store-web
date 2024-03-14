@@ -109,7 +109,10 @@ const UserCart = () => {
                         </div>
                       </div>
                       <div key={idx + values.data.length + 2} className='text-center'>{item.price}</div>   
-                      <div key={idx + values.data.length + 3} className='flex justify-center'><InputCount value={item.quantity} onChange={(qty) => handleChangeQty(qty, idx, item)} /></div>
+                      {
+                        console.log(item.stock)
+                      }
+                      <div key={idx + values.data.length + 3} className='flex justify-center'><InputCount min={0} max={item.stock} value={item.quantity} onChange={(qty) => handleChangeQty(qty, idx, item)} /></div>
                       <div key={idx + values.data.length + 4} className='text-center'>{item.price}</div>
                     </>
                   ))}
@@ -133,8 +136,8 @@ const UserCart = () => {
                   <button type='button' className='bg-[#2d2d2d]  px-4 text-white'>Áp dụng</button>
                 </div>
                 <div className='text-[1.6rem] font-bold mb-[1.5rem]'>Free ship cho đơn hàng từ 500.000đ</div>
-                <div className='text-[1.6rem] font-bold py-[1.5rem] border-t border-gray-200'>Chùng tôi chấp nhận</div>
-                <div><Pay className="w-[10rem]" /></div>
+                {/* <div className='text-[1.6rem] font-bold py-[1.5rem] border-t border-gray-200'>Chùng tôi chấp nhận</div>
+                <div><Pay className="w-[10rem]" /></div> */}
               </div>
             </div>
           </form>

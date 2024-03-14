@@ -11,21 +11,22 @@ import { useParams, useRouter } from 'next/navigation'
 import { useSWRWrapper } from '@/store/custom'
 import { PostRes } from '@/interfaces/model'
 import Link from 'next/link'
+import { PaginationRes } from '@/interfaces'
 
 const Promotion = (props: { promotionId?: string; }) => {
-  const [id, setId] = useState<string>('3'); // Sửa từ 'string | undefined' thành 'string'
+  // const [id, setId] = useState<string>('3'); // Sửa từ 'string | undefined' thành 'string'
 
   useEffect(() => {
     if (props.promotionId != null) {
-      setId(props.promotionId || '3');
+      // setId(props.promotionId || '3');
     }
   }, [props.promotionId])
 
-  const { data: postDetail } = useSWRWrapper<PostRes>(`/api/post/${id}`, {
-    url: `/api/post/${id}`,
+  const { data: postDetail } = useSWRWrapper<PostRes>(`/api/post/${props.promotionId}`, {
+    url: `/api/post/${props.promotionId}`,
   })
 
-  const { data: postData } = useSWRWrapper<PostRes[]>('/api/post', {
+  const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post', {
     url: '/api/post',
   })
   // Sử dụng hook useRouter để lấy đối tượng router
@@ -89,7 +90,7 @@ const Promotion = (props: { promotionId?: string; }) => {
               </div>
             </div> */}
             {
-              postData?.map((item, idx) => (
+              postData?.items.map((item, idx) => (
                 <Link href={`/promotion/${item.id}`} key={idx}>
                   <div className='flex gap-1 mb-4'>
                     <Image className="object-contain mb-8" src={item.image} alt="Ảnh bìa" width={80} height={90} />

@@ -37,7 +37,7 @@ const ProductSlider = () => {
   return (
     <div className='w-full relative'>
       <div ref={sliderRef} className="keen-slider">
-        {data?.items.map(item => <div className="keen-slider__slide number-slide1"><ProductCard data={item} key={item.id} /></div>)}
+        {data?.items.map((item , idx) => <div key={idx} className="keen-slider__slide number-slide1"><ProductCard data={item} key={item.id} /></div>)}
         {/* <div className="keen-slider__slide number-slide1"><ProductCard /></div>
         <div className="keen-slider__slide number-slide1"><ProductCard /></div>
         <div className="keen-slider__slide number-slide1"><ProductCard /></div>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { RestError, verifyToken } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
+import { bill_product } from '@prisma/client';
 
 export const PUT = async (req: NextRequest, { params }: { params: { billId: string; } }) => {
 
@@ -35,14 +36,46 @@ export const PUT = async (req: NextRequest, { params }: { params: { billId: stri
     const res = await prisma.bill.update({
       where: {
         id,
-        user_id: data.id
+        user_id: data.id,
       },
       data: {
         ...body,
-        user_id: undefined,
       }
     })
+    const bill_Check = prisma.bill.findFirst({
+      where: {
+        id,
+        user_id: data.id,
+        status: "CANCEL"
+      },   
+    })
 
+    if(bill_Check != null){
+      const [updateBill] = await prisma.$transaction([
+        // cập nhật lại stock và sold
+        ...body.bill_product.map((item: bill_product) => prisma.product_model.update({
+          where: {
+            id: item.product_model_id,
+          },
+          data: {
+            sold: {
+              // công thêm item.quantity
+              decrement: item.quantity
+            },
+            stock: {
+              // trừ đi item.quantity
+              increment: item.quantity,
+            }
+          }
+        }))
+      ])
+    }else{
+      return NextResponse.json({
+        code: "Bill_NOT_EXIST",
+        message: "Bill không tồn tại"
+      }, { status: 403 })
+    }
+  
     return NextResponse.json({ id: res.id })
   } catch (error) {
     console.log({ error })

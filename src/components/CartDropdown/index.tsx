@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 
 
 const CartDropdown = () => {
-  const { data } = useCart();
+  const { data, mutate } = useCart();
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
 
   // điều hướng route
@@ -39,7 +39,7 @@ const CartDropdown = () => {
       <div className='relative'>
         <HiOutlineShoppingBag />
         <div className='absolute font-bold translate-x-1/2 -translate-y-1/2 top-0 right-0 w-[1.8rem] h-[1.8rem] flex items-center justify-center bg-red-500 text-red-50  rounded-[50%] text-[1.2rem]'>
-          {summary.totalQuantity ?? '0'}
+          {data?.length != 0 ? summary.totalQuantity ?? '0': '0'}
         </div>
       </div>
       <div className='cart-menu absolute border top-full right-0 w-[30rem] p-6 min-h-[40rem] bg-white border-black'>
@@ -64,19 +64,26 @@ const CartDropdown = () => {
           )
             : <div className='text-[1.4rem] text-center'> Chưa có sản phẩm nào </div>}
         <div>
-          {summary.totalPrice > 0 && (
+          {summary.totalPrice > 0 && data?.length != 0 && (
             <div className='text-center text-[1.6rem] font-[700] border-b-2 border-gray-300 pb-2'>
               <div>Tổng cộng: {formatNumber(summary.totalPrice)} VND</div>
             </div>
           )}
-          {summary.totalPrice > 0 && (
+          {summary.totalPrice > 0 && data?.length != 0 && (
             <div className='flex items-center justify-center pt-4 mb-6'>
               <button onClick={handleViewCartPage} className='w-[25rem] flex items-center justify-center text-[1.6rem] font-bold p-4 text-white uppercase bg-[#bc0516] cursor-pointer ' type='button'>
                 Xem giỏ hàng
               </button>
             </div>
           )}
-          {summary.totalPrice > 0 && (
+         {/* {summary.totalPrice > 0 && data?.length != 0 && (
+            <div className='flex items-center justify-center pt-4 mb-6'>
+              <div className='w-[25rem] flex items-center justify-center text-[1.6rem] font-bold p-4 text-white uppercase bg-[#bc0516] cursor-pointer '>
+                Chưa có sản phẩm trong giỏ hàng
+              </div>
+            </div>
+          )} */}
+          {summary.totalPrice > 0 && data?.length != 0 && (
             <div className='flex items-center justify-center'>
               <button onClick={handleViewPaymentPage} className='w-[25rem] flex items-center justify-center text-[1.6rem] font-bold p-4 uppercase bg-white cursor-pointer border-2 border-gray-300' type='button'>
                 Thanh toán

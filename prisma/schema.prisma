@@ -131,3 +131,11 @@ model category {
   @@index([parent_id], map: "fk_parentId")
   @@index([id], map: "id")
 }
+
+model look_book {
+  id       Int       @id @default(autoincrement())
+  title    String?   @db.VarChar(255)
+  content  String?   @db.LongText
+  createAt DateTime? @db.Date
+  url      String?   @db.VarChar(255)
+}

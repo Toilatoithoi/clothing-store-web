@@ -83,7 +83,7 @@ const Footer = () => {
           <li><FaYoutube /></li>
           <li><SiShopee /></li>
         </ul>
-        <span className="font-bold mb-5 text-[1.2rem]">
+        {/* <span className="font-bold mb-5 text-[1.2rem]">
           Đăng kí nhận tin từ 360
         </span>
         <div className="flex items-center h-[3.4rem] mb-7">
@@ -91,14 +91,14 @@ const Footer = () => {
               <div className="h-full flex items-center justify-center bg-[#E6E7E9] p-4 text-center mt-1 border border-[black] hover:text-[white] hover:bg-gray-500">
                 <button className="text-[1rem] font-bold uppercase">Đăng ký</button>
               </div>
-        </div>
-        <span className="font-bold text-[1.2rem]">
+        </div> */}
+        {/* <span className="font-bold text-[1.2rem]">
           Phương thức thanh toán
         </span>
         <div className="flex">
              <img src="https://360.com.vn/wp-content/uploads/2022/06/pay.svg" className="w-[15rem] mr-10"></img>
              <img src="https://360.com.vn/wp-content/uploads/2022/06/bct.svg" className='w-[15rem]'></img>
-        </div>
+        </div> */}
       </div>
     </footer>
   )
