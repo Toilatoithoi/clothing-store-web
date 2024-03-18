@@ -1,7 +1,10 @@
 'use client'
 import React from 'react'
 import './style.scss'
-import Video from '@/assets/svg/video.svg'
+import Facebook from '@/assets/svg/facebook.svg'
+import Instagram from '@/assets/svg/instagram.svg'
+import Google from '@/assets/svg/google.svg'
+import PhoneCall from '@/assets/svg/phone-call.svg'
 
 const Footer = () => {
   return (
@@ -73,12 +76,11 @@ const Footer = () => {
           Kết nối 360 cập nhật những thông tin mới nhất
         </span>
         <ul className="flex ml-2 mb-4 align-middle items-center gap-5">
-          <li><Video /></li>
-          {/* <li><FaFacebookF /></li>
-          <li><FaInstagram /></li>
-          <li><FaTiktok /></li>
-          <li><FaYoutube /></li>
-          <li><SiShopee /></li> */}
+          {/* <li><Video /></li> */}
+          <li><Facebook /></li>
+          <li><Instagram /></li>
+          <li><Google /></li>
+          <li><PhoneCall /></li>     
         </ul>
         {/* <span className="font-bold mb-5 text-[1.2rem]">
           Đăng kí nhận tin từ 360

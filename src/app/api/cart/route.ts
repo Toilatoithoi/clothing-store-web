@@ -62,8 +62,6 @@ export const GET = async (req: NextRequest) => {
 }
 
 export const POST = async (req: NextRequest) => {
-
-
   try {
     const data = await verifyToken(req);
     if (data == null) {
@@ -77,28 +75,29 @@ export const POST = async (req: NextRequest) => {
       where: {
         user_id: data.id,
         // nếu không parseInt sẽ lỗi
-        product_model_id: Number(body.product_model_id)
+        product_model_id: Number(body.product_model_id),
       }
     })
-    let res = null
-    console.log({ cartItem })
-    if (cartItem) { // nếu product_mode đã dc thêm vào giỏ hàng thì cartItem sẽ khác null
 
+    let res = null
+    // console.log({ cartItem })
+    // console.log(Number(cartItem?.quantity))
+    if (cartItem) { // nếu product_mode đã dc thêm vào giỏ hàng thì cartItem sẽ khác null
       res = await prisma.cart.update({ // update quantity cho cartItem
         data: {
           quantity: body.override ? Number(body.quantity) : (cartItem.quantity ?? 0) + Number(body.quantity ?? 0)
         },
         where: {
-          id: cartItem.id
+          id: cartItem.id,   
         }
       })
-    } else { // nếu product_mode chưa dc thêm vào thì tạo mới
-      res = await prisma.cart.create({
-        data: {
-          user_id: data.id,
-          // nếu không parseInt sẽ lỗi
-          product_model_id: Number(body.product_model_id),
-          quantity: body.quantity,
+    } else{ // nếu product_mode chưa dc thêm vào thì tạo mới
+        res = await prisma.cart.create({
+          data: {
+            user_id: data.id,
+            // nếu không parseInt sẽ lỗi
+            product_model_id: Number(body.product_model_id),
+            quantity: body.quantity,
         }
       })
     }

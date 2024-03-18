@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { useKeenSlider } from "keen-slider/react"
 import 'keen-slider/keen-slider.min.css'
 import ProductCard from '../ProductCard'
-import { IoIosArrowBack } from "react-icons/io";
-import { IoIosArrowForward } from "react-icons/io";
+import Left from "@/assets/svg/arrow-left-circle.svg";
+import Right from "@/assets/svg/arrow-right-circle.svg";
 import { useSWRWrapper } from '@/store/custom'
 import { PaginationRes } from '@/interfaces'
 import { ProductRes } from '@/interfaces/model'
@@ -48,7 +48,7 @@ const ProductSlider = () => {
       </div>
       {loaded && instanceRef.current && (
         <>
-          <IoIosArrowBack
+          <Left
             className="absolute left-[2rem] top-1/2 -translate-y-1/2 text-[4rem] cursor-pointer text-gray-500 hover:text-gray-900"
             onClick={(e: any) => {
               if (currentSlide === 0) {
@@ -59,7 +59,7 @@ const ProductSlider = () => {
             }
           />
 
-          <IoIosArrowForward
+          <Right
             className="absolute right-[2rem] top-1/2 -translate-y-1/2 text-[4rem] cursor-pointer text-gray-500 hover:text-gray-900"
             onClick={(e: any) => {
               if (currentSlide === (instanceRef.current?.track.details?.slides.length ?? 0) - 1) {

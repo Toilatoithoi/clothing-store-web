@@ -2,16 +2,16 @@
 import React, { useRef } from 'react';
 import { formatNumber, uuid } from '@/utils';
 import Logo from '@/assets/svg/logo.svg';
-import { FaHeadset } from "react-icons/fa6";
-import { FaRegUser } from "react-icons/fa6";
-import { HiOutlineShoppingBag } from "react-icons/hi";
-import { RiGlobalLine } from "react-icons/ri";
-import { IoMdSearch } from "react-icons/io";
-import Image from 'next/image';
-import BannerImage from '@/assets/png/set-do-3.jpg'
+import HeadPhone from "@/assets/svg/headphones.svg";
+import  User  from "@/assets/svg/user.svg";
+// import { HiOutlineShoppingBag } from "react-icons/hi";
+// import { RiGlobalLine } from "react-icons/ri";
+import Search from "@/assets/svg/search.svg";
+// import Image from 'next/image';
+// import BannerImage from '@/assets/png/set-do-3.jpg'
 
 import './style.scss';
-import { config } from 'process';
+// import { config } from 'process';
 import { useAppStatus } from '@/store/globalSWR';
 import { mutate } from 'swr';
 import { APP_STATUS, COMMON_LOADING, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '@/store/key';
@@ -20,11 +20,11 @@ import { Category } from '@/interfaces/model';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import CartDropdown from '../CartDropdown';
-import { GoListUnordered } from "react-icons/go";
+import Menu from "@/assets/svg/menu.svg";
 import { removeKey, setKey } from '@/utils/localStorage';
 import ToastNotification from '../ToastNotification';
 import { toast } from 'react-toastify';
-import Loader from '../Loader';
+// import Loader from '../Loader';
 import { useRouter } from 'next/navigation';
 
 interface HeaderProps {
@@ -71,32 +71,32 @@ const ListConfig = [
     children: [
       {
         label: 'Thông tin BST mới',
-        path: '/tin-tuc',
+        path: 'promotion',
       },
-      {
-        label: '360 Blog',
-        path: '/tin-tuc',
-      },
-      {
-        label: 'Tin tức thời trang',
-        path: '/tin-tuc',
-      },
-      {
-        label: '360 Tuyển dụng',
-        path: '/tin-tuc',
-      },
+      // {
+      //   label: '360 Blog',
+      //   path: '/tin-tuc',
+      // },
+      // {
+      //   label: 'Tin tức thời trang',
+      //   path: '/tin-tuc',
+      // },
+      // {
+      //   label: '360 Tuyển dụng',
+      //   path: '/tin-tuc',
+      // },
     ]
   },
-  {
-    label: 'Khuyến mãi',
-    path: 'promotion',
-    children: [
-      {
-        label: 'Sale từ 99k',
-        path: '/khuyen-mai',
-      },
-    ]
-  },
+  // {
+  //   label: 'Khuyến mãi',
+  //   path: 'promotion',
+  //   children: [
+  //     {
+  //       label: 'Sale từ 99k',
+  //       path: '/khuyen-mai',
+  //     },
+  //   ]
+  // },
 
 ]
 
@@ -176,14 +176,14 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
           <button type="button" onClick={handleHome} className="h-[6rem] w-[6rem] cursor-pointer"><Logo /></button>
           <div className="flex items-center">
             <div className="flex items-center mr-[1.6rem]">
-              <strong className="flex items-center mr-[0.4rem] text-[#BC0517]"><FaHeadset className="text-[2.8rem]  mr-[0.4rem]" /> Tư vấn bán hàng:</strong>
+              <strong className="flex items-center mr-[0.4rem] text-[#BC0517]"><HeadPhone className="text-[2.8rem]  mr-[0.4rem]" /> Tư vấn bán hàng:</strong>
               0973.285.886
             </div>
             {/* nếu đăng nhập rồi isAuthenticated là true sẽ show ra biểu tượng */}
             {appStatus?.isAuthenticated ? <div className="flex item-center gap-[1.6rem]">
-              <button type="button" onClick={handleUser} className="text-[2.4rem]"><FaRegUser /></button>
+              <button type="button" onClick={handleUser} className="text-[2.4rem]"><User /></button>
               <div className="text-[2.8rem] cursor-pointer z-10"><CartDropdown /></div>
-              <div className="text-[2.8rem]"><Link href={'/list-bill'}><GoListUnordered /></Link></div>
+              <div className="text-[2.8rem]"><Link href={'/list-bill'}><Menu /></Link></div>
               <button type="button" className='font-bold' onClick={handleShowLogout}>Đăng xuất</button>
             </div> : <div className='flex gap-4'>
               <button type="button" className='font-bold' onClick={handleShowLogin}>Đăng nhập</button>
@@ -218,7 +218,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
           <div className="flex items-center h-[3.5rem] border border-gray-700">
             <input className="h-full p-4 outline-none" type="text" placeholder='Tìm kiếm...' />
             <div className="bg-gray-300 h-full aspect-square flex items-center justify-center hover:bg-gray-500">
-              <IoMdSearch className="text-[2rem]" />
+              <Search className="text-[2rem]" />
             </div>
           </div>
         </div>

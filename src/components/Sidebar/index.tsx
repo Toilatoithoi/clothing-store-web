@@ -1,7 +1,8 @@
 'use client'
 import { Disclosure, Transition } from '@headlessui/react'
 import React, { Fragment } from 'react'
-import { FaPlus, FaMinus } from 'react-icons/fa'
+import Plus from '@/assets/svg/plus.svg'
+import Minus from '@/assets/svg/minus.svg'
 import Slider from 'react-rangeslider'
 
 const SideBar = () => {
@@ -15,7 +16,7 @@ const SideBar = () => {
             >
 
               <div>Danh mục</div>
-              <div>{!open ? <FaPlus /> : <FaMinus />}</div>
+              <div>{!open ? <Plus /> : <Minus />}</div>
             </Disclosure.Button>
             <Transition
               show={open}

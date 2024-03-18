@@ -1,7 +1,7 @@
 
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import { IoIosArrowForward } from "react-icons/io";
+import Right from "@/assets/svg/chevron-right.svg"
 import { Formik, FormikProps } from 'formik';
 import * as yup from 'yup';
 import TextInput from '@/components/TextInput';
@@ -163,8 +163,8 @@ const Payment = () => {
   return (
     <Loader id={componentId.current} loading={isLoading} >
       <div className='flex items-center justify-center my-[3.2rem]'>
-        <div>Giỏ hàng</div><IoIosArrowForward />
-        <div className='font-bold'>Thanh toán</div><IoIosArrowForward />
+        <div>Giỏ hàng</div><Right />
+        <div className='font-bold'>Thanh toán</div><Right />
         <div>Hoàn tất</div>
       </div>
       <Formik

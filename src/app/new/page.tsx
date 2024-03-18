@@ -1,9 +1,9 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import anhBia from '@/assets/png/promotion.jpg'
 import Image from 'next/image'
-import { LuClock4 } from "react-icons/lu";
-import { FaPlus } from "react-icons/fa";
+import Clock from "@/assets/svg/clock.svg";
+import Plus from "@/assets/svg/plus.svg";
 
 import Post from '@/components/Post';
 import Link from 'next/link';
@@ -11,16 +11,63 @@ import { useSWRWrapper } from '@/store/custom';
 import { PostRes } from '@/interfaces/model';
 import { useRouter } from 'next/navigation';
 import { PaginationRes } from '@/interfaces';
+import { mutate } from 'swr';
+import ToastNotification from '@/components/ToastNotification';
+import { uuid } from '@/utils';
+import { toast } from 'react-toastify';
 
 const New = () => {
+  const [fetchCount, setFetchCount] = useState(3);
+  const [page, setPage] = useState(1);
   const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post', {
     url: '/api/post',
+    params: {
+      fetchCount: fetchCount,
+      page: page,
+    }
   })
   const route = useRouter();
   const handleClickDetail = () => {
     route.push(`/promotion/4`)
   }
-
+  useEffect(() => {
+    mutate('/api/post')
+  })
+  const handleValuePage = (values: number) => {
+    if(postData){
+      if(postData.pagination.totalCount >= values){
+        setFetchCount(values)
+      }else{
+        toast(
+          <ToastNotification
+            type="error"
+            title="Hết"
+            content="Số bài viết đã hết"
+          />,
+          {
+            toastId: uuid(),
+            position: 'bottom-right',
+            hideProgressBar: true,
+            theme: 'light',
+          },
+        );
+      }
+    }else{
+      toast(
+        <ToastNotification
+          type="error"
+          title="Đợi"
+          content="Đợi một lúc "
+        />,
+        {
+          toastId: uuid(),
+          position: 'bottom-right',
+          hideProgressBar: true,
+          theme: 'light',
+        },
+      );
+    }
+  }
   return (
     <div>
       <div className='flex gap-1 text-gray-300 pl-8 h-[4rem] mb-4 items-center'>          
@@ -32,7 +79,7 @@ const New = () => {
         <div className='bg-[#f7f8fa] h-[44.5rem] w-[40rem] px-[1.6rem] py-[1.6rem] flex flex-col items-start justify-center cursor-pointer'>
           <div className='h-fit pb-8 mb-2 border-b-[0.05rem] border-gray-300 cursor-pointer'>
             <div className='flex text-[1rem] gap-1'>
-              <LuClock4 className='my-1' />
+              <Clock className='my-1 w-4 h-4' />
               <div className=''>20/12/2023</div>
             </div>
             <div className='text-[1.2rem] font-bold'>ENJOY CHRISMAS | 2023 Holidays</div>
@@ -42,7 +89,7 @@ const New = () => {
           </div>
           <div className='flex cursor-pointer text-red-700 hover:text-green-700'>
             <button onClick={handleClickDetail} type='button' className='font-bold text-[1.2rem] mr-1'>Xem thêm</button>
-            <FaPlus className='text-[1rem] mt-[0.45rem]' />
+            <Plus className='text-[1rem] mt-[0.45rem] w-4 h-4' />
           </div>    
         </div>
         <div className=''>
@@ -59,7 +106,13 @@ const New = () => {
         </div>
       </div>
       <div className='w-full flex items-center justify-center mb-14'>
-        <button type='button' className='bg-red-700 text-white text-[1rem] text-center px-9 py-2 rounded-[1.5rem]'>Xem thêm</button>
+        {
+          postData && postData.pagination.totalCount >= fetchCount + 3 && (
+            <button onClick={() => handleValuePage(Number(fetchCount + 3))}type='button' className='bg-red-700 text-white text-[1rem] text-center px-9 py-2 rounded-[1.5rem]'>
+              Xem thêm
+            </button>
+          )
+        }
       </div>
     </div>
   )

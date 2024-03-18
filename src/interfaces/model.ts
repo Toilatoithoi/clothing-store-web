@@ -41,6 +41,7 @@ export interface PostRes {
   content: string;
   createAt: string;
   image: string;
+  sapo: string;
 }
 
 export interface LookBookRes {

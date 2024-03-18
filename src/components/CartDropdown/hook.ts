@@ -1,3 +1,4 @@
+import { List } from '@/app/list-bill/page';
 import { UserPayload } from '@/app/user/page';
 import { METHOD } from '@/constants';
 import { Bill, BillProduct, ProductDetail, ProductModel } from '@/interfaces/model';
@@ -51,14 +52,12 @@ export const useCart = () => {
   // truyền {id} trong hàm api có cơ chế replance string id thay bằng giá trị tương ứng
   const { trigger: product } = useMutation<ProductCart[]>('/api/cart', {
     url: `/api/cart/{product_model_id}`,
-
+    method: METHOD.DELETE
   });
   const updateCart = (cart: ProductCart[]) => {
     // hiểu là truyền value cho global state /api/cart
     mutate(cart)
   }
-
-
 
   // global state dùng key để lấy gia 1 giá trị bất kì
   // key hiểu nôm na là id để lấy ra giá trị của state
@@ -117,6 +116,24 @@ export const useBill = (options: {
     }
   });
 
+  const { trigger: bill } = useMutation<UserPayload>('/api/bill', {
+    url: '/api/bill/{bill_id}',
+    method: METHOD.PUT,
+    onSuccess(data) {
+      console.log(data)
+    },
+    // thực hiện loading
+    componentId: options.componentId,
+    loading: true,
+    notification: {
+      // config thông báo
+      // title dùng chung cho thành công và thấT bại
+      title: 'Huỷ đơn hàng',
+      // chỉ dùng cho thành công
+      content: 'Huỷ đơn hàng thành công',
+    }
+  })
+
   // global state dùng key để lấy gia 1 giá trị bất kì
   // key hiểu nôm na là id để lấy ra giá trị của state
 
@@ -143,13 +160,20 @@ export const useBill = (options: {
       address: data.address,
       note: data.note,
     })
+  }
 
+  const updateToBill = (data: List) => {
+    bill({
+      //đầu vào của api tạo bill 
+      bill_id: data.id
+    })
   }
 
   return {
     // data là dữ liệu của giỏ hàng lấy từ api
     data,
     addToBill,
+    updateToBill
   }
 }
 

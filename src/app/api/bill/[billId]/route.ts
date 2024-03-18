@@ -5,25 +5,28 @@ import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 import { bill_product } from '@prisma/client';
 
 export const PUT = async (req: NextRequest, { params }: { params: { billId: string; } }) => {
-
   const data = await verifyToken(req);
   if (data == null) {
     return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
   }
 
   const id = Number(params.billId);
-  const body = await req.json();
+  // const body = await req.json();
   // validate data: user_id có hợp lệ k? .....
 
   try {
     const bill = await prisma.bill.findFirst({
+      select:{
+       bill_product: true,
+       id: true
+      },
       where: {
         id, user: {
           username: data.username
         }
       }
     });
-    // lây thông tin bill trên db -> nếu mà không có thông tin bill -> thông báo lỗi bill not exist
+    // // lây thông tin bill trên db -> nếu mà không có thông tin bill -> thông báo lỗi bill not exist
     if (bill == null) {
       return NextResponse.json({
         code: "Bill_NOT_EXIST",
@@ -33,50 +36,34 @@ export const PUT = async (req: NextRequest, { params }: { params: { billId: stri
     //TODO: nếu status là CANCEL thì tính toán lại stock và sold của product_model tương tự lúc tạo bill
     //TODO: vì hàng hoàn có thế bị hỏng nên xem xét thêm 1 param để có thể ignore việc cộng lại sản phẩm vào stock ( vẫn phải trừ đã sold)
     // update data vào hệ thống
-    const res = await prisma.bill.update({
-      where: {
-        id,
-        user_id: data.id,
-      },
-      data: {
-        ...body,
-      }
-    })
-    const bill_Check = prisma.bill.findFirst({
-      where: {
-        id,
-        user_id: data.id,
-        status: "CANCEL"
-      },   
-    })
-
-    if(bill_Check != null){
-      const [updateBill] = await prisma.$transaction([
-        // cập nhật lại stock và sold
-        ...body.bill_product.map((item: bill_product) => prisma.product_model.update({
-          where: {
-            id: item.product_model_id,
+    const [updateBill] = await prisma.$transaction([
+      prisma.bill.update({
+        where: {
+          id: bill.id,
+          status: 'NEW'
+        },
+        data: {
+          status: 'CANCEL',
+        }
+      }),
+      // cập nhật lại stock và sold
+      ...bill.bill_product.map((item: bill_product) => prisma.product_model.update({
+        where: {
+          id: item.product_model_id,
+        },
+        data: {
+          sold: {
+            // công thêm item.quantity
+            decrement: item.quantity
           },
-          data: {
-            sold: {
-              // công thêm item.quantity
-              decrement: item.quantity
-            },
-            stock: {
-              // trừ đi item.quantity
-              increment: item.quantity,
-            }
+          stock: {
+            // trừ đi item.quantity
+            increment: item.quantity,
           }
-        }))
-      ])
-    }else{
-      return NextResponse.json({
-        code: "Bill_NOT_EXIST",
-        message: "Bill không tồn tại"
-      }, { status: 403 })
-    }
-  
-    return NextResponse.json({ id: res.id })
+        }
+      }))
+    ])
+    return NextResponse.json({updateBill})
   } catch (error) {
     console.log({ error })
     return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
