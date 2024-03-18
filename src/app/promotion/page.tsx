@@ -18,7 +18,7 @@ interface PromotionPageProps {
   }
 }
 const PromotionPage = (props: PromotionPageProps) => {
-  const [fetchCount, setFetchCount] = useState(2);
+  const [fetchCount, setFetchCount] = useState(5);
   const [page, setPage] = useState(1);
   const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post', {
     url: '/api/post',

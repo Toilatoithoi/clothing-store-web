@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 const New = () => {
   const [fetchCount, setFetchCount] = useState(3);
   const [page, setPage] = useState(1);
+  const [count, setCount] = useState(1);
   const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post', {
     url: '/api/post',
     params: {
@@ -32,6 +33,19 @@ const New = () => {
   }
   useEffect(() => {
     mutate('/api/post')
+    if(postData){
+      if(postData.pagination.totalCount - fetchCount > 3){
+        setCount(3)
+      }else{
+        if(postData.pagination.totalCount - fetchCount == 2){
+          setCount(2)
+        }else{
+          if(postData.pagination.totalCount - fetchCount == 1){
+            setCount(1)
+          }
+        }
+      }
+    }
   })
   const handleValuePage = (values: number) => {
     if(postData){
@@ -107,8 +121,8 @@ const New = () => {
       </div>
       <div className='w-full flex items-center justify-center mb-14'>
         {
-          postData && postData.pagination.totalCount >= fetchCount + 3 && (
-            <button onClick={() => handleValuePage(Number(fetchCount + 3))}type='button' className='bg-red-700 text-white text-[1rem] text-center px-9 py-2 rounded-[1.5rem]'>
+          postData && postData.pagination.totalCount >= fetchCount + count && (
+            <button onClick={() => handleValuePage(Number(fetchCount + count))}type='button' className='bg-red-700 text-white text-[1rem] text-center px-9 py-2 rounded-[1.5rem]'>
               Xem thêm
             </button>
           )

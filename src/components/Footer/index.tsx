@@ -5,6 +5,7 @@ import Facebook from '@/assets/svg/facebook.svg'
 import Instagram from '@/assets/svg/instagram.svg'
 import Google from '@/assets/svg/google.svg'
 import PhoneCall from '@/assets/svg/phone-call.svg'
+import Link from 'next/link'
 
 const Footer = () => {
   return (
@@ -22,10 +23,10 @@ const Footer = () => {
             </span>
             {/*nội dung  */}
             <ul>
-              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Giới thiệu 360</li>
-              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Hệ thống cửa hàng</li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer"><Link href="/about-shop">Giới thiệu 360</Link></li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer"><Link href="/about-shop">Hệ thống cửa hàng</Link></li>
               <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Khuyến mãi</li>
-              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Tuyển dụng</li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer"><Link href="/promotion/11">Tuyển dụng</Link></li>
             </ul>
           </div>
           {/* hộ trợ khách hàng */}
@@ -36,10 +37,10 @@ const Footer = () => {
             </span>
             {/* nội dung */}
             <ul>
-              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Chính sách bảo mật thông tin</li>
-              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Chính sách đổi trả</li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer"><Link href="/promotion/12">Chính sách bảo mật thông tin</Link></li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer"><Link href="/promotion/10">Chính sách đổi trả</Link></li>
               <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Hướng dẫn đặt hàng</li>
-              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Chính sách vận chuyển</li>
+              <li className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer"><Link href="/promotion/9">Chính sách vận chuyển</Link></li>
             </ul>
           </div>
           {/* dịch vụ */}
@@ -49,7 +50,7 @@ const Footer = () => {
               Dịch vụ khách hàng
             </span>
             {/* nội dung */}
-            <span className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer">Liên hệ chúng tôi</span>
+            <span className="text-[1rem] text-[#6d6d6d] hover:text-[#BC0517] cursor-pointer"><Link href="/about-shop">Liên hệ chúng tôi</Link></span>
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import prisma from '@/lib/db';
-import { isBlank } from '@/utils';
+import { formatNumber, isBlank } from '@/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { CreatePostReq } from '@/interfaces/request';
 import { RestError } from '@/utils/service';
@@ -44,7 +44,7 @@ export const GET = async (req: NextRequest) => {
       pagination: {
         totalCount: count,
         page: page <= 0 ? 1 : page + 1,
-        totalPage: fetchCount ? count / Number(fetchCount) : 1,
+        totalPage: fetchCount ? Number(formatNumber(count / Number(fetchCount))) : 1,
       },
       limit
     });
