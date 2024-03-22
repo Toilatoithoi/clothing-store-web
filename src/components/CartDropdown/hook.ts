@@ -50,6 +50,8 @@ export const useCart = () => {
   });
 
   // truyền {id} trong hàm api có cơ chế replance string id thay bằng giá trị tương ứng
+  // phải điều chỉnh key cho delete và get giống nhau để khi delete xong nó sẽ get lại do trùng key, có thể để trùng key
+  // nếu khô g phải mutute lại key get nếu không trùng key sau khi delete để refesh lại dữ liệu
   const { trigger: product } = useMutation<ProductCart[]>('/api/cart', {
     url: `/api/cart/{product_model_id}`,
     method: METHOD.DELETE
