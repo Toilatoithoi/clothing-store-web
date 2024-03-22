@@ -99,7 +99,7 @@ const UserCart = () => {
                           <div>{item.product.name}</div>
                           <div>{item.size}</div>
                           <div>{item.color}</div>
-                          <button type='button' onClick={() => handledelete(item)} className='cursor-pointer hover:text-red-500'>Xóa</button>
+                          <button type='button' onClick={() => handledelete(item)} className='cursor-pointer px-1  border-2 border-gray-500 bg-blue-200 text-red-500 hover:border-red-500 hover:bg-yellow-500'>Xóa</button>
                         </div>
                       </div>
                       <div key={idx + values.data.length + 2} className='text-center'>{formatNumber(item.price)} VND</div>
@@ -121,12 +121,12 @@ const UserCart = () => {
                 <div className='w-full mb-[2.4rem]'>
                   <button type="submit" className='h-[4rem] w-full flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1'>Thanh toán</button>
                 </div>
-                <div className='flex text-[1.6rem] items-center mb-[1.4rem]'> <ShoppingTag className=" font-bold mr-[0.4rem]" /> <div className='font-bold'>Phiếu ưu đãi</div> </div>
+                {/* <div className='flex text-[1.6rem] items-center mb-[1.4rem]'> <ShoppingTag className=" font-bold mr-[0.4rem]" /> <div className='font-bold'>Phiếu ưu đãi</div> </div>
                 <div className='flex h-[3.8rem] border border-gray-900 mb-[1rem]'>
                   <input type="text" placeholder='Mã ưu đãi' className='outline-none flex-1 px-4' />
                   <button type='button' className='bg-[#2d2d2d]  px-4 text-white'>Áp dụng</button>
                 </div>
-                <div className='text-[1.6rem] font-bold mb-[1.5rem]'>Free ship cho đơn hàng từ 500.000đ</div>
+                <div className='text-[1.6rem] font-bold mb-[1.5rem]'>Free ship cho đơn hàng từ 500.000đ</div> */}
                 {/* <div className='text-[1.6rem] font-bold py-[1.5rem] border-t border-gray-200'>Chùng tôi chấp nhận</div>
                 <div><Pay className="w-[10rem]" /></div> */}
               </div>
