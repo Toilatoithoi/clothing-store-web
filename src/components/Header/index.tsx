@@ -1,5 +1,5 @@
 'use client'
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { formatNumber, uuid } from '@/utils';
 import Logo from '@/assets/svg/logo.svg';
 import HeadPhone from "@/assets/svg/headphones.svg";
@@ -38,7 +38,7 @@ const ListConfig = [
     path: 'about-shop',
     children: [
       {
-        label: 'Tầm nhìn-Sứ mệnh',
+        label: 'Giới thiệu về chúng tôi',
         path: 'about-shop',
       },
     ]
@@ -70,7 +70,7 @@ const ListConfig = [
     path: 'new',
     children: [
       {
-        label: 'Thông tin BST mới',
+        label: 'Blog',
         path: 'promotion',
       },
       // {
@@ -129,6 +129,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
 
   const handleShowLogout = () => {
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
+    // xoá access_token đi để user_info set lại
     removeKey('access_token')
     mutate(USER_INFO, null);
     // thành công sẽ cập nhật APP_STATUS là true 
@@ -157,6 +158,10 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
       loading: true
     })
   }
+  
+  useEffect(()=>{
+    mutate('/api/category?level=1')
+  }, [data])
 
   return (
     <header className="header flex flex-col bg-white border border-blue-100">

@@ -104,7 +104,7 @@ const UserCart = () => {
                       </div>
                       <div key={idx + values.data.length + 2} className='text-center'>{formatNumber(item.price)} VND</div>
                       <div key={idx + values.data.length + 3} className='flex justify-center'><InputCount min={0} max={item.stock} value={item.quantity} onChange={(qty) => handleChangeQty(qty, idx, item)} /></div>
-                      <div key={idx + values.data.length + 4} className='text-center'>{formatNumber(item.price)} VND</div>
+                      <div key={idx + values.data.length + 4} className='text-center'>{formatNumber(item.price * item.quantity)} VND</div>
                     </>
                   ))}
               </div>

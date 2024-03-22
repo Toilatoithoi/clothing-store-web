@@ -27,7 +27,7 @@ const Promotion = (props: { promotionId?: string; }) => {
     url: `/api/post/${props.promotionId}`,
   })
 
-  const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post/5', {
+  const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post/limit', {
     url: '/api/post',
     params:{
       limit: 5
@@ -94,8 +94,8 @@ const Promotion = (props: { promotionId?: string; }) => {
               </div>
             </div> */}
             {
-              postData?.items.map((item, idx) => (
-                <Link href={`/promotion/${item.id}`} key={idx}>
+              postData?.items.map((item) => (
+                <Link href={`/promotion/${item.id}`} key={item.id}>
                   <div className='flex gap-1 mb-4'>
                     {
                       item.image ? <Image className="object-contain mb-8" src={item.image} alt="Ảnh bìa" width={80} height={90} />

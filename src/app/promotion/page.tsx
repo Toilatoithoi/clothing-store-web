@@ -27,14 +27,14 @@ const PromotionPage = (props: PromotionPageProps) => {
       page: page,
     }
   })
-  const { data: postOnTop } = useSWRWrapper<PaginationRes<PostRes>>('/api/post/5',{
+  const { data: postOnTop } = useSWRWrapper<PaginationRes<PostRes>>('/api/post/limit',{
     url: '/api/post',
     params: {
       limit: 5
     }
   })
   useEffect(() => {
-      mutate('/api/post')
+      mutate('/api/post/limit')
   }, [page])
   const handleValuePage = (values: number) =>{
     setPage(values)

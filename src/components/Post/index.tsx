@@ -22,7 +22,7 @@ const Post = (props: { data: PostRes }) => {
           <div className='h-fit pb-8 mb-2 border-b-[0.05rem] border-gray-300 cursor-pointer'>
             <div className='flex text-[1rem] gap-1'>
               <Clock className='my-1 h-4 w-4' />
-              <div className=''>{props.data.createAt.toString().split('T')[0]}</div>
+              <div className=''>{props.data?.createAt.toString().split('T')[0]}</div>
             </div>
             <div className='text-[1.2rem] font-bold'>{props.data.title}</div>
           </div>

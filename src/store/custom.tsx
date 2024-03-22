@@ -31,6 +31,8 @@ export const useMutation = <T = Record<string, unknown>,>(
 ) => {
   const { mutate } = useSWRConfig();
   // trả về một hook useSWRMutation thư viện
+  // nếu để đây thì dù đã xoá đi access_token rồi nhưng do câu lệnh này chỉ được chạy một lần thôi nên nó chỉ dữ giá trị ban đầu
+  // const accessToken = getKey('access_token') as string;
   return useSWRMutation(
     key,
     (
@@ -40,6 +42,7 @@ export const useMutation = <T = Record<string, unknown>,>(
     ) => {
       return new Promise<T>((resolve, reject) => {
         // bắt đầu fetcher thì sẽ set lại COMMON_LOADING để bằng true show loading
+        // phải để nó ở đâu do nếu khi đăng xuất nó sẽ gọi lại user_info để get data mới về do nó không chạy lại nên vẫn có giá trị nên không đăng xuất thành công
         const accessToken = getKey('access_token') as string;
 
         if (options.loading) {
@@ -140,7 +143,8 @@ export function useSWRWrapper<T = Record<string, unknown>>(
 ) {
   let keyParse = typeof key === 'string' ? key : key?.();
   // lấy ra accessToken
-  // trả về một hook useSWRMutation thư viện
+  // trả về một hook useSWRMutation thư viện nhưng chỉ chạy lần đầu
+  // const accessToken = getKey('access_token') as string;
   return useSWR<T>(
     isBlank(keyParse!) ? null : (keyParse as any),
     () => {

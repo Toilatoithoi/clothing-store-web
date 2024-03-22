@@ -196,6 +196,7 @@ const Payment = () => {
                   {/* value theo PaymentForm */}
                   <TextInput
                     name='name'
+                    // gán giá trị có textInput
                     value={values.name}
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -206,6 +207,7 @@ const Payment = () => {
                     label="Họ và tên" />
                   <TextInput
                     name='phone'
+                    // gán giá trị có textInput
                     value={values.phone}
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -214,6 +216,7 @@ const Payment = () => {
                     placeholder='Số điện thoại của bạn'
                     label="Số điện thoại" />
                   <TextInput
+                    // gán giá trị cho textInput
                     name='email'
                     value={values.email}
                     onBlur={handleBlur}
@@ -291,7 +294,7 @@ const Payment = () => {
                     onChange={handleChange}
                     hasError={touched.address && !isBlank(errors.address)}
                     errorMessage={errors.address}
-                    placeholder='Địa chỉ của bạn'
+                    placeholder='Ví dụ Số 20, ngõ 20'
                     label="Địa chỉ" />
                   <TextInput
                     name='note'
