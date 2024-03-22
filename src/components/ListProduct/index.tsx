@@ -53,7 +53,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
       </div>
 
       <div className='flex flex-1 gap-[1.5rem]'>
-        <SideBar />
+        <SideBar categoryId={props.categoryId} />
         <div className='grid grid-cols-4 gap-5 h-fit'>
           {data?.items.map(item => <ProductCard data={item} key={item.id} />)}
         </div>

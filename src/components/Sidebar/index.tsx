@@ -9,9 +9,9 @@ import { Category } from '@/interfaces/model'
 import { formatNumber } from '@/utils'
 
 
-const SideBar = () => {
-  const { data } = useSWRWrapper<Category[]>('/api/category?level=2', {
-    url: '/api/category',
+const SideBar = (props: { categoryId?: string; }) => {
+  const { data } = useSWRWrapper<Category[]>(`/api/category/${props.categoryId}?level=2`, {
+    url: `/api/category/${props.categoryId}`,
     params:{
       level: 2
     }

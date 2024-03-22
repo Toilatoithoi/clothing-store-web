@@ -20,9 +20,13 @@ export const GET = async (request: NextRequest) => {
   }
   try {
     let category: category | null = null;
+    let category_child: category[] = [];
     if (category_id && !isBlank(category_id)) {
       category = await prisma.category.findFirst({
         where: { id: Number(category_id) },
+      });
+      category_child = await prisma.category.findMany({
+        where: { parent_id: Number(category_id) },
       });
     }
     
@@ -107,6 +111,7 @@ export const GET = async (request: NextRequest) => {
         page: page <= 0 ? 1 : page + 1,
         totalPage: fetchCount ? count / Number(fetchCount) : 1,
       },
+      category_child: category_child
     });
   } catch (error) {
     console.log({ error });

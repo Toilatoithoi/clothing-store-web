@@ -16,9 +16,7 @@ export const GET = async (req: NextRequest) => {
         },
       }),
       orderBy: {
-        category:{
-          name: 'desc'
-        },
+        name: 'desc'
       },
     });
 
