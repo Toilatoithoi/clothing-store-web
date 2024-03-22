@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { formatNumber, uuid } from '@/utils';
 import Logo from '@/assets/svg/logo.svg';
 import HeadPhone from "@/assets/svg/headphones.svg";
@@ -16,7 +16,7 @@ import { useAppStatus } from '@/store/globalSWR';
 import { mutate } from 'swr';
 import { APP_STATUS, COMMON_LOADING, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '@/store/key';
 import { useSWRWrapper } from '@/store/custom';
-import { Category } from '@/interfaces/model';
+import { Category, ProductRes } from '@/interfaces/model';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import CartDropdown from '../CartDropdown';
@@ -26,6 +26,7 @@ import ToastNotification from '../ToastNotification';
 import { toast } from 'react-toastify';
 // import Loader from '../Loader';
 import { useRouter } from 'next/navigation';
+import { PaginationRes } from '@/interfaces';
 
 interface HeaderProps {
 
@@ -101,6 +102,9 @@ const ListConfig = [
 ]
 
 const Header = (props: HeaderProps) => { //jsx, không phai html 
+  const [fetchCount, setFetchCount] = useState(8);
+  const [page, setPage] = useState(1);
+  const [name, setName] = useState('')
   const { data: appStatus } = useAppStatus();
   console.log(appStatus)
   // điều hướng route
@@ -111,6 +115,16 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
   const { data } = useSWRWrapper<Category[]>('/api/category?level=1', {
     url: '/api/category?level=1',
   })
+  const { data: productSearch } = useSWRWrapper<PaginationRes<ProductRes>>('/api/product/name', {
+    url: '/api/product',
+    params:{
+      name: name,
+    }
+  })
+
+  useEffect(() =>{
+    mutate('/api/product/name')
+  }, [name])
 
   const handleShowLogin = () => {
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
@@ -220,12 +234,12 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
               ))
             }
           </div>
-          <div className="flex items-center h-[3.5rem] border border-gray-700">
-            <input className="h-full p-4 outline-none" type="text" placeholder='Tìm kiếm...' />
-            <div className="bg-gray-300 h-full aspect-square flex items-center justify-center hover:bg-gray-500">
+          <form className="flex items-center h-[3.5rem] border border-gray-700">
+            <input className="h-full p-4 outline-none" type="text" placeholder='Tìm kiếm...' onChange={(e)=> {setName(e.target.value)}}/>
+            <button type='submit' className="bg-gray-300 h-full aspect-square flex items-center justify-center hover:bg-gray-500">
               <Search className="text-[2rem]" />
-            </div>
-          </div>
+            </button>
+          </form>
         </div>
       </div>
     </header>

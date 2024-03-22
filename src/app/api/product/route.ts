@@ -2,7 +2,7 @@ import { CreateProductReq, PRODUCT_STATUS } from '@/interfaces/request';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { isBlank } from '@/utils';
+import { formatNumber, isBlank } from '@/utils';
 import { category } from '@prisma/client';
 import { RestError } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
@@ -18,6 +18,7 @@ export const GET = async (request: NextRequest) => {
   if (page < 0) {
     page = 0;
   }
+  let name = url.searchParams.get('name');
   try {
     let category: category | null = null;
     let category_child: category[] = [];
@@ -66,7 +67,30 @@ export const GET = async (request: NextRequest) => {
           take: Number(fetchCount),
           skip: Number(page ?? 0) * Number(fetchCount), // skip = (page - 1) * fetchCount
         }),
-        where,
+        where:{
+          name:{
+            contains: name?.toString(),
+          },
+          status: 'PUBLISHED',
+          ...(category != null && {
+            // hiển thị tất cả category cha và category con
+            // truyền một object category vào filter
+            category: {
+              // OR là 1 trong 2 thoả mãn là được
+              // tìm kiếm theo categoryId
+              OR: [
+                {
+                  // bằng category truyền vào
+                  id: Number(category_id),
+                },
+                {
+                  // category truyền vào bằng category cha
+                  parent_id: Number(category_id),
+                },
+              ],
+            },
+          }),
+        },
         orderBy: {
           id: 'asc',
         },
@@ -109,7 +133,7 @@ export const GET = async (request: NextRequest) => {
       pagination: {
         totalCount: count,
         page: page <= 0 ? 1 : page + 1,
-        totalPage: fetchCount ? count / Number(fetchCount) : 1,
+        totalPage: fetchCount ? Number(formatNumber(count / Number(fetchCount))) : 1,
       },
       category_child: category_child
     });
