@@ -6,20 +6,20 @@ import Menu3 from '@/assets/png/menu3.jpg'
 import Menu4 from '@/assets/png/menu4.jpg'
 import Menu5 from '@/assets/png/menu5.jpg'
 import Image from 'next/image' // tương đương với img
-import InputCount from '@/components/InputCount'
-import { LiaShippingFastSolid } from "react-icons/lia"
-import { MdPayments } from "react-icons/md"
-import { BsBox } from "react-icons/bs"
-import { Disclosure, Transition } from '@headlessui/react'
-import { TiMinus } from 'react-icons/ti'
-import { FaPlus } from 'react-icons/fa6'
+// import InputCount from '@/components/InputCount'
+// import { LiaShippingFastSolid } from "react-icons/lia"
+// import { MdPayments } from "react-icons/md"
+// import { BsBox } from "react-icons/bs"
+// import { Disclosure, Transition } from '@headlessui/react'
+// import { TiMinus } from 'react-icons/ti'
+// import { FaPlus } from 'react-icons/fa6'
 // thư viện sử lí ảnh ở detail 
 import ImageGallery, { ReactImageGalleryItem } from "react-image-gallery"
 import "react-image-gallery/styles/css/image-gallery.css"
-import { MdLocalShipping } from "react-icons/md";
-import { FaCcAmazonPay } from "react-icons/fa";
-import { RiVipFill } from "react-icons/ri";
-import { FcDataRecovery } from "react-icons/fc";
+import Truck from "@/assets/svg/truck.svg";
+// import { FaCcAmazonPay } from "react-icons/fa";
+import Gift from "@/assets/svg/gift.svg";
+import Refresh from "@/assets/svg/refresh-ccw.svg";
 import ProductSlider from '@/components/ProductSilder';
 import './style.scss';
 
@@ -64,14 +64,14 @@ export const Menu = () => {
       <div className="flex items-center justify-center pb-8 border-b-2 border-gray-500 mb-8">
         <div className="flex items-center justify-between pr-20 mr-4 border-r-2 border-gray-800">
           <div className='mr-6'>
-            <MdLocalShipping className='text-[4rem]' />
+            <Truck className='text-[4rem]' />
           </div>
           <div className='text-[1.2rem]'>
             <div className='font-bold'>Freeship</div>
             <div className='font-semibold'>Cho đơn hàng từ 500K</div>
           </div>
         </div>
-        <div className="flex items-center justify-between pr-20 mr-4 border-r-2 border-gray-800">
+        {/* <div className="flex items-center justify-between pr-20 mr-4 border-r-2 border-gray-800">
           <div className='mr-6'>
             <FaCcAmazonPay className='text-[4rem]' />
           </div>
@@ -79,19 +79,19 @@ export const Menu = () => {
             <div className='font-bold'>Thanh toán COD</div>
             <div className='font-semibold'>Nhận hàng & thanh toán</div>
           </div>
-        </div>
+        </div> */}
         <div className="flex items-center justify-between pr-20 mr-4 border-r-2 border-gray-800">
           <div className='mr-6'>
-            <RiVipFill className='text-[4rem]' />
+            <Gift className='text-[4rem]' />
           </div>
           <div className='text-[1.2rem]'>
             <div className='font-bold'>Nhiều ưu đãi</div>
             <div className='font-semibold'>Chiết khấu & quà tặng</div>
           </div>
         </div>
-        <div className="flex items-center justify-between pr-20 mr-4 border-r-2 border-gray-800">
+        <div className="flex items-center justify-between pr-20 mr-4">
           <div className='mr-6'>
-            <FcDataRecovery className='text-[4rem]' />
+            <Refresh className='text-[4rem]' />
           </div>
           <div className='text-[1.2rem]'>
             <div className='font-bold'>Sửa đồ</div>

@@ -1,8 +1,8 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import SideBar from '../Sidebar'
 import ProductCard from '../ProductCard'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import { fetcher } from '@/utils/fetcher'
 import { useSWRWrapper } from '@/store/custom'
 import { ProductRes } from '@/interfaces/model'
@@ -12,19 +12,30 @@ import Link from 'next/link'
 
 
 const ListProduct = (props: { categoryId?: string; }) => {
+  const [fetchCount, setFetchCount] = useState(8);
+  const [page, setPage] = useState(1);
   // lấy dữ liệu danh sách product từ api 
   const { data } = useSWRWrapper<PaginationRes<ProductRes>>('/api/product', {
     url: '/api/product',
     params: {
-      ...props.categoryId && { categoryId: props.categoryId }
-    }
+      ...props.categoryId && { categoryId: props.categoryId },
+        fetchCount: fetchCount,
+        page: page,
+      }
   })
 
   console.log({ data });
 
+  const handleValuePage = (values: number) =>{
+    setPage(values)
+  }
+
+  useEffect(() => {
+    mutate('/api/product')
+}, [page])
+
   return (
     <>
-
       <div className='h-[6rem] flex items-center text-gray-400 text-[1.6rem]'>
        <Link href={`/`}> <span className='hover:text-gray-600 cursor-pointer'>Trang chủ</span></Link>
         <span className='mx-2'>/</span>
@@ -51,12 +62,20 @@ const ListProduct = (props: { categoryId?: string; }) => {
           </div>
         </div>
       </div>
-
-      <div className='flex flex-1 gap-[1.5rem]'>
-        <SideBar />
+      <div className='flex mb-[2rem] gap-[1.5rem]'>
+        <SideBar categoryId={props.categoryId} />
         <div className='grid grid-cols-4 gap-5 h-fit'>
           {data?.items.map(item => <ProductCard data={item} key={item.id} />)}
         </div>
+      </div>
+      <div className='flex items-center justify-center gap-4'>
+        <select className='w-[5rem] flex items-end justify-end p-2 border-2 border-blue-600' onChange={(e) => handleValuePage(Number(e.target.value))}>
+          {data?.pagination.totalPage && Array.from({ length: data.pagination.totalPage }, (_, index) => (
+            <option className="text-center" key={index} value={index + 1}>{`${index + 1}`}</option>
+          ))}
+        </select>
+        <div>/</div>
+        <div>{data?.pagination.totalPage}</div>
       </div>
     </>
   )

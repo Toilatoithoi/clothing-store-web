@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { FaChevronDown } from "react-icons/fa6";
+import Down from "@/assets/svg/chevron-down.svg";
 
 import { Combobox as ComboboxCmt, Transition } from '@headlessui/react';
 import { isBlank } from '@/utils';
@@ -67,7 +67,7 @@ const Combobox = (props: ComboboxProps) => {
               {/* cách bên phải 0.8 rem */}
               {/* phần top cách phía trên 1/2 50% của lớp cha */}
               {/* nó sẽ bị lệch về bên dưới nên muốn mũi tên về chính giữa phải trừ đi 50% của lớp con là thằng mũi tên */}
-              <FaChevronDown className="absolute right-[0.8rem] top-1/2 -translate-y-1/2" />
+              <Down className="absolute right-[0.8rem] top-1/2 -translate-y-1/2" />
             </div>
 
             <Transition

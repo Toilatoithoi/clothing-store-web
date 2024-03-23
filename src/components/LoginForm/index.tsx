@@ -97,8 +97,8 @@ const LoginForm = (props: { onShowRegister(): void }) => {
             <div className="flex justify-between" >
               {/* dùng để set lại setFieldValue khi click vào */}
               {/* values.saveLogin xem có phải true hay không nếu true nó sẽ hiện svg tích*/}
-              <Checkbox selected={values.saveLogin} name='saveLogin' onChange={setFieldValue} label='Nhớ mật khẩu' />
-              <div>Quên mật khẩu</div>
+              {/* <Checkbox selected={values.saveLogin} name='saveLogin' onChange={setFieldValue} label='Nhớ mật khẩu' />
+              <div>Quên mật khẩu</div> */}
             </div>
             <button type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Đăng nhập</button>
           </form>}

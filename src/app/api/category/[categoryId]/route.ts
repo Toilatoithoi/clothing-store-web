@@ -3,6 +3,7 @@ import prisma from '@/lib/db';
 import { CreateCategoryReq } from '@/interfaces/request';
 import { RestError } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
+import { isBlank } from '@/utils';
 
 export const PUT = async (req: NextRequest, { params }: { params: { categoryId: string; } }) => {
   const id = Number(params.categoryId);
@@ -82,16 +83,22 @@ export const DELETE = async (req: NextRequest, { params }: { params: { categoryI
 export const GET = async (req: NextRequest, { params }: { params: { categoryId: string; } }) => {
   const id = Number(params.categoryId);
   try {
-    const category = await prisma.category.findFirst({ where: { id } });
-
-    // lây thông tin category trên db -> nếu mà không có thông tin category -> thông báo lỗi category not exist
-    if (category == null) {
-      return NextResponse.json({
-        code: "CATEGORY_NOT_EXIST",
-        message: "Category không tồn tại"
-      }, { status: 403 })
-    }
-
+      const searchParams = new URL(req.url).searchParams;
+      const level = searchParams.get('level');
+      const id = Number(params.categoryId);
+      const category = await prisma.category.findMany({
+        ...(!isBlank(level) && {
+          where: {
+            parent_id: id,
+            level: Number(level),
+          },
+        }),
+        orderBy: {
+          category:{
+            name: 'desc'
+          },
+        },
+      });
     return NextResponse.json(category);
   } catch (error) {
     console.log({ error })

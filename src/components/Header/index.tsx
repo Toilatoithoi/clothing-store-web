@@ -1,31 +1,32 @@
 'use client'
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { formatNumber, uuid } from '@/utils';
 import Logo from '@/assets/svg/logo.svg';
-import { FaHeadset } from "react-icons/fa6";
-import { FaRegUser } from "react-icons/fa6";
-import { HiOutlineShoppingBag } from "react-icons/hi";
-import { RiGlobalLine } from "react-icons/ri";
-import { IoMdSearch } from "react-icons/io";
-import Image from 'next/image';
-import BannerImage from '@/assets/png/set-do-3.jpg'
+import HeadPhone from "@/assets/svg/headphones.svg";
+import  User  from "@/assets/svg/user.svg";
+// import { HiOutlineShoppingBag } from "react-icons/hi";
+// import { RiGlobalLine } from "react-icons/ri";
+import Search from "@/assets/svg/search.svg";
+// import Image from 'next/image';
+// import BannerImage from '@/assets/png/set-do-3.jpg'
 
 import './style.scss';
-import { config } from 'process';
+// import { config } from 'process';
 import { useAppStatus } from '@/store/globalSWR';
 import { mutate } from 'swr';
 import { APP_STATUS, COMMON_LOADING, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '@/store/key';
 import { useSWRWrapper } from '@/store/custom';
-import { Category } from '@/interfaces/model';
+import { Category, ProductRes } from '@/interfaces/model';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import CartDropdown from '../CartDropdown';
-import { GoListUnordered } from "react-icons/go";
+import Menu from "@/assets/svg/menu.svg";
 import { removeKey, setKey } from '@/utils/localStorage';
 import ToastNotification from '../ToastNotification';
 import { toast } from 'react-toastify';
-import Loader from '../Loader';
+// import Loader from '../Loader';
 import { useRouter } from 'next/navigation';
+import { PaginationRes } from '@/interfaces';
 
 interface HeaderProps {
 
@@ -38,7 +39,7 @@ const ListConfig = [
     path: 'about-shop',
     children: [
       {
-        label: 'Tầm nhìn-Sứ mệnh',
+        label: 'Giới thiệu về chúng tôi',
         path: 'about-shop',
       },
     ]
@@ -70,37 +71,40 @@ const ListConfig = [
     path: 'new',
     children: [
       {
-        label: 'Thông tin BST mới',
-        path: '/tin-tuc',
+        label: 'Blog',
+        path: 'promotion',
       },
-      {
-        label: '360 Blog',
-        path: '/tin-tuc',
-      },
-      {
-        label: 'Tin tức thời trang',
-        path: '/tin-tuc',
-      },
-      {
-        label: '360 Tuyển dụng',
-        path: '/tin-tuc',
-      },
+      // {
+      //   label: '360 Blog',
+      //   path: '/tin-tuc',
+      // },
+      // {
+      //   label: 'Tin tức thời trang',
+      //   path: '/tin-tuc',
+      // },
+      // {
+      //   label: '360 Tuyển dụng',
+      //   path: '/tin-tuc',
+      // },
     ]
   },
-  {
-    label: 'Khuyến mãi',
-    path: 'promotion',
-    children: [
-      {
-        label: 'Sale từ 99k',
-        path: '/khuyen-mai',
-      },
-    ]
-  },
+  // {
+  //   label: 'Khuyến mãi',
+  //   path: 'promotion',
+  //   children: [
+  //     {
+  //       label: 'Sale từ 99k',
+  //       path: '/khuyen-mai',
+  //     },
+  //   ]
+  // },
 
 ]
 
 const Header = (props: HeaderProps) => { //jsx, không phai html 
+  const [fetchCount, setFetchCount] = useState(8);
+  const [page, setPage] = useState(1);
+  const [name, setName] = useState('')
   const { data: appStatus } = useAppStatus();
   console.log(appStatus)
   // điều hướng route
@@ -111,6 +115,16 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
   const { data } = useSWRWrapper<Category[]>('/api/category?level=1', {
     url: '/api/category?level=1',
   })
+  const { data: productSearch } = useSWRWrapper<PaginationRes<ProductRes>>('/api/product/name', {
+    url: '/api/product',
+    params:{
+      name: name,
+    }
+  })
+
+  useEffect(() =>{
+    mutate('/api/product/name')
+  }, [name])
 
   const handleShowLogin = () => {
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
@@ -129,6 +143,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
 
   const handleShowLogout = () => {
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
+    // xoá access_token đi để user_info set lại
     removeKey('access_token')
     mutate(USER_INFO, null);
     // thành công sẽ cập nhật APP_STATUS là true 
@@ -157,6 +172,10 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
       loading: true
     })
   }
+  
+  useEffect(()=>{
+    mutate('/api/category?level=1')
+  }, [data])
 
   return (
     <header className="header flex flex-col bg-white border border-blue-100">
@@ -176,14 +195,14 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
           <button type="button" onClick={handleHome} className="h-[6rem] w-[6rem] cursor-pointer"><Logo /></button>
           <div className="flex items-center">
             <div className="flex items-center mr-[1.6rem]">
-              <strong className="flex items-center mr-[0.4rem] text-[#BC0517]"><FaHeadset className="text-[2.8rem]  mr-[0.4rem]" /> Tư vấn bán hàng:</strong>
+              <strong className="flex items-center mr-[0.4rem] text-[#BC0517]"><HeadPhone className="text-[2.8rem]  mr-[0.4rem]" /> Tư vấn bán hàng:</strong>
               0973.285.886
             </div>
             {/* nếu đăng nhập rồi isAuthenticated là true sẽ show ra biểu tượng */}
             {appStatus?.isAuthenticated ? <div className="flex item-center gap-[1.6rem]">
-              <button type="button" onClick={handleUser} className="text-[2.4rem]"><FaRegUser /></button>
+              <button type="button" onClick={handleUser} className="text-[2.4rem]"><User /></button>
               <div className="text-[2.8rem] cursor-pointer z-10"><CartDropdown /></div>
-              <div className="text-[2.8rem]"><Link href={'/list-bill'}><GoListUnordered /></Link></div>
+              <div className="text-[2.8rem]"><Link href={'/list-bill'}><Menu /></Link></div>
               <button type="button" className='font-bold' onClick={handleShowLogout}>Đăng xuất</button>
             </div> : <div className='flex gap-4'>
               <button type="button" className='font-bold' onClick={handleShowLogin}>Đăng nhập</button>
@@ -215,12 +234,12 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
               ))
             }
           </div>
-          <div className="flex items-center h-[3.5rem] border border-gray-700">
-            <input className="h-full p-4 outline-none" type="text" placeholder='Tìm kiếm...' />
-            <div className="bg-gray-300 h-full aspect-square flex items-center justify-center hover:bg-gray-500">
-              <IoMdSearch className="text-[2rem]" />
-            </div>
-          </div>
+          <form className="flex items-center h-[3.5rem] border border-gray-700">
+            <input className="h-full p-4 outline-none" type="text" placeholder='Tìm kiếm...' onChange={(e)=> {setName(e.target.value)}}/>
+            <button type='submit' className="bg-gray-300 h-full aspect-square flex items-center justify-center hover:bg-gray-500">
+              <Search className="text-[2rem]" />
+            </button>
+          </form>
         </div>
       </div>
     </header>

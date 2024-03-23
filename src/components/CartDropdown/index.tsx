@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { HiOutlineShoppingBag } from "react-icons/hi";
+import ShoppingCart  from "@/assets/svg/shopping-cart.svg";
 import { useCart } from './hook';
 import './style.scss';
 import Image, { StaticImageData } from 'next/image'
@@ -37,14 +37,14 @@ const CartDropdown = () => {
   return (
     <div className='relative cart'>
       <div className='relative'>
-        <HiOutlineShoppingBag />
+        <ShoppingCart />
         <div className='absolute font-bold translate-x-1/2 -translate-y-1/2 top-0 right-0 w-[1.8rem] h-[1.8rem] flex items-center justify-center bg-red-500 text-red-50  rounded-[50%] text-[1.2rem]'>
           {data?.length != 0 ? summary.totalQuantity ?? '0': '0'}
         </div>
       </div>
       <div className='cart-menu absolute border top-full right-0 w-[30rem] p-6 min-h-[40rem] bg-white border-black'>
         {
-          summary.totalPrice > 0 ? data?.map(item => <div key={item.id} className='flex gap-2 text-[1rem] pb-2 border-b-2 border-gray-300'>
+          summary.totalPrice > 0  && data?.length != 0 ? data?.map(item => <div key={item.id} className='flex gap-2 text-[1rem] pb-2 border-b-2 border-gray-300'>
             <div>
               <Image className={`object-contain mr-[1rem] cursor-pointer`} src={item.image} alt={''} width={50} height={50} />
             </div>
@@ -57,7 +57,7 @@ const CartDropdown = () => {
               <div className='flex'>
                 <div className='text-gray-400'>{item.quantity}</div>
                 <div className='text-gray-400'>X</div>
-                <div className='text-gray-400'>{item.price}</div>
+                <div className='text-gray-400'>{formatNumber(item.price)} VND</div>
               </div>
             </div>
           </div>

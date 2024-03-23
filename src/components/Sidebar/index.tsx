@@ -1,10 +1,25 @@
 'use client'
 import { Disclosure, Transition } from '@headlessui/react'
-import React, { Fragment } from 'react'
-import { FaPlus, FaMinus } from 'react-icons/fa'
+import React, { Fragment, useEffect, useState } from 'react'
+import Plus from '@/assets/svg/plus.svg'
+import Minus from '@/assets/svg/minus.svg'
 import Slider from 'react-rangeslider'
+import { useSWRWrapper } from '@/store/custom'
+import { Category } from '@/interfaces/model'
+import { formatNumber } from '@/utils'
 
-const SideBar = () => {
+
+const SideBar = (props: { categoryId?: string; }) => {
+  const { data } = useSWRWrapper<Category[]>(`/api/category/${props.categoryId}?level=2`, {
+    url: `/api/category/${props.categoryId}`,
+    params:{
+      level: 2
+    }
+  })
+  const [price, setPrice] = useState(0);
+  useEffect(()=>{
+
+  }, [price])
   return (
     <div className='w-[21.5rem]  h-full'>
       <Disclosure>
@@ -15,7 +30,7 @@ const SideBar = () => {
             >
 
               <div>Danh mục</div>
-              <div>{!open ? <FaPlus /> : <FaMinus />}</div>
+              <div>{!open ? <Plus /> : <Minus />}</div>
             </Disclosure.Button>
             <Transition
               show={open}
@@ -31,7 +46,7 @@ const SideBar = () => {
                 static
               >
                 <div className='flex flex-col p-2 gap-6  max-h-[40rem] overflow-y-auto'>
-                  <div className='flex  w-full items-center'>
+                  {/* <div className='flex  w-full items-center'>
                     <input className='mr-2' type="checkbox" name="demo" />
                     <div>Áo khoác nỉ</div>
                   </div>
@@ -82,8 +97,16 @@ const SideBar = () => {
                   <div className='flex  w-full items-center'>
                     <input className='mr-2' type="checkbox" name="demo" />
                     <div>Áo khoác nỉ</div>
-                  </div>
-                </div>
+                  </div> */}
+                   {
+                    data && data.map((item, index) => (
+                      <div className='flex w-full items-center' key={index}>
+                        <input className='mr-2' type="checkbox" name="demo" />
+                        <div>{item.name}</div>
+                      </div>
+                    ))
+                  }
+                </div> 
               </Disclosure.Panel>
             </Transition>
           </>
@@ -93,8 +116,22 @@ const SideBar = () => {
       <div>
         <div>Khoảng giá</div>
         <Slider
-          value={10}
+          value={price}
+          min={0}
+          max={3000000}
+          onChange={setPrice}
+          tooltip= {false}
+          className=''
+          step={10000}
         />
+        <div className='flex items-center justify-between'>
+          {
+            price != 0 && <div className='font-bold '>0</div>
+          }
+          {
+            price != 0 && <div className='font-bold '>{formatNumber(price)} VND</div>
+          }
+        </div>
       </div>
     </div>
   )

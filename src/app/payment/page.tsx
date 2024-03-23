@@ -1,7 +1,7 @@
 
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import { IoIosArrowForward } from "react-icons/io";
+import Right from "@/assets/svg/chevron-right.svg"
 import { Formik, FormikProps } from 'formik';
 import * as yup from 'yup';
 import TextInput from '@/components/TextInput';
@@ -163,8 +163,8 @@ const Payment = () => {
   return (
     <Loader id={componentId.current} loading={isLoading} >
       <div className='flex items-center justify-center my-[3.2rem]'>
-        <div>Giỏ hàng</div><IoIosArrowForward />
-        <div className='font-bold'>Thanh toán</div><IoIosArrowForward />
+        <div>Giỏ hàng</div><Right />
+        <div className='font-bold'>Thanh toán</div><Right />
         <div>Hoàn tất</div>
       </div>
       <Formik
@@ -196,6 +196,7 @@ const Payment = () => {
                   {/* value theo PaymentForm */}
                   <TextInput
                     name='name'
+                    // gán giá trị có textInput
                     value={values.name}
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -206,6 +207,7 @@ const Payment = () => {
                     label="Họ và tên" />
                   <TextInput
                     name='phone'
+                    // gán giá trị có textInput
                     value={values.phone}
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -214,6 +216,7 @@ const Payment = () => {
                     placeholder='Số điện thoại của bạn'
                     label="Số điện thoại" />
                   <TextInput
+                    // gán giá trị cho textInput
                     name='email'
                     value={values.email}
                     onBlur={handleBlur}
@@ -291,7 +294,7 @@ const Payment = () => {
                     onChange={handleChange}
                     hasError={touched.address && !isBlank(errors.address)}
                     errorMessage={errors.address}
-                    placeholder='Địa chỉ của bạn'
+                    placeholder='Ví dụ Số 20, ngõ 20'
                     label="Địa chỉ" />
                   <TextInput
                     name='note'

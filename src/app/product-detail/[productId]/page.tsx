@@ -1,60 +1,33 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import { FaMinus, FaPlus, FaStar } from "react-icons/fa";
-import { FaRegStar } from "react-icons/fa";
+import Plus from "@/assets/svg/plus.svg";
+import Minus from '@/assets/svg/minus.svg'
+// import { FaRegStar } from "react-icons/fa";
 import ProductImage from "@/assets/png/product-1.jpg"
 import Image from 'next/image'; // tương đương với thẻ img
 import InputCount from '@/components/InputCount';
-import { LiaShippingFastSolid } from "react-icons/lia";
-import { MdOutlinePayments } from "react-icons/md";
-import { BsBoxSeam } from "react-icons/bs";
+import Gift from "@/assets/svg/gift.svg";
+// import Cast  from "@/assets/svg/cast.svg";
+import Box from "@/assets/svg/box.svg";
 import { Disclosure, Transition } from '@headlessui/react';
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
-import ProductSlider from '@/components/ProductSilder';
+// import ProductSlider from '@/components/ProductSilder';
 import { useSWRWrapper } from '@/store/custom';
 import { ProductDetail, ProductModel } from '@/interfaces/model';
-import { formatNumber } from '@/utils';
+import { formatNumber, isBlank } from '@/utils';
 import { useCart } from '@/components/CartDropdown/hook';
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip } from 'react-tooltip'
 import { useRouter } from 'next/navigation';
 import { useAppStatus } from '@/store/globalSWR';
-const images = [
-  {
-    original: ProductImage.src,
-    thumbnail: ProductImage.src,
-  },
-  {
-    original: ProductImage.src,
-    thumbnail: ProductImage.src,
-  },
-  {
-    original: ProductImage.src,
-    thumbnail: ProductImage.src,
-  },
-  {
-    original: ProductImage.src,
-    thumbnail: ProductImage.src,
-  },
-  {
-    original: ProductImage.src,
-    thumbnail: ProductImage.src,
-  },
-  {
-    original: ProductImage.src,
-    thumbnail: ProductImage.src,
-  },
-  {
-    original: ProductImage.src,
-    thumbnail: ProductImage.src,
-  },
-  {
-    original: ProductImage.src,
-    thumbnail: ProductImage.src,
-  },
+import Link from 'next/link';
+import { mutate } from 'swr';
 
-];
+interface ImageProp {
+  original: string,
+  thumbnail: string
+}
 
 const ProductDetailPage = (props: { params: { productId: string; } }) => {
   // query data của product băng id -> render data lên 
@@ -81,6 +54,43 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   const { data: product } = useSWRWrapper<ProductDetail>(`/api/product/${props.params.productId}`, {
     url: `/api/product/${props.params.productId}`
   })
+  console.log(product)
+
+  // const images = [
+  //   {
+  //     original: ProductImage.src,
+  //     thumbnail: ProductImage.src,
+  //   },
+  //   {
+  //     original: ProductImage.src,
+  //     thumbnail: ProductImage.src,
+  //   },
+  //   {
+  //     original: ProductImage.src,
+  //     thumbnail: ProductImage.src,
+  //   },
+  //   {
+  //     original: ProductImage.src,
+  //     thumbnail: ProductImage.src,
+  //   },
+  //   {
+  //     original: ProductImage.src,
+  //     thumbnail: ProductImage.src,
+  //   },
+  //   {
+  //     original: ProductImage.src,
+  //     thumbnail: ProductImage.src,
+  //   },
+  //   {
+  //     original: ProductImage.src,
+  //     thumbnail: ProductImage.src,
+  //   },
+  //   {
+  //     original: ProductImage.src,
+  //     thumbnail: ProductImage.src,
+  //   },
+  // ];
+  const [imageValues, setImageValues] = useState<ImageProp[]>([])
 
   // điều hướng route
   const router = useRouter();
@@ -88,6 +98,11 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   // bắt sự thay đổi của product
   useEffect(() => {
     if (product) {
+      const imageList: ImageProp[] = [];
+      product.image_product.forEach((item)=>{
+        imageList.push({original: item.url, thumbnail: item.url})
+      })
+      setImageValues(imageList)
       // 
       const sizes: string[] = [];
       // là một list các phần tử nên dùng object.key hay array vẫn giống nhau
@@ -162,27 +177,34 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   // chon product_model mong muốn bằng MapSizeColorToModel.current[key] lấy giá trị
   // mặc định khi render ban đầu sẽ hiển thị MapSizeColorToModel đầu tiên của product nếu không chọn
   // selectdModel là product_model chọn
-  const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
+  let selectedModel;
+  if(selectedSize){
+    selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
+  }else{
+    selectedModel = MapSizeColorToModel.current["null" + selectedColor] ?? product?.product_model[0];
+  }
   return (
     <div className='w-full  h-full flex-1'>
       <div className='flex gap-[0.8rem]  p-[1.2rem] items-center'>
-        <a className='text-[1.6rem] text-gray-500' href="">Trang chủ</a>/
+        <Link className='text-[1.6rem] text-gray-500' href="/">Trang chủ</Link>/
         <a className='text-[1.6rem] text-gray-500' href="">{product?.category?.name}</a>/
       </div>
       <div className='flex mb-[8rem]'>
-        <div className='flex-1 max-w-[60%] mr-[2.4rem]' ><ImageGallery items={images} thumbnailPosition="left" /></div>
+        <div className='flex-1 max-w-[60%] mr-[2.4rem]' ><ImageGallery items={imageValues} thumbnailPosition="left"/></div>
         <div className='flex flex-col flex-1 p-[1.6rem]'>
           <div className='border-dashed border-b border-[#6d6d6d1a]'>
             <div className='text-[2.7rem]'>{product?.name}</div>
-            <div className='flex mb-[1.6rem]'>
+            {/* <div className='flex mb-[1.6rem]'>
               <FaStar className="text-yellow-500" />
               <FaStar className="text-yellow-500" />
               <FaStar className="text-yellow-500" />
               <FaStar className="text-yellow-500" />
               <FaRegStar className="text-yellow-500" />
-            </div>
+            </div> */}
             <div className="flex text-[1.6rem] items-center" >
-              <span className='mr-1'>Tình trạng:</span> <strong className='text-green-600'>{`${selectedModel?.stock} sản phẩm sẵn có`}</strong>
+              <span className='mr-1'>Tình trạng:</span> <strong className='text-green-600'>
+              {selectedModel?.stock && selectedModel?.stock> 0? selectedModel?.stock + ' ': 0 + ' '} 
+              sản phẩm sẵn có</strong>
             </div>
             <div className='text-[2.4rem] font-semibold'>{formatNumber(selectedModel?.price)} VND</div>
           </div>
@@ -209,38 +231,52 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
 
           </div>
           <div className='flex items-center py-[0.8rem]'>
-            <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Cỡ</div>
+            {
+              sizes[0] && (
+                <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Cỡ</div>
+              )
+            }
             {/* hiển thị danh sách màu sắc theo product */}
-            {sizes.map(size => <><a><div className={`mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedSize === size ? 'border-gray-600 border-[2px]' : ''}`}
+            {sizes[0] && sizes.map(size => <><a><div className={`mr-4 rounded-[0.4rem] w-[3rem] h-[3rem] flex items-center justify-center cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedSize === size ? 'border-gray-600 border-[2px]' : ''}`}
               // sự kiện khi click vào sẽ setSelectedSize
               onClick={() => setSelectedSize(size)}
               key={size} data-tooltip-id="my-tooltip" data-tooltip-content={size}>{size}
             </div></a><Tooltip id="my-tooltip" /></>
             )}
           </div>
-          <div className='text-[#bc0516] text-[1.6rem] py-[0.8rem] cursor-pointer'>Hướng dẫn kích thước</div>
+          {/* <div className='text-[#bc0516] text-[1.6rem] py-[0.8rem] cursor-pointer'>Hướng dẫn kích thước</div> */}
           <div className='flex items-center'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Số lượng</div>
 
             <div><InputCount value={quantity} onChange={setQuantity} min={0} max={selectedModel?.stock} /></div>
           </div>
           <div className='flex items-center py-[0.8rem]'>
-            <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
-            <button onClick={handleAddPayment} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button>
+            {
+              selectedModel?.stock&& selectedModel?.stock > 0 ? 
+                <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
+              : <button disabled={true} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-gray-300 flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
+            }
+            {
+              selectedModel?.stock&& selectedModel?.stock > 0 ? 
+                <button onClick={handleAddPayment} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button>
+              : <button disabled={true} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-gray-300 flex-1' type='button'>Mua ngay</button>
+            }
+            {/* <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button> */}
+            {/* <button onClick={handleAddPayment} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button> */}
           </div>
           <div className='bg-[#F7F8FA] p-[1.6rem]'>
             <div className='flex items-center mb-[0.8rem]'>
-              <div className='mr-[0.8rem]'><LiaShippingFastSolid /></div>
-              <div><strong>Miễn phí vận chuyển</strong> (Tìm hiểu thêm)</div>
+              <div className='mr-[0.8rem]'><Gift /></div>
+              <div><strong>Miễn phí vận chuyển</strong><Link className="cursor-pointer hover:font-bold" href={'/promotion/9'}>(Tìm hiểu thêm)</Link></div>
             </div>
-            <div className='flex items-center mb-[0.8rem]'>
-              <div className='mr-[0.8rem]'><MdOutlinePayments /></div>
+            {/* <div className='flex items-center mb-[0.8rem]'>
+              <div className='mr-[0.8rem]'><Cast /></div>
               <div><strong>Thanh toán ngay hoặc COD</strong> (Tìm hiểu thêm)</div>
-            </div>
+            </div> */}
             <div className='flex items-center mb-[0.8rem]'>
-              <div className='mr-[0.8rem]'><BsBoxSeam /></div>
+              <div className='mr-[0.8rem]'><Box /></div>
               <div><strong>
-                Chính sách đổi trả</strong> (Tìm hiểu thêm)</div>
+                Chính sách đổi trả</strong> <Link className="cursor-pointer hover:font-bold" href={'/promotion/10'}>(Tìm hiểu thêm)</Link></div>
             </div>
           </div>
 
@@ -252,7 +288,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
                 >
 
                   <div className={`text-[2rem] font-bold ${open ? 'text-[#bc0516]' : ''}`}>Chi tiết sản phẩm</div>
-                  <div>{!open ? <FaPlus /> : <FaMinus className="text-[#bc0516]" />}</div>
+                  <div>{!open ? <Plus /> : <Minus className="text-[#bc0516]" />}</div>
                 </Disclosure.Button>
                 <Transition
                   show={open}

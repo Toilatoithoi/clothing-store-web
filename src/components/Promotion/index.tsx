@@ -1,14 +1,15 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import anhBia from '@/assets/png/promotion.jpg'
-import anhBia2 from '@/assets/png/anhbai2.jpg'
-import anhBia3 from '@/assets/png/anhbai3.jpg'
-import anhBia4 from '@/assets/png/anhbai4.jpg'
-import anhBia5 from '@/assets/png/anhbai5.jpg'
+// import anhBia from '@/assets/png/promotion.jpg'
+// import anhBia2 from '@/assets/png/anhbai2.jpg'
+// import anhBia3 from '@/assets/png/anhbai3.jpg'
+// import anhBia4 from '@/assets/png/anhbai4.jpg'
+// import anhBia5 from '@/assets/png/anhbai5.jpg'
 import Image from 'next/image'
-import { LuClock4 } from "react-icons/lu";
+import Clock from "@/assets/svg/clock.svg";
 import { useParams, useRouter } from 'next/navigation'
 import { useSWRWrapper } from '@/store/custom'
+import anhBia from '@/assets/png/promotion.jpg'
 import { PostRes } from '@/interfaces/model'
 import Link from 'next/link'
 import { PaginationRes } from '@/interfaces'
@@ -26,8 +27,11 @@ const Promotion = (props: { promotionId?: string; }) => {
     url: `/api/post/${props.promotionId}`,
   })
 
-  const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post', {
+  const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post/limit', {
     url: '/api/post',
+    params:{
+      limit: 5
+    }
   })
   // Sử dụng hook useRouter để lấy đối tượng router
   const route = useRouter();
@@ -90,13 +94,16 @@ const Promotion = (props: { promotionId?: string; }) => {
               </div>
             </div> */}
             {
-              postData?.items.map((item, idx) => (
-                <Link href={`/promotion/${item.id}`} key={idx}>
+              postData?.items.map((item) => (
+                <Link href={`/promotion/${item.id}`} key={item.id}>
                   <div className='flex gap-1 mb-4'>
-                    <Image className="object-contain mb-8" src={item.image} alt="Ảnh bìa" width={80} height={90} />
+                    {
+                      item.image ? <Image className="object-contain mb-8" src={item.image} alt="Ảnh bìa" width={80} height={90} />
+                      : <Image className="object-contain mb-8" src={anhBia} alt="Ảnh bìa" width={80} height={90} />
+                    }
                     <div>
                       <div className='flex'>
-                        <LuClock4 className='m-1' />
+                        <Clock className='m-1 text-[1rem] h-4 w-4' />
                         <div className='text-[1rem]'>
                           {item.createAt.toString().split('T')[0]}
                         </div>

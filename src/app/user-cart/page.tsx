@@ -1,9 +1,9 @@
 
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import { IoIosArrowForward } from "react-icons/io";
+import Right from "@/assets/svg/chevron-right.svg";
 import Pay from '@/assets/svg/pay.svg'
-import { CiShoppingTag } from "react-icons/ci";
+import ShoppingTag from "@/assets/svg/tag.svg";
 import ProductImage from '@/assets/png/product-1.jpg'
 import Image from 'next/image'
 import InputCount from '@/components/InputCount';
@@ -71,8 +71,8 @@ const UserCart = () => {
   return (
     <div>
       <div className='flex items-center justify-center my-[3.2rem]'>
-        <div className='font-bold'>Giỏ hàng</div><IoIosArrowForward />
-        <div>Thanh toán</div><IoIosArrowForward />
+        <div className='font-bold'>Giỏ hàng</div><Right />
+        <div>Thanh toán</div><Right />
         <div>Hoàn tất</div>
       </div>
       <Formik
@@ -99,12 +99,12 @@ const UserCart = () => {
                           <div>{item.product.name}</div>
                           <div>{item.size}</div>
                           <div>{item.color}</div>
-                          <button type='button' onClick={() => handledelete(item)} className='cursor-pointer hover:text-red-500'>Xóa</button>
+                          <button type='button' onClick={() => handledelete(item)} className='cursor-pointer px-1  border-2 border-gray-500 bg-blue-200 text-red-500 hover:border-red-500 hover:bg-yellow-500'>Xóa</button>
                         </div>
                       </div>
-                      <div key={idx + values.data.length + 2} className='text-center'>{item.price}</div>
+                      <div key={idx + values.data.length + 2} className='text-center'>{formatNumber(item.price)} VND</div>
                       <div key={idx + values.data.length + 3} className='flex justify-center'><InputCount min={0} max={item.stock} value={item.quantity} onChange={(qty) => handleChangeQty(qty, idx, item)} /></div>
-                      <div key={idx + values.data.length + 4} className='text-center'>{item.price}</div>
+                      <div key={idx + values.data.length + 4} className='text-center'>{formatNumber(item.price * item.quantity)} VND</div>
                     </>
                   ))}
               </div>
@@ -112,7 +112,7 @@ const UserCart = () => {
                 <div className='h-[4rem] flex items-center text-[2rem] font-bold mb-[1.6rem]'>Tóm tắt đơn hàng</div>
                 <div className=' w-full flex justify-between h-[3.6rem] items-center text-[1.6rem]'>
                   <div className='font-bold'>Tạm tính</div>
-                  <div>{formatNumber(summary.totalPrice)}</div>
+                  <div>{formatNumber(summary.totalPrice)} VND</div>
                 </div>
                 <div className='w-full flex justify-between h-[3.6rem] items-center text-[1.6rem] mb-[2.4rem]'>
                   <div className='font-bold'>Tổng</div>
@@ -121,12 +121,12 @@ const UserCart = () => {
                 <div className='w-full mb-[2.4rem]'>
                   <button type="submit" className='h-[4rem] w-full flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1'>Thanh toán</button>
                 </div>
-                <div className='flex text-[1.6rem] items-center mb-[1.4rem]'> <CiShoppingTag className=" font-bold mr-[0.4rem]" /> <div className='font-bold'>Phiếu ưu đãi</div> </div>
+                {/* <div className='flex text-[1.6rem] items-center mb-[1.4rem]'> <ShoppingTag className=" font-bold mr-[0.4rem]" /> <div className='font-bold'>Phiếu ưu đãi</div> </div>
                 <div className='flex h-[3.8rem] border border-gray-900 mb-[1rem]'>
                   <input type="text" placeholder='Mã ưu đãi' className='outline-none flex-1 px-4' />
                   <button type='button' className='bg-[#2d2d2d]  px-4 text-white'>Áp dụng</button>
                 </div>
-                <div className='text-[1.6rem] font-bold mb-[1.5rem]'>Free ship cho đơn hàng từ 500.000đ</div>
+                <div className='text-[1.6rem] font-bold mb-[1.5rem]'>Free ship cho đơn hàng từ 500.000đ</div> */}
                 {/* <div className='text-[1.6rem] font-bold py-[1.5rem] border-t border-gray-200'>Chùng tôi chấp nhận</div>
                 <div><Pay className="w-[10rem]" /></div> */}
               </div>

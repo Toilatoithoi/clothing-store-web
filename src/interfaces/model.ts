@@ -27,12 +27,19 @@ export interface ProductModel {
   id: number;
 }
 
+export interface ImageProduct {
+ id: number;
+ url: string;
+ product_model_id: number;
+}
+
 export interface ProductDetail {
   id: number;
   name: string;
   category: Category;
   product_model: ProductModel[];
   description: string;
+  image_product: ImageProduct[];
 }
 
 export interface PostRes {
@@ -41,6 +48,7 @@ export interface PostRes {
   content: string;
   createAt: string;
   image: string;
+  sapo: string;
 }
 
 export interface LookBookRes {

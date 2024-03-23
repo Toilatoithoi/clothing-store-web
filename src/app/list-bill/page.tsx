@@ -5,7 +5,7 @@ import "ag-grid-community/styles/ag-grid.css"; // CSS bắt buộc được yêu
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Chủ đề tùy chọn được áp dụng cho grid
 import { ColDef, ICellRendererParams } from 'ag-grid-community';
 import React, { useEffect, useState } from 'react'
-import { Payment, useBill } from '@/components/CartDropdown/hook';
+import { Payment, ProductCart, useBill } from '@/components/CartDropdown/hook';
 import { set } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { timeFormatterFromTimestamp } from '@/utils/grid';
@@ -27,7 +27,8 @@ export interface List {
     note?: string;
     status?: string;
     created_at?: string;
-    bill_id: number;
+    bill_product: ProductCart[];
+    id: number;
 }
 
 const ListBill = () => {
@@ -45,7 +46,19 @@ const ListBill = () => {
             <button className='h-[3.2rem] px-[0.4rem] bg-[#BC0517] text-white rounded-[0.8rem] flex items-center justify-center' onClick={handleClick}>Xem</button>
         </div>;
     };
-    const { addToBill, data } = useBill({});
+    const DeleteButtonComponent = ({ data }: ICellRendererParams) => {
+        const handleClick = () => {
+           updateToBill(data)
+        }
+        return <div className='w-full h-full flex items-center justify-center'>
+            {
+                data.status != "SUCCESS" && data.status != "CANCEL" ? <button className='h-[3.2rem] px-[0.4rem] bg-[#BC0517] text-white rounded-[0.8rem] flex items-center justify-center' onClick={handleClick}>Huỷ đơn</button>
+                : <button disabled={true} className='h-[3.2rem] px-[0.4rem] bg-gray-300 text-white rounded-[0.8rem] flex items-center justify-center'>Huỷ đơn</button>
+            }
+        </div>;
+    };
+    
+    const { addToBill, data, updateToBill } = useBill({});
     const [rowData, setRowData] = useState<Payment[]>([]);
     const [colDefs, setColDefs] = useState<Array<ColDef>>([
         {
@@ -72,6 +85,7 @@ const ListBill = () => {
         },
         { headerName: "Ghi chú", field: "note" },
         { headerName: "Xem", field: 'id', cellRenderer: CustomButtonComponent },
+        { headerName: "Huỷ đơn hàng", field: 'id', cellRenderer: DeleteButtonComponent },
     ]);
 
     useEffect(() => {
@@ -94,7 +108,7 @@ const ListBill = () => {
                     rowSelection="multiple"
                     suppressRowClickSelection={true}
                     pagination={true}
-                    paginationPageSize={10}
+                    paginationPageSize={20}
                     paginationPageSizeSelector={[10, 50, 100]}
                 />
             </div>
