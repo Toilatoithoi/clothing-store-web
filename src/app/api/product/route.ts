@@ -18,7 +18,7 @@ export const GET = async (request: NextRequest) => {
   if (page < 0) {
     page = 0;
   }
-  let name = url.searchParams.get('name');
+  const name = url.searchParams.get('name');
   try {
     let category: category | null = null;
     let category_child: category[] = [];
@@ -33,6 +33,9 @@ export const GET = async (request: NextRequest) => {
     
     // model where cho biểu thức điều kiện
     const where = {
+      name:{
+        contains: name?.toString(),
+      },
       status: 'PUBLISHED',
       ...(category != null && {
         // hiển thị tất cả category cha và category con
@@ -67,30 +70,7 @@ export const GET = async (request: NextRequest) => {
           take: Number(fetchCount),
           skip: Number(page ?? 0) * Number(fetchCount), // skip = (page - 1) * fetchCount
         }),
-        where:{
-          name:{
-            contains: name?.toString(),
-          },
-          status: 'PUBLISHED',
-          ...(category != null && {
-            // hiển thị tất cả category cha và category con
-            // truyền một object category vào filter
-            category: {
-              // OR là 1 trong 2 thoả mãn là được
-              // tìm kiếm theo categoryId
-              OR: [
-                {
-                  // bằng category truyền vào
-                  id: Number(category_id),
-                },
-                {
-                  // category truyền vào bằng category cha
-                  parent_id: Number(category_id),
-                },
-              ],
-            },
-          }),
-        },
+        where,
         orderBy: {
           id: 'asc',
         },
