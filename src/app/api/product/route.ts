@@ -13,7 +13,7 @@ export const GET = async (request: NextRequest) => {
   // lấy từ link url api lấy giá trị categoryId
   const category_id = url.searchParams.get('categoryId');
   // lấy từ link url api lấy giá trị fetchCount
-  const fetchCount = Number(url.searchParams.get('fetchCount')) || 10; // default 10 bản ghi
+  const fetchCount = Number(url.searchParams.get('fetchCount')) || 8; // default 8 bản ghi
 
   const orderBy = url.searchParams.get('orderBy') as SORT_TYPE ?? SORT_TYPE.TIME; // mặc định sort theo time 
   const priceMin = Number(url.searchParams.get('priceMin'))
@@ -80,6 +80,7 @@ export const GET = async (request: NextRequest) => {
           category: true,
           id: true,
           price: true,
+          image_product: true
         },
         take: fetchCount,
         skip: Number(page ?? 0) * Number(fetchCount), // skip = (page - 1) * fetchCount

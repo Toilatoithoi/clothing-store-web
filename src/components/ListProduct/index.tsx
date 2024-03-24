@@ -11,7 +11,7 @@ import { formatNumber } from '@/utils'
 import Link from 'next/link'
 import { SORT_TYPE } from '@/constants'
 
-const FETCH_COUNT = 10;
+const FETCH_COUNT = 8;
 const ListProduct = (props: { categoryId?: string; }) => {
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState({
@@ -43,7 +43,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
   }
 
   useEffect(() => {
-    mutate('/api/product')
+    mutate(`/api/product?orderBy=${orderBy}${JSON.stringify(filter)}`)
   }, [page]);
 
 

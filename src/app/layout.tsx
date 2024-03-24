@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   // pathname lấy ra từ loacalhost:3000/
-  const pathname = usePathname();
+  // const pathname = usePathname();
   const router = useRouter()
 
   const [showLogin, setShowLogin] = useState(false);
@@ -50,21 +50,21 @@ export default function RootLayout({
   const { data: triggerShowLogin } = useSWR<boolean>(COMMON_SHOW_LOGIN);
   const { data: triggerShowRegister } = useSWR<boolean>(COMMON_SHOW_REGISTER);
 
-  useEffect(() => {
-    // khi đăng xuất thì khi ở những trang này sẽ quay về trang home
-    const privateRoute = ['/list-bill', '/user-cart', '/payment', '/user'];
-    console.log(appStatus)
-    if (appStatus) {
-      if (!appStatus.isAuthenticated) {
-        // nếu một trong những item này trả về true thì inPrivate trả về true
-        // every thì tất cả item này trả về true thì inPrivate mới trả về true
-        const inPrivate = privateRoute.some(item => pathname.startsWith(item));
-        if (inPrivate) {
-          router.push('/')
-        }
-      }
-    }
-  }, [appStatus?.isAuthenticated])
+  // useEffect(() => {
+  //   // khi đăng xuất thì khi ở những trang này sẽ quay về trang home
+  //   const privateRoute = ['/list-bill', '/user-cart', '/payment', '/user'];
+  //   console.log(appStatus)
+  //   if (appStatus) {
+  //     if (!appStatus.isAuthenticated) {
+  //       // nếu một trong những item này trả về true thì inPrivate trả về true
+  //       // every thì tất cả item này trả về true thì inPrivate mới trả về true
+  //       const inPrivate = privateRoute.some(item => pathname.startsWith(item));
+  //       if (inPrivate) {
+  //         router.push('/')
+  //       }
+  //     }
+  //   }
+  // }, [appStatus?.isAuthenticated])
 
   useEffect(() => {
     yup.setLocale({

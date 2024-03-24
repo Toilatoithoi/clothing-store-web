@@ -20,7 +20,7 @@ interface PromotionPageProps {
 const PromotionPage = (props: PromotionPageProps) => {
   const [fetchCount, setFetchCount] = useState(5);
   const [page, setPage] = useState(1);
-  const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post', {
+  const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post/list', {
     url: '/api/post',
     params: {
       fetchCount: fetchCount,
@@ -34,7 +34,7 @@ const PromotionPage = (props: PromotionPageProps) => {
     }
   })
   useEffect(() => {
-      mutate('/api/post/limit')
+      mutate('/api/post/list')
   }, [page])
   const handleValuePage = (values: number) =>{
     setPage(values)

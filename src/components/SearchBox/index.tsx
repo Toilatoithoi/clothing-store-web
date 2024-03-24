@@ -5,7 +5,8 @@ import { FETCH_COUNT, METHOD } from '@/constants';
 import { PaginationRes } from '@/interfaces';
 import { ProductRes } from '@/interfaces/model';
 import { formatNumber } from '@/utils';
-
+import Image from 'next/image'
+import anhBia from '@/assets/png/promotion.jpg'
 
 const SearchBox = () => {
   const [searchKey, setSearchKey] = useState('');
@@ -59,11 +60,13 @@ const SearchBox = () => {
           <Search className="text-[2rem]" />
         </button>
       </form>
-      {isFocus && data && data.items && <div className='absolute top-full left-0 w-full min-h-[30rem] overflow-y-auto bg-white shadow-md mt-[0.8rem]'>
-        {data.items.map(item => <div key={item.id} className='cursor-pointer gap-[0.4rem] hover:bg-gray-200 w-full flex h-[5rem] items-center px-[1.6rem] border-b border-b-gray-400'>
-          <div className='w-[6rem]'>ảnh</div>
-          <div className='flex-1 overflow-hidden text-ellipsis whitespace-nowrap'>{item.name}</div>
-          <div className='w-[6rem]'>{formatNumber(item.price?.price)} VNĐ</div>
+      {isFocus && data && data.items && <div className='absolute top-full left-0 w-full max-h-[40rem] overflow-y-scroll bg-white shadow-md mt-[0.8rem]'>
+        {data.items.map(item => <div key={item.id} className='cursor-pointer gap-[0.4rem] hover:bg-gray-200 w-full flex h-[8rem] items-center px-[1.6rem] border-b border-b-gray-400'>
+          <div>
+            <Image className={`object-contain mr-[1rem] cursor-pointer`} src={item.image? item.image: anhBia} alt={''} width={50} height={50} />
+          </div>
+          <div className='flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-center text-[1rem]'>{item.name}</div>
+          <div className='w-[6rem] text-center text-[1rem]'>{formatNumber(item.price?.price)} VNĐ</div>
         </div>)}
       </div>}
     </div>
