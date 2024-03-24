@@ -14,3 +14,9 @@ export enum METHOD {
   PUT = 'put',
   DELETE = 'delete',
 }
+
+export enum SORT_TYPE {
+  PRICE_ASC = 'PRICE_ASC', // giá thấp -> cao
+  PRICE_DESC = 'PRICE_DESC',// cao -> thấp
+  TIME = 'TIME', // mới nhất
+}

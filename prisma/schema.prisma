@@ -74,6 +74,9 @@ model product {
   image_product image_product[]
   category      category?       @relation(fields: [category_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_product_category")
   product_model product_model[]
+  price         Float?
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @default(now())
 
   @@index([category_id], map: "fk_product_category")
 }

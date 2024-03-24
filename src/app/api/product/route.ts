@@ -6,13 +6,18 @@ import { formatNumber, isBlank } from '@/utils';
 import { category } from '@prisma/client';
 import { RestError } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
+import { SORT_TYPE } from '@/constants';
 export const GET = async (request: NextRequest) => {
   // lấy từ link url api
   const url = new URL(request.url);
   // lấy từ link url api lấy giá trị categoryId
   const category_id = url.searchParams.get('categoryId');
+  const orderBy = url.searchParams.get('orderBy') as SORT_TYPE ?? SORT_TYPE.TIME; // mặc định sort theo time 
   // lấy từ link url api lấy giá trị fetchCount
-  const fetchCount = url.searchParams.get('fetchCount');
+  const fetchCount = Number(url.searchParams.get('fetchCount')) ?? 10; // default 10 bản ghi
+  const priceMin = Number(url.searchParams.get('priceMin'))
+  const priceMax = Number(url.searchParams.get('priceMax'))
+  const filterCategories = !isBlank(url.searchParams.get('filterCategories')) ? url.searchParams.get('filterCategories')?.split('|') : null
   // lấy từ link url api lấy giá trị page nếu bằng null thig gán bằng 0 và trừ 1
   let page = Number(url.searchParams.get('page') ?? 0) - 1;
   if (page < 0) {
@@ -30,11 +35,15 @@ export const GET = async (request: NextRequest) => {
         where: { parent_id: Number(category_id) },
       });
     }
-    
+
     // model where cho biểu thức điều kiện
     const where = {
-      name:{
+      name: {
         contains: name?.toString(),
+      },
+      price: {
+        gte: priceMin ?? 0,
+        lte: priceMax ?? Number.MAX_SAFE_INTEGER
       },
       status: 'PUBLISHED',
       ...(category != null && {
@@ -42,21 +51,36 @@ export const GET = async (request: NextRequest) => {
         // truyền một object category vào filter
         category: {
           // OR là 1 trong 2 thoả mãn là được
-          // tìm kiếm theo categoryId
-          OR: [
-            {
-              // bằng category truyền vào
-              id: Number(category_id),
-            },
-            {
-              // category truyền vào bằng category cha
-              parent_id: Number(category_id),
-            },
-          ],
+          // tìm kiếm theo categoryId,
+          OR: filterCategories?.length ? filterCategories.map((category: string) => ({
+            id: Number(category)
+          })) :
+            [
+              {
+                // bằng category truyền vào
+                id: Number(category_id),
+              },
+              {
+                // category truyền vào bằng category cha
+                parent_id: Number(category_id),
+              },
+            ],
         },
       }),
     };
 
+    console.log(JSON.stringify(where), filterCategories)
+    console.log({
+      ...orderBy === SORT_TYPE.TIME && {
+        created_at: 'desc',
+      },
+      ...orderBy === SORT_TYPE.PRICE_ASC && {
+        price: 'asc',
+      },
+      ...orderBy === SORT_TYPE.PRICE_DESC && {
+        price: 'desc',
+      },
+    })
     const [products, count] = await prisma.$transaction([
       prisma.product.findMany({
         select: {
@@ -65,14 +89,21 @@ export const GET = async (request: NextRequest) => {
           status: true,
           category: true,
           id: true,
+          price: true,
         },
-        ...(!isBlank(fetchCount) && {
-          take: Number(fetchCount),
-          skip: Number(page ?? 0) * Number(fetchCount), // skip = (page - 1) * fetchCount
-        }),
+        take: fetchCount,
+        skip: Number(page ?? 0) * Number(fetchCount), // skip = (page - 1) * fetchCount
         where,
         orderBy: {
-          id: 'asc',
+          ...orderBy === SORT_TYPE.TIME && {
+            created_at: 'desc',
+          },
+          ...orderBy === SORT_TYPE.PRICE_ASC && {
+            price: 'asc',
+          },
+          ...orderBy === SORT_TYPE.PRICE_DESC && {
+            price: 'desc',
+          },
         },
       }),
       prisma.product.count({
@@ -80,13 +111,14 @@ export const GET = async (request: NextRequest) => {
       }),
     ]);
 
-    const res = products.map((product) => {
+    let res = products.map((product) => {
       const price = {
         // giá hiển thị ban đầu là product_model đầu tiên của product đó nếu không có giá trị thì sẽ mặc định là 0
         priceMin: product.product_model[0]?.price ?? 0,
         priceMax: product.product_model[0]?.price ?? 0,
+        price: product.price
       };
-       
+
       // lấy giá lớn nhất của một model
       product.product_model.forEach((mode) => {
         if (mode.price && mode.price > price.priceMax) {
@@ -107,13 +139,14 @@ export const GET = async (request: NextRequest) => {
       };
     });
 
+
     return NextResponse.json({
       items: res,
       // phân trang
       pagination: {
         totalCount: count,
         page: page <= 0 ? 1 : page + 1,
-        totalPage: fetchCount ? Number(formatNumber(count / Number(fetchCount))) : 1,
+        totalPage: fetchCount ? Number(count / Number(fetchCount)) : 1,
       },
       category_child: category_child
     });

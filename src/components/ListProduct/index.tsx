@@ -9,35 +9,58 @@ import { ProductRes } from '@/interfaces/model'
 import { PaginationRes } from '@/interfaces';
 import { formatNumber } from '@/utils'
 import Link from 'next/link'
+import { SORT_TYPE } from '@/constants'
 
-
+const FETCH_COUNT = 10;
 const ListProduct = (props: { categoryId?: string; }) => {
-  const [fetchCount, setFetchCount] = useState(8);
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState({
+    price: {
+      min: 0,
+      max: Number.MAX_SAFE_INTEGER,
+    },
+    categories: [] as number[]
+  })
+  const [orderBy, setOrderBy] = useState(SORT_TYPE.TIME);
   // lấy dữ liệu danh sách product từ api 
-  const { data } = useSWRWrapper<PaginationRes<ProductRes>>('/api/product', {
+  const { data } = useSWRWrapper<PaginationRes<ProductRes>>(`/api/product?orderBy=${orderBy}${JSON.stringify(filter)}`, {
     url: '/api/product',
     params: {
       ...props.categoryId && { categoryId: props.categoryId },
-        fetchCount: fetchCount,
-        page: page,
-      }
+      fetchCount: FETCH_COUNT,
+      page: page,
+      orderBy,
+      priceMin: filter.price.min,
+      priceMax: filter.price.max,
+      filterCategories: filter.categories.join('|')
+    }
   })
 
   console.log({ data });
 
-  const handleValuePage = (values: number) =>{
+  const handleValuePage = (values: number) => {
     setPage(values)
   }
 
   useEffect(() => {
     mutate('/api/product')
-}, [page])
+  }, [page]);
+
+
+  const onChangeFilter = (filter: { price: number[], categories: number[] }) => {
+    setFilter({
+      price: {
+        min: filter.price[0],
+        max: filter.price[1],
+      },
+      categories: filter.categories
+    })
+  }
 
   return (
     <>
       <div className='h-[6rem] flex items-center text-gray-400 text-[1.6rem]'>
-       <Link href={`/`}> <span className='hover:text-gray-600 cursor-pointer'>Trang chủ</span></Link>
+        <Link href={`/`}> <span className='hover:text-gray-600 cursor-pointer'>Trang chủ</span></Link>
         <span className='mx-2'>/</span>
         <span className='hover:text-gray-600 cursor-pointer'>áo nam</span>
       </div>
@@ -48,14 +71,19 @@ const ListProduct = (props: { categoryId?: string; }) => {
         <div className='flex'>
           <div className='mr-4'>Sắp xếp theo</div>
           <div>
-            <select className='outline-none'>
-              <option>
+            <select className='outline-none'
+              value={orderBy}
+              onChange={(e) => {
+                setOrderBy(e.target.value as SORT_TYPE)
+              }}
+            >
+              <option value={SORT_TYPE.TIME}>
                 Mới nhất
               </option>
-              <option>
+              <option value={SORT_TYPE.PRICE_ASC}>
                 Theo giá từ thấp đến cao
               </option>
-              <option>
+              <option value={SORT_TYPE.PRICE_DESC}>
                 Theo giá từ cao đến thấp
               </option>
             </select>
@@ -63,7 +91,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
         </div>
       </div>
       <div className='flex mb-[2rem] gap-[1.5rem]'>
-        <SideBar categoryId={props.categoryId} />
+        <SideBar categoryId={props.categoryId} onChangeFilter={onChangeFilter} />
         <div className='grid grid-cols-4 gap-5 h-fit'>
           {data?.items.map(item => <ProductCard data={item} key={item.id} />)}
         </div>

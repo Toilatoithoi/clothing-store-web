@@ -63,3 +63,18 @@ body {
   font-weight: 500;
   font-size: inherit;
 }
+
+.rc-slider {
+  .rc-slider-track {
+    background-color: #666;
+    opacity: 0.5;
+  }
+  .rc-slider-handle {
+    border-color: #666666 !important;
+    background-color: #666666 !important;
+    opacity: 1;
+    &.rc-slider-handle-dragging {
+      box-shadow: 0 0 0 5px #9a9a9a86 !important;
+    }
+  }
+}

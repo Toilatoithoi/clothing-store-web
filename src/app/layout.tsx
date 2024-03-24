@@ -120,16 +120,16 @@ export default function RootLayout({
         <ToastContainer autoClose={3000} />
         {
           // nếu chưa lấy dữ liệu xong thì loading bằng true hiển thị preload
-          isLoading ? <div className='h-full w-full flex items-center justify-center bg-white'><Preload /> </div> :
-            <div className='flex flex-col h-screen w-screen'>
-              <Header />
-              <div className='flex-1 overflow-y-auto bg-white'>
-                <main className="min-h-[130rem] flex flex-col max-w-screen-xl m-auto">
-                  {children}
-                </main>
-                <Footer />
-              </div>
+          // isLoading ? <div className='h-full w-full flex items-center justify-center bg-white'><Preload /> </div> :
+          <div className='flex flex-col h-screen w-screen'>
+            <Header />
+            <div className='flex-1 overflow-y-auto bg-white'>
+              <main className=" flex flex-col max-w-screen-xl m-auto">
+                {children}
+              </main>
+              <Footer />
             </div>
+          </div>
         }
         <ModalProvider
           onHide={() => {
