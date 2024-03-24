@@ -92,8 +92,8 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
           rowSelection="multiple"
           suppressRowClickSelection={true}
           pagination={true}
-          paginationPageSize={3}
-          paginationPageSizeSelector={[3, 10, 100]}
+          paginationPageSize={10}
+          paginationPageSizeSelector={[10, 50, 100]}
         />
         <div className='h-[3.5rem] w-full border border-gray-950 flex items-center justify-between'>
           <div className='text-right my-1 text-[2rem] font-bold'>Tổng:</div>
