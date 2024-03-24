@@ -76,7 +76,7 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
 
 
   return (
-    <div>
+    <div className='h-[50rem]'>
       <div className='h-[4.5rem] w-full mb-2'>
         <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center flex justify-center text-center'>
           <div className='uppercase font-[900] text-[2rem] text-[#2d2d2d]'>
@@ -86,6 +86,7 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
       </div>
       <div className="ag-theme-quartz m-auto" style={{ width: 600, height: 500 }}>
         <AgGridReact
+          className='h-[30rem]'
           rowData={rowData}
           columnDefs={colDefs}
           rowSelection="multiple"
