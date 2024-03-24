@@ -93,18 +93,26 @@ const ListProduct = (props: { categoryId?: string; }) => {
       <div className='flex mb-[2rem] gap-[1.5rem]'>
         <SideBar categoryId={props.categoryId} onChangeFilter={onChangeFilter} />
         <div className='grid grid-cols-4 gap-5 h-fit'>
-          {data?.items.map(item => <ProductCard data={item} key={item.id} />)}
+          {data && data.pagination.totalCount != 0 ?
+            data.items.map(item => <ProductCard data={item} key={item.id} />)
+            :
+            <div>Không có sản phẩm</div>
+          }
         </div>
       </div>
-      <div className='flex items-center justify-center gap-4'>
-        <select className='w-[5rem] flex items-end justify-end p-2 border-2 border-blue-600' onChange={(e) => handleValuePage(Number(e.target.value))}>
-          {data?.pagination.totalPage && Array.from({ length: data.pagination.totalPage }, (_, index) => (
-            <option className="text-center" key={index} value={index + 1}>{`${index + 1}`}</option>
-          ))}
-        </select>
-        <div>/</div>
-        <div>{data?.pagination.totalPage}</div>
-      </div>
+      {
+        data && data.pagination.totalCount != 0 ?
+          <div className='flex items-center justify-center gap-4'>
+            <select className='w-[5rem] flex items-end justify-end p-2 border-2 border-blue-600' onChange={(e) => handleValuePage(Number(e.target.value))}>
+              {Array.from({ length: data.pagination.totalPage }, (_, index) => (
+                <option className="text-center" key={index} value={index + 1}>{`${index + 1}`}</option>
+              ))}
+            </select>
+            <div>/</div>
+            <div>{data?.pagination.totalPage}</div>
+          </div>
+          : <div></div>
+      }
     </>
   )
 }
