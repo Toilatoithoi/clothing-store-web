@@ -3,10 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { formatNumber, uuid } from '@/utils';
 import Logo from '@/assets/svg/logo.svg';
 import HeadPhone from "@/assets/svg/headphones.svg";
-import  User  from "@/assets/svg/user.svg";
+import User from "@/assets/svg/user.svg";
 // import { HiOutlineShoppingBag } from "react-icons/hi";
 // import { RiGlobalLine } from "react-icons/ri";
-import Search from "@/assets/svg/search.svg";
 // import Image from 'next/image';
 // import BannerImage from '@/assets/png/set-do-3.jpg'
 
@@ -27,6 +26,7 @@ import { toast } from 'react-toastify';
 // import Loader from '../Loader';
 import { useRouter } from 'next/navigation';
 import { PaginationRes } from '@/interfaces';
+import SearchBox from '../SearchBox';
 
 interface HeaderProps {
 
@@ -104,7 +104,6 @@ const ListConfig = [
 const Header = (props: HeaderProps) => { //jsx, không phai html 
   const [fetchCount, setFetchCount] = useState(8);
   const [page, setPage] = useState(1);
-  const [name, setName] = useState('')
   const { data: appStatus } = useAppStatus();
   console.log(appStatus)
   // điều hướng route
@@ -115,16 +114,6 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
   const { data } = useSWRWrapper<Category[]>('/api/category?level=1', {
     url: '/api/category?level=1',
   })
-  const { data: productSearch } = useSWRWrapper<PaginationRes<ProductRes>>('/api/product/name', {
-    url: '/api/product',
-    params:{
-      name: name,
-    }
-  })
-
-  useEffect(() =>{
-    mutate('/api/product/name')
-  }, [name])
 
   const handleShowLogin = () => {
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
@@ -172,8 +161,8 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
       loading: true
     })
   }
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     mutate('/api/category?level=1')
   }, [data])
 
@@ -234,12 +223,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
               ))
             }
           </div>
-          <form className="flex items-center h-[3.5rem] border border-gray-700">
-            <input className="h-full p-4 outline-none" type="text" placeholder='Tìm kiếm...' onChange={(e)=> {setName(e.target.value)}}/>
-            <button type='submit' className="bg-gray-300 h-full aspect-square flex items-center justify-center hover:bg-gray-500">
-              <Search className="text-[2rem]" />
-            </button>
-          </form>
+          <SearchBox />
         </div>
       </div>
     </header>

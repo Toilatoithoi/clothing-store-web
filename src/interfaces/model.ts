@@ -5,8 +5,9 @@ export interface ProductRes {
   price: {
     priceMin: number;
     priceMax: number;
+    price: number;
   };
-  product_model?:{
+  product_model?: {
     color?: string;
     size?: string;
   }
@@ -28,9 +29,9 @@ export interface ProductModel {
 }
 
 export interface ImageProduct {
- id: number;
- url: string;
- product_model_id: number;
+  id: number;
+  url: string;
+  product_model_id: number;
 }
 
 export interface ProductDetail {
@@ -59,7 +60,7 @@ export interface LookBookRes {
   url: string;
 }
 
-export interface Bill{
+export interface Bill {
   [x: string]: any;
   id: number;
   user_id: number;

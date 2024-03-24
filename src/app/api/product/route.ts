@@ -12,9 +12,10 @@ export const GET = async (request: NextRequest) => {
   const url = new URL(request.url);
   // lấy từ link url api lấy giá trị categoryId
   const category_id = url.searchParams.get('categoryId');
-  const orderBy = url.searchParams.get('orderBy') as SORT_TYPE ?? SORT_TYPE.TIME; // mặc định sort theo time 
   // lấy từ link url api lấy giá trị fetchCount
-  const fetchCount = Number(url.searchParams.get('fetchCount')) ?? 10; // default 10 bản ghi
+  const fetchCount = Number(url.searchParams.get('fetchCount')) || 10; // default 10 bản ghi
+
+  const orderBy = url.searchParams.get('orderBy') as SORT_TYPE ?? SORT_TYPE.TIME; // mặc định sort theo time 
   const priceMin = Number(url.searchParams.get('priceMin'))
   const priceMax = Number(url.searchParams.get('priceMax'))
   const filterCategories = !isBlank(url.searchParams.get('filterCategories')) ? url.searchParams.get('filterCategories')?.split('|') : null
@@ -23,27 +24,25 @@ export const GET = async (request: NextRequest) => {
   if (page < 0) {
     page = 0;
   }
-  const name = url.searchParams.get('name');
+  const searchKey = url.searchParams.get('searchKey');
   try {
     let category: category | null = null;
-    let category_child: category[] = [];
     if (category_id && !isBlank(category_id)) {
       category = await prisma.category.findFirst({
         where: { id: Number(category_id) },
-      });
-      category_child = await prisma.category.findMany({
-        where: { parent_id: Number(category_id) },
       });
     }
 
     // model where cho biểu thức điều kiện
     const where = {
-      name: {
-        contains: name?.toString(),
+      ...!isBlank(searchKey) && {
+        name: {
+          contains: searchKey!,
+        },
       },
       price: {
         gte: priceMin ?? 0,
-        lte: priceMax ?? Number.MAX_SAFE_INTEGER
+        lte: priceMax || Number.MAX_SAFE_INTEGER
       },
       status: 'PUBLISHED',
       ...(category != null && {
@@ -54,7 +53,7 @@ export const GET = async (request: NextRequest) => {
           // tìm kiếm theo categoryId,
           OR: filterCategories?.length ? filterCategories.map((category: string) => ({
             id: Number(category)
-          })) :
+          })) : !isBlank(category_id) ?
             [
               {
                 // bằng category truyền vào
@@ -64,23 +63,14 @@ export const GET = async (request: NextRequest) => {
                 // category truyền vào bằng category cha
                 parent_id: Number(category_id),
               },
-            ],
+            ] : [],
         },
       }),
     };
 
-    console.log(JSON.stringify(where), filterCategories)
-    console.log({
-      ...orderBy === SORT_TYPE.TIME && {
-        created_at: 'desc',
-      },
-      ...orderBy === SORT_TYPE.PRICE_ASC && {
-        price: 'asc',
-      },
-      ...orderBy === SORT_TYPE.PRICE_DESC && {
-        price: 'desc',
-      },
-    })
+
+    console.log(JSON.stringify(where), fetchCount)
+
     const [products, count] = await prisma.$transaction([
       prisma.product.findMany({
         select: {
@@ -146,9 +136,8 @@ export const GET = async (request: NextRequest) => {
       pagination: {
         totalCount: count,
         page: page <= 0 ? 1 : page + 1,
-        totalPage: fetchCount ? Number(count / Number(fetchCount)) : 1,
+        totalPage: fetchCount ? Number(Math.ceil(count / Number(fetchCount))) : 1,
       },
-      category_child: category_child
     });
   } catch (error) {
     console.log({ error });
@@ -160,12 +149,15 @@ export const POST = async (req: NextRequest) => {
   try {
     // khi người ta điền thêm size và thêm màu thì sẽ tạo ra thêm bảng product_model
     const body = (await req.json()) as CreateProductReq;
+    const priceMin = Math.min(...body.model.map(item => item.price));
+
     const product = await prisma.product.create({
       data: {
         name: body.name,
         status: PRODUCT_STATUS.DRAFT,
         description: body.description,
         category_id: body.category_id,
+        price: priceMin,
         // tạo bảng product_model
         // tạo đồng thời cả product và product_model thì nếu khi product_model bị lỗi thì product sẽ không thành công
         product_model: {
@@ -180,3 +172,5 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 };
+
+
