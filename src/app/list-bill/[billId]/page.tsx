@@ -12,7 +12,7 @@ import React, { use, useEffect, useState } from 'react'
 import { Payment, ProductCart } from '@/components/CartDropdown/hook';
 import { integerFormatter } from '@/utils/grid';
 import { formatNumber } from '@/utils';
-
+import './style.scss';
 export interface Product {
   name: string,
   quantity: number,
@@ -76,7 +76,7 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
 
 
   return (
-    <div className='h-[50rem]'>
+    <div className=''>
       <div className='h-[4.5rem] w-full mb-2'>
         <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center flex justify-center text-center'>
           <div className='uppercase font-[900] text-[2rem] text-[#2d2d2d]'>
@@ -86,7 +86,7 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
       </div>
       <div className="ag-theme-quartz m-auto" style={{ width: 600, height: 500 }}>
         <AgGridReact
-          className='h-[30rem]'
+          className='ag-height'
           rowData={rowData}
           columnDefs={colDefs}
           rowSelection="multiple"
