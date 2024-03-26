@@ -17,7 +17,7 @@ import { APP_STATUS, COMMON_LOADING, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, US
 import { useSWRWrapper } from '@/store/custom';
 import { Category, ProductRes } from '@/interfaces/model';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import CartDropdown from '../CartDropdown';
 import Menu from "@/assets/svg/menu.svg";
 import { removeKey, setKey } from '@/utils/localStorage';
@@ -103,6 +103,7 @@ const ListConfig = [
 
 const Header = (props: HeaderProps) => { //jsx, không phai html 
   const [fetchCount, setFetchCount] = useState(8);
+  const pathname = usePathname();
   const [page, setPage] = useState(1);
   const { data: appStatus } = useAppStatus();
   console.log(appStatus)
@@ -150,6 +151,14 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
         theme: 'light',
       },
     );
+    // khi đăng xuất thì khi ở những trang này sẽ quay về trang home
+    const privateRoute = ['/list-bill', '/user-cart', '/payment', '/user'];
+    // nếu một trong những item này trả về true thì inPrivate trả về true
+    // every thì tất cả item này trả về true thì inPrivate mới trả về true
+    const inPrivate = privateRoute.some(item => pathname.startsWith(item));
+    if (inPrivate) {
+      router.push('/')
+    }
   }
 
   const handleShowRegister = () => {

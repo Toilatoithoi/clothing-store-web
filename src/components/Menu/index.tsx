@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Menu1 from '@/assets/png/menu1.jpg'
 import Menu2 from '@/assets/png/menu2.jpg'
 import Menu3 from '@/assets/png/menu3.jpg'
@@ -22,6 +22,11 @@ import Gift from "@/assets/svg/gift.svg";
 import Refresh from "@/assets/svg/refresh-ccw.svg";
 import ProductSlider from '@/components/ProductSilder';
 import './style.scss';
+import { useSWRWrapper } from '@/store/custom'
+import { PaginationRes } from '@/interfaces'
+import { ProductRes } from '@/interfaces/model'
+import { SORT_TYPE } from '@/constants'
+import { mutate } from 'swr'
 
 
 const images: ReactImageGalleryItem[] = [
@@ -54,6 +59,42 @@ const images: ReactImageGalleryItem[] = [
 // mỗi sản phẩm đấy phải phân biệt bởi productId (kiểu dùng này là dynamic router)
 // props là thuộc tính từ lớp cha truyền cho lớp con
 export const Menu = () => {
+  const [filter, setFilter] = useState({
+    price: {
+      min: 0,
+      max: Number.MAX_SAFE_INTEGER,
+    },
+  })
+
+  const { data: dataProductPrice } = useSWRWrapper<PaginationRes<ProductRes>>(`/api/product?orderBy=${SORT_TYPE.PRICE_DESC}}`, {
+    url: '/api/product',
+    params: {
+      fetchCount: 8,
+      page: 1,
+      orderBy: SORT_TYPE.PRICE_DESC,
+      priceMin: filter.price.min,
+      priceMax: filter.price.max,
+    }
+  })
+
+  const { data: dataProducCreatAt } = useSWRWrapper<PaginationRes<ProductRes>>(`/api/product?orderBy=${SORT_TYPE.TIME}${JSON.stringify(filter)}`, {
+    url: '/api/product',
+    params: {
+      fetchCount: 8,
+      page: 1,
+      orderBy: SORT_TYPE.TIME,
+      priceMin: filter.price.min,
+      priceMax: filter.price.max,
+    }
+  })
+
+  useEffect(() => {
+    mutate(`/api/product?orderBy=${SORT_TYPE.PRICE_DESC}${JSON.stringify(filter)}`)
+  }, []);
+
+  useEffect(() => {
+    mutate(`/api/product?orderBy=${SORT_TYPE.TIME}${JSON.stringify(filter)}`)
+  }, []);
   // query data của product theo id
   // render data lên
   return (
@@ -100,12 +141,20 @@ export const Menu = () => {
         </div>
       </div>
       <div className='mb-[8rem]'>
-        <div className='text-[2rem] font-bold mb-[2.4rem] flex items-center justify-center'>NHỮNG SẢN PHẨM NHIỀU NGƯỜI MUA</div>
-        <div><ProductSlider /></div>
+        <div className='text-[2rem] font-bold mb-[2.4rem] flex items-center justify-center'>NHỮNG SẢN PHẨM GIÁ CAO NHẤT</div>
+        <div>{
+          dataProductPrice && (
+            <ProductSlider data={dataProductPrice?.items}/>
+          )
+        }</div>
       </div>
       <div className='mb-[8rem] border-t-[0.05rem] border-gray-200 pt-[1.6rem]'>
-        <div className='text-[2rem] font-bold mb-[2.4rem] flex items-center justify-center'>KHUYẾN MÃI HÔM NAY</div>
-        <div><ProductSlider /></div>
+        <div className='text-[2rem] font-bold mb-[2.4rem] flex items-center justify-center'>NHỮNG SẢN PHẨM MỚI NHẤT</div>
+        {
+          dataProducCreatAt && (
+            <ProductSlider data={dataProducCreatAt?.items}/>
+          )
+        }
       </div>
     </div>
   )

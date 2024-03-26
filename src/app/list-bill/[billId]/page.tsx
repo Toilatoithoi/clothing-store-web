@@ -12,7 +12,7 @@ import React, { use, useEffect, useState } from 'react'
 import { Payment, ProductCart } from '@/components/CartDropdown/hook';
 import { integerFormatter } from '@/utils/grid';
 import { formatNumber } from '@/utils';
-
+import './style.scss';
 export interface Product {
   name: string,
   quantity: number,
@@ -76,7 +76,7 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
 
 
   return (
-    <div>
+    <div className=''>
       <div className='h-[4.5rem] w-full mb-2'>
         <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center flex justify-center text-center'>
           <div className='uppercase font-[900] text-[2rem] text-[#2d2d2d]'>
@@ -86,13 +86,14 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
       </div>
       <div className="ag-theme-quartz m-auto" style={{ width: 600, height: 500 }}>
         <AgGridReact
+          className='ag-height'
           rowData={rowData}
           columnDefs={colDefs}
           rowSelection="multiple"
           suppressRowClickSelection={true}
           pagination={true}
-          paginationPageSize={3}
-          paginationPageSizeSelector={[3, 10, 100]}
+          paginationPageSize={10}
+          paginationPageSizeSelector={[10, 50, 100]}
         />
         <div className='h-[3.5rem] w-full border border-gray-950 flex items-center justify-between'>
           <div className='text-right my-1 text-[2rem] font-bold'>Tổng:</div>

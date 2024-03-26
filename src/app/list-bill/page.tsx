@@ -109,7 +109,7 @@ const ListBill = () => {
                     suppressRowClickSelection={true}
                     pagination={true}
                     paginationPageSize={20}
-                    paginationPageSizeSelector={[10, 50, 100]}
+                    paginationPageSizeSelector={[20, 50, 100]}
                 />
             </div>
         </div>
