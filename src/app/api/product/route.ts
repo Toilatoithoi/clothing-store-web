@@ -85,6 +85,8 @@ export const GET = async (request: NextRequest) => {
         take: fetchCount,
         skip: Number(page ?? 0) * Number(fetchCount), // skip = (page - 1) * fetchCount
         where,
+        // Cho prouduct muốn soát theo giá thì phải liên kết với product_model do có phân trang vì có fetchCount
+        // nên chỉ có thể sort nhưng thằng lấy ra được sau fetchCount thôi còn những thằng database sẽ không sort được
         orderBy: {
           ...orderBy === SORT_TYPE.TIME && {
             created_at: 'desc',
@@ -129,6 +131,10 @@ export const GET = async (request: NextRequest) => {
         id: product.id,
       };
     });
+
+    // chỉ sort những thằng lấy ra được sau khi phân trang chứ không phải toàn bộ từ database
+    // nên phải dùng order by ở câu truy vấn luôn nên bắt buộc phải có thêm thuộc tính price ở sản phẩm
+    // res = res.sort() 
 
 
     return NextResponse.json({
