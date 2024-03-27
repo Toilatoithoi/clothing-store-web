@@ -14,7 +14,7 @@ export enum METHOD {
   PUT = 'put',
   DELETE = 'delete',
 }
-
+// hằng số dùng cho nhiều chỗ thì dùng enum
 export enum SORT_TYPE {
   PRICE_ASC = 'PRICE_ASC', // giá thấp -> cao
   PRICE_DESC = 'PRICE_DESC',// cao -> thấp

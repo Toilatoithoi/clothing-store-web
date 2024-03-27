@@ -110,6 +110,9 @@ export const GET = async (req: NextRequest, { params }: { params: { billId: stri
                   }
                 },
                 price: true,
+                size: true,
+                color: true,
+                image: true,
               }
             },
             quantity: true,

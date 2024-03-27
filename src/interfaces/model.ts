@@ -82,6 +82,9 @@ export interface BillProduct {
       name: string;
     },
     price: number;
+    size: number;
+    color: string;
+    image: string;
   };
   quantity: number;
   id: number;

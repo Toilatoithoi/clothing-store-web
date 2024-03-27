@@ -14,10 +14,13 @@ export const GET = async (request: NextRequest) => {
   const category_id = url.searchParams.get('categoryId');
   // lấy từ link url api lấy giá trị fetchCount
   const fetchCount = Number(url.searchParams.get('fetchCount')) || 8; // default 8 bản ghi
-
+  // orderBy là sort thời gian, giá từ thấp đến cap, giá từ cao đến thấp
   const orderBy = url.searchParams.get('orderBy') as SORT_TYPE ?? SORT_TYPE.TIME; // mặc định sort theo time 
-  const priceMin = Number(url.searchParams.get('priceMin'))
+  // sort theo giá lớn nhất
+  const priceMin = Number(url.searchParams.get('priceMin')) 
+  // sort theo giá nhỏ nhất
   const priceMax = Number(url.searchParams.get('priceMax'))
+  // chuổi chuỗi category con nhận được thành mảng
   const filterCategories = !isBlank(url.searchParams.get('filterCategories')) ? url.searchParams.get('filterCategories')?.split('|') : null
   // lấy từ link url api lấy giá trị page nếu bằng null thig gán bằng 0 và trừ 1
   let page = Number(url.searchParams.get('page') ?? 0) - 1;
@@ -42,6 +45,7 @@ export const GET = async (request: NextRequest) => {
       },
       price: {
         gte: priceMin ?? 0,
+        // phải để là || không phải ?? vì ?? chỉ khi null hoặc undefind mới mới trả về giá trị thay thế còn || thì ngoài null và undefind thì còn 0, '' sẽ coi là false đều trả về giá trị kia
         lte: priceMax || Number.MAX_SAFE_INTEGER
       },
       status: 'PUBLISHED',
@@ -51,6 +55,7 @@ export const GET = async (request: NextRequest) => {
         category: {
           // OR là 1 trong 2 thoả mãn là được
           // tìm kiếm theo categoryId,
+          // nếu filterCategories có thì sẽ không filter theo thằng cha và thằng con của cha nữa mà chỉ filter riêng mấy thằng con mà tích vào thôi
           OR: filterCategories?.length ? filterCategories.map((category: string) => ({
             id: Number(category)
           })) : !isBlank(category_id) ?
@@ -179,5 +184,16 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
   }
 };
+
+// ... do đầu vào có thể là nhiều tham số không biết ra có bao nhiêu tham số
+// (a,b,c,d,...) chứ không phải ([a,b,c,d,...])
+
+// do không biết có bao nhiêu tham số nên để lấy hết thì dùng ... arg là một mảng
+// const min = (...arg: number[]) =>{
+//   console.log(arg)
+// }
+
+// min(2,3,4) in mảng [2,3,4]
+
 
 

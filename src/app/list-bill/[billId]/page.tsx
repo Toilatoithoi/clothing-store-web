@@ -3,7 +3,7 @@ import { METHOD } from '@/constants';
 import { AgGridReact } from 'ag-grid-react'; // Component AG Grid
 import "ag-grid-community/styles/ag-grid.css"; // CSS bắt buộc được yêu cầu bởi grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Chủ đề tùy chọn được áp dụng cho grid
-import { ColDef } from 'ag-grid-community';
+import { ColDef, ICellRendererParams } from 'ag-grid-community';
 import { set } from 'date-fns';
 import { Bill, BillProduct } from '@/interfaces/model';
 import { useSWRWrapper } from '@/store/custom';
@@ -13,29 +13,45 @@ import { Payment, ProductCart } from '@/components/CartDropdown/hook';
 import { integerFormatter } from '@/utils/grid';
 import { formatNumber } from '@/utils';
 import './style.scss';
+import Image from 'next/image';
+
 export interface Product {
-  name: string,
-  quantity: number,
-  price: string
+  name: string;
+  quantity: number;
+  size: number;
+  color: string;
+  price: string;
+  image: string;
+  buy: string;
 }
-
-
 
 const ListBillDetail = (props: { params: { billId: string; } }) => {
   const { data } = useSWRWrapper<Bill>(`/api/bill/${props.params.billId}`, {
     url: `/api/bill/${props.params.billId}`,
     method: METHOD.GET
   })
+  const ImageRenderer = ({ data }: ICellRendererParams) => {
+    return <Image className="object-contain overflow-hidden" src={data.image} alt="Ảnh bìa" width={70} height={70}/>;
+  };
   console.log({ data })
   const router = useRouter();
   const [summary, setSummary] = useState(0);
   const [rowData, setRowData] = useState<Product[]>([]);
   const [colDefs, setColDefs] = useState<Array<ColDef>>([
-    { headerName: "Name", field: "name", flex: 1 },
+    { headerName: "Image", field: "image", cellClass: 'text-start p-[1rem]', autoHeight: true, cellRenderer: ImageRenderer},
+    { headerName: "Name", field: "name"},
+    { headerName: "Size", field: "size", cellClass: 'text-end'},
+    { headerName: "Color", field: "color", cellClass: 'text-end'},
     { headerName: "Quantity", field: "quantity", cellClass: 'text-end' },
     {
       headerName: "Price",
       field: "price",
+      cellClass: 'text-end',
+      valueFormatter: integerFormatter
+    },
+    {
+      headerName: "Thành tiền",
+      field: "buy",
       cellClass: 'text-end',
       valueFormatter: integerFormatter
     },
@@ -46,9 +62,13 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
     if (data) {
       data.bill_product.forEach((product) => {
         row.push({
+          image: product.product_model.image,
           name: product.product_model?.product.name,
+          size: product.product_model.size,
+          color: product.product_model.color,
           quantity: product.quantity,
-          price: (formatNumber(product.product_model.price * product.quantity)).toString() + ' ' + 'VND'
+          price: formatNumber(product.product_model.price).toString() + ' ' + 'VND',
+          buy: (formatNumber(product.product_model.price * product.quantity)).toString() + ' ' + 'VND'
         })
         total = Number(total + product.product_model.price * product.quantity)
       })
@@ -84,7 +104,7 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
           </div>
         </div>
       </div>
-      <div className="ag-theme-quartz m-auto" style={{ width: 600, height: 500 }}>
+      <div className="ag-theme-quartz m-auto" style={{ width: 1400, height: 500 }}>
         <AgGridReact
           className='ag-height'
           rowData={rowData}
@@ -92,8 +112,8 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
           rowSelection="multiple"
           suppressRowClickSelection={true}
           pagination={true}
-          paginationPageSize={10}
-          paginationPageSizeSelector={[10, 50, 100]}
+          paginationPageSize={3}
+          paginationPageSizeSelector={[3, 10, 100]}
         />
         <div className='h-[3.5rem] w-full border border-gray-950 flex items-center justify-between'>
           <div className='text-right my-1 text-[2rem] font-bold'>Tổng:</div>

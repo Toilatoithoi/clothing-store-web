@@ -101,7 +101,7 @@ const ListBill = () => {
                     </div>
                 </div>
             </div>
-            <div className="ag-theme-quartz h-[70vh]" >
+            <div className="ag-theme-quartz h-[70vh]">
                 <AgGridReact
                     rowData={rowData}
                     columnDefs={colDefs}
