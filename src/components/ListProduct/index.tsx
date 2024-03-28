@@ -23,6 +23,14 @@ const ListProduct = (props: { categoryId?: string; }) => {
   })
   const [orderBy, setOrderBy] = useState(SORT_TYPE.TIME);
   // lấy dữ liệu danh sách product từ api 
+  // JSON.stringify(filter) để chuyển một chuyển js thành 1 chuỗi json {}
+  // const filter = {
+  //   priceMin: 100,
+  //   priceMax: 200,
+  // };
+  // Kết quả sẽ là '{"priceMin":100,"priceMax":200}'
+  // khi key thay đổi thì data mới load lại nếu key vẫn dữ nguyên data
+  // do method searchParams.get chỉ nhận chuỗi string nên phải chuyển các category con thành chuỗi rồi khi get xong thì chuyển thành mảng 
   const { data } = useSWRWrapper<PaginationRes<ProductRes>>(`/api/product?orderBy=${orderBy}${JSON.stringify(filter)}`, {
     url: '/api/product',
     params: {
@@ -32,6 +40,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
       orderBy,
       priceMin: filter.price.min,
       priceMax: filter.price.max,
+      // khi truyền filterCategories sử dụng một kĩ thuật join để tạo chuỗi là các category con
       filterCategories: filter.categories.join('|')
     }
   })
@@ -74,6 +83,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
             <select className='outline-none'
               value={orderBy}
               onChange={(e) => {
+                // khi onChange sẽ lấy được target.value của option ép kiểu là SORT_TYPE
                 setOrderBy(e.target.value as SORT_TYPE)
               }}
             >

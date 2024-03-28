@@ -9,15 +9,18 @@ import Image from 'next/image'
 import anhBia from '@/assets/png/promotion.jpg'
 
 const SearchBox = () => {
+  // lưu giá trị người ta tìm kiếm
   const [searchKey, setSearchKey] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const timer = useRef<NodeJS.Timeout>();
+  // dùng useMutation thay vì useSWRWrapaer để kiểm soát được khi nào nó query data
   const { trigger, data } = useMutation<PaginationRes<ProductRes>>('/searchProduct', {
     url: '/api/product',
     method: METHOD.GET
   })
 
   useEffect(() => {
+    // để clear timeout lần đầu tiên
     return () => {
       if (timer.current) {
         clearTimeout(timer.current)
@@ -27,14 +30,17 @@ const SearchBox = () => {
 
   useEffect(() => {
     if (isFocus) {
+      // khi mà search thay đổi thì sẽ call handleSearch
       handleSearch(searchKey)
     }
   }, [searchKey])
 
   const handleSearch = (key: string) => {
+    // clear time out hiện tại
     if (timer.current) {
       clearTimeout(timer.current)
     }
+    // sau khi nhập xong một lúc mới thử hiện tìm kiếm để tránh tìm kiếm khi người ta chưa nhập xong
     timer.current = setTimeout(() => {
       console.log(key)
       trigger({ searchKey: key, page: 1, fetchCount: FETCH_COUNT })
@@ -42,10 +48,12 @@ const SearchBox = () => {
     }, 500)
   }
 
+  // khi nhấn chuột vào nhập xong mới hiển thị danh sách còn khi bỏ chuột ra không nhập nữa chuyển qua cái khác thì nó sẽ không hiển thị nữa
   const handleFocus = () => {
     setIsFocus(true)
   }
 
+  // khi nhập xong chuyển qua cái khác
   const handleBlur = () => {
     setIsFocus(false)
 
