@@ -69,7 +69,7 @@ const ListBill = () => {
             // valueGetter và valueFormatter hai cái này hoạt động giống nhau đều trả về giá trị để render ra cell fleid
             valueFormatter: timeFormatterFromTimestamp
         },
-        { headerName: "Tên", field: "full_name" },
+        { headerName: "Tên người nhận", field: "full_name" },
         { headerName: "Email", field: "email" },
         { headerName: "Số điện thoại", field: "phoneNumber" },
         { headerName: "Tỉnh/Thành phố", field: "city" },

@@ -98,19 +98,22 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
 
   return (
     <div className=''>
-      <div className='h-[4.5rem] w-full mb-2'>
-        <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center flex justify-center text-center'>
+      <div className='h-[7rem] w-full mb-2'>
+        <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center'>
           <div className='uppercase font-[900] text-[2rem] text-[#2d2d2d]'>
             {data && (
-              <div className='flex items-center justify-center'>
-                <div className='mr-4 font-bold text-[1.6rem]'>
-                  {data.created_at.split('T')[0]}
+              <div className=''>
+                <div className='flex items-start justify-center'>
+                  <div className='mr-2 font-bold text-[1.6rem] '>Thời gian đặt hàng:</div>
+                  <div className='font-bold text-[1.6rem]'>{data.created_at.split('T')[0]}</div>  
                 </div>
-                <div className='mr-4 font-bold text-[1.6rem]'>
-                  {data.full_name}
+                <div className='flex items-start justify-center'>
+                  <div className='mr-2 font-bold text-[1.6rem] '>Tên người nhận:</div>
+                  <div className='font-bold text-[1.6rem]'>{data.full_name}</div>
                 </div>
-                <div className='mr-4 font-bold text-[1.6rem]'>
-                  {data.user.phoneNumber}
+                <div className='flex items-start justify-center'>
+                  <div className='mr-2 font-bold text-[1.6rem] '>Số điện thoại:</div>
+                  <div className='font-bold text-[1.6rem]'>{data.user.phoneNumber}</div>
                 </div>
               </div>
             )}
