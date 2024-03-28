@@ -63,15 +63,16 @@ export interface LookBookRes {
 export interface Bill {
   [x: string]: any;
   id: number;
-  user_id: number;
+  user: User;
   city: string;
   district: string;
   wards: string;
   address: string;
   note: string;
   status: string;
-  create_at: string;
-  update_at: string;
+  full_name: string;
+  created_at: string;
+  updated_at: string;
   bill_product: BillProduct[];
 
 }
@@ -88,6 +89,13 @@ export interface BillProduct {
   };
   quantity: number;
   id: number;
+}
+
+export interface User {
+  name: string;
+  phoneNumber: string;
+  dob: string;
+  username: string;
 }
 
 

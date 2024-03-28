@@ -11,6 +11,8 @@ export const GET = async (req: NextRequest) => {
   const url = new URL(req.url);
   const firstDay = url.searchParams.get('firstDay')?.toString();
   const lastDay = url.searchParams.get('lastDay')?.toString();
+  console.log({firstDay})
+  console.log({lastDay})
   try {
     // input fromDate, toDate, status
     // verify token
@@ -43,6 +45,9 @@ export const GET = async (req: NextRequest) => {
         updated_at: true,
         bill_product: true,
         status: true,
+      },
+      orderBy:{
+        created_at: 'desc'
       }
     });
 

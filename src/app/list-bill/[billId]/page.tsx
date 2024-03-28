@@ -14,6 +14,7 @@ import { integerFormatter } from '@/utils/grid';
 import { formatNumber } from '@/utils';
 import './style.scss';
 import Image from 'next/image';
+import { da } from 'date-fns/locale';
 
 export interface Product {
   name: string;
@@ -100,7 +101,19 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
       <div className='h-[4.5rem] w-full mb-2'>
         <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center flex justify-center text-center'>
           <div className='uppercase font-[900] text-[2rem] text-[#2d2d2d]'>
-            Lịch sử mua hàng
+            {data && (
+              <div className='flex items-center justify-center'>
+                <div className='mr-4 font-bold text-[1.6rem]'>
+                  {data.created_at.split('T')[0]}
+                </div>
+                <div className='mr-4 font-bold text-[1.6rem]'>
+                  {data.full_name}
+                </div>
+                <div className='mr-4 font-bold text-[1.6rem]'>
+                  {data.user.phoneNumber}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
