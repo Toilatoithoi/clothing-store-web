@@ -76,7 +76,7 @@ export const POST = async (req: NextRequest) => {
 
   //validate input 
   const body = await req.json();
-  if (isBlank(body.city) || isBlank(body.district) || isBlank(body.wards) || isBlank(body.address) || isBlank(body.name) || isBlank(body.phone) || isBlank(body.email)) {
+  if (isBlank(body.city) || isBlank(body.district) || isBlank(body.wards) || isBlank(body.address) || isBlank(body.name) || isBlank(body.phone) || isBlank(body.email) || body.bill_product.length == 0) {
     return NextResponse.json(new RestError(INPUT_INVALID));
   }
 
