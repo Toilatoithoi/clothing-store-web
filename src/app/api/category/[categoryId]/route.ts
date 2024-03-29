@@ -86,19 +86,28 @@ export const GET = async (req: NextRequest, { params }: { params: { categoryId: 
       const searchParams = new URL(req.url).searchParams;
       const level = searchParams.get('level');
       const id = Number(params.categoryId);
-      const category = await prisma.category.findMany({
-        ...(!isBlank(level) && {
-          where: {
-            parent_id: id,
-            level: Number(level),
+      let category;
+      if(!isBlank(level)){
+        category = await prisma.category.findMany({
+          ...(!isBlank(level) && {
+            where: {
+              parent_id: id,
+              level: Number(level),
+            },
+          }),
+          orderBy: {
+            category:{
+              name: 'desc'
+            },
           },
-        }),
-        orderBy: {
-          category:{
-            name: 'desc'
-          },
-        },
-      });
+        });
+      }else{
+        category = await prisma.category.findFirst({
+            where: {
+               id: id
+            },
+        });
+      }
     return NextResponse.json(category);
   } catch (error) {
     console.log({ error })

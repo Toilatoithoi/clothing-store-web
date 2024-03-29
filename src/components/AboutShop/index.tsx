@@ -92,7 +92,7 @@ const AboutShop = () => {
     <div>
       <div className='h-[4.5rem] w-full'>
         <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center flex gap-[0.4rem] font-thin text-[1.2rem]'>
-          <Link href={`/`}><div className='text-gray-500'>Trang chủ</div></Link>
+          <Link href={`/`}><div className='text-gray-500 hover:font-bold'>Trang chủ</div></Link>
           <div className='text-gray-500'>/</div>
           <div className='text-gray-500'>Giới thiệu về chúng tôi</div>
         </div>

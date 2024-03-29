@@ -85,7 +85,7 @@ const New = () => {
   return (
     <div>
       <div className='flex gap-1 text-gray-300 pl-8 h-[4rem] mb-4 items-center'>          
-        <Link href={`/`}><div>Trang chủ</div></Link>
+        <Link className="hover:text-gray-800" href={`/`}><div>Trang chủ</div></Link>
         <div>/</div>
         <div>Tin tức</div>
       </div>
