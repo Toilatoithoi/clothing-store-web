@@ -103,7 +103,7 @@ const UserCart = () => {
                         </div>
                       </div>
                       <div key={idx + values.data.length + 2} className='text-center'>{formatNumber(item.price)} VND</div>
-                      <div key={idx + values.data.length + 3} className='flex justify-center'><InputCount min={0} max={item.stock} value={item.quantity} onChange={(qty) => handleChangeQty(qty, idx, item)} /></div>
+                      <div key={idx + values.data.length + 3} className='flex justify-center'><InputCount min={1} max={item.stock} value={item.quantity} onChange={(qty) => handleChangeQty(qty, idx, item)} /></div>
                       <div key={idx + values.data.length + 4} className='text-center'>{formatNumber(item.price * item.quantity)} VND</div>
                     </>
                   ))}
@@ -119,7 +119,11 @@ const UserCart = () => {
                   <div className='font-bold'>{formatNumber(summary.totalPrice)} VNĐ</div>
                 </div>
                 <div className='w-full mb-[2.4rem]'>
-                  <button type="submit" className='h-[4rem] w-full flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1'>Thanh toán</button>
+                  {
+                    summary.totalPrice > 0 && values.data.length != 0 ?
+                    <button type="submit" className='h-[4rem] w-full flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1'>Thanh toán</button>
+                    : <button disabled={true} type="submit" className='h-[4rem] w-full flex items-center justify-center tex-[1.6rem] font-bold text-white uppercase bg-gray-300 flex-1'>Thanh toán</button>
+                  }
                 </div>
                 {/* <div className='flex text-[1.6rem] items-center mb-[1.4rem]'> <ShoppingTag className=" font-bold mr-[0.4rem]" /> <div className='font-bold'>Phiếu ưu đãi</div> </div>
                 <div className='flex h-[3.8rem] border border-gray-900 mb-[1rem]'>

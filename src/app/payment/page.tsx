@@ -354,7 +354,7 @@ const Payment = () => {
                 <div className='mb-[0.8rem] text-[1.4rem]'>Trả tiền mặt khi giao hàng</div>
                 {/* Khi không valid thì nút đặt hàng sẽ bị làm mờ  */}
                 {/* {JSON.stringify(errors)} */}
-                <button disabled={!isValid} type="submit" className='bg-black disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center font-bold'>Đặt hàng</button>
+                <button disabled={!isValid || summary.totalPrice <=0} type="submit" className='bg-black disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center font-bold'>Đặt hàng</button>
               </div>
             </div>
           </form>
