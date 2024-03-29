@@ -1,9 +1,10 @@
+import CategoryMgmt from '@/components/CategoryMgmt'
 import React from 'react'
 
 
 const CategoryMgmtPage = () => {
   return (
-    <div>CategoryMgmtPage</div>
+    <CategoryMgmt />
   )
 }
 

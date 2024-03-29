@@ -11,7 +11,7 @@ import User from "@/assets/svg/user.svg";
 
 import './style.scss';
 // import { config } from 'process';
-import { useAppStatus } from '@/store/globalSWR';
+import { useAppStatus, useUserInfo } from '@/store/globalSWR';
 import { mutate } from 'swr';
 import { APP_STATUS, COMMON_LOADING, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '@/store/key';
 import { useSWRWrapper } from '@/store/custom';
@@ -27,6 +27,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { PaginationRes } from '@/interfaces';
 import SearchBox from '../SearchBox';
+import { ROLES } from '@/constants';
 
 interface HeaderProps {
 
@@ -106,7 +107,8 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
   const pathname = usePathname();
   const [page, setPage] = useState(1);
   const { data: appStatus } = useAppStatus();
-  console.log(appStatus)
+  const { data: userInfo } = useUserInfo();
+  console.log({ userInfo })
   // điều hướng route
   const router = useRouter();
   // tại sao lại phải dùng useRef vì compomentId sẽ chỉ lấy 1 lần nếu để uuid() sẽ mỗi lần chạy lại sẽ lấy id mới
@@ -202,6 +204,9 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
               <div className="text-[2.8rem] cursor-pointer z-10"><CartDropdown /></div>
               <div className="text-[2.8rem]"><Link href={'/list-bill'}><Menu /></Link></div>
               <button type="button" className='font-bold' onClick={handleShowLogout}>Đăng xuất</button>
+              {
+                userInfo?.role === ROLES.ADMIN && <Link href={`/cms`} className='font-bold text-[#BC0517]'>Quản trị</Link>
+              }
             </div> : <div className='flex gap-4'>
               <button type="button" className='font-bold' onClick={handleShowLogin}>Đăng nhập</button>
               <button type="button" className='text-[#BC0517]' onClick={handleShowRegister}>Đăng ký</button>

@@ -27,14 +27,13 @@ export const PUT = async (req: NextRequest, { params }: { params: { categoryId: 
       },
       data: {
         ...body,
-        parent_id: undefined
       }
     })
 
     return NextResponse.json({ id: res.id })
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), { status: 500 });
   }
 }
 
@@ -83,22 +82,22 @@ export const DELETE = async (req: NextRequest, { params }: { params: { categoryI
 export const GET = async (req: NextRequest, { params }: { params: { categoryId: string; } }) => {
   const id = Number(params.categoryId);
   try {
-      const searchParams = new URL(req.url).searchParams;
-      const level = searchParams.get('level');
-      const id = Number(params.categoryId);
-      const category = await prisma.category.findMany({
-        ...(!isBlank(level) && {
-          where: {
-            parent_id: id,
-            level: Number(level),
-          },
-        }),
-        orderBy: {
-          category:{
-            name: 'desc'
-          },
+    const searchParams = new URL(req.url).searchParams;
+    const level = searchParams.get('level');
+    const id = Number(params.categoryId);
+    const category = await prisma.category.findMany({
+      ...(!isBlank(level) && {
+        where: {
+          parent_id: id,
+          level: Number(level),
         },
-      });
+      }),
+      orderBy: {
+        category: {
+          name: 'desc'
+        },
+      },
+    });
     return NextResponse.json(category);
   } catch (error) {
     console.log({ error })

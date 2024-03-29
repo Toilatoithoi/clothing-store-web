@@ -18,7 +18,7 @@ const ModalProvider = (props: ModalProviderProps) => {
   }
 
   return (
-    <Transition appear show={props.show} as={Fragment}>
+    <Transition appear show={Boolean(props.show)} as={Fragment}>
       {/*  Thành phần Dialog chính từ @headlessui/react. Nó đại diện cho container chính của modal, với một class để tùy chỉnh kiểu dáng và một prop onClose kích hoạt hàm handleCloseModal khi modal được đóng */}
       <Dialog as="div" className="relative z-10" onClose={handleCloseModal}>
         <Transition.Child
@@ -45,8 +45,8 @@ const ModalProvider = (props: ModalProviderProps) => {
               leaveTo="opacity-0 scale-95"
             >
               {/* là phần nội dung */}
-              <Dialog.Panel className={`w-fit transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}>
-                 {/* children là nhưng thứ nằm trong ModalProvider */}
+              <Dialog.Panel className={`w-fit transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all`}>
+                {/* children là nhưng thứ nằm trong ModalProvider */}
                 {props.children}
               </Dialog.Panel>
             </Transition.Child>

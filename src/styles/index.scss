@@ -1,26 +1,7 @@
 // là các base chung
 :root {
   --white: #ffffff;
-  --primary-color: #f06852;
-  --btn-color-2: #f06852;
-
-  --text-color: #222020;
-  --text-color-1: #4e4d4d;
-  --text-color-2: #7a7979;
-  --text-color-3: #a7a6a6;
-  --text-color-4: #d3d2d2;
-  --text-color-5: #e9e9e9;
-  --text-color-6: #f4f4f4;
-
-  --border-color: #cfe8e2;
-  --border-color-2: #f3f9f7;
-
-  --bg-color-1: #108a6d;
-  --bg-color-2: #cfe8e2;
-  --bg-color-3: #e8f4f1;
-  --bg-color-4: #f3f9f7;
-  --bg-color-5: rgba(0, 0, 0, 0.7);
-  --bg-color-6: #f4f4f4;
+  --primary: #bc0517;
 }
 
 html {
@@ -76,5 +57,18 @@ body {
     &.rc-slider-handle-dragging {
       box-shadow: 0 0 0 5px #9a9a9a86 !important;
     }
+  }
+}
+
+.btn {
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.6rem;
+  border-radius: 8px;
+  &-primary {
+    background-color: var(--primary);
+    color: white;
   }
 }
