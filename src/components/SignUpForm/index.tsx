@@ -80,7 +80,7 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
     console.log({ values })
     // chứa data
     trigger({
-      name: values.surname + values.name,
+      name: values.surname + " " + values.name,
       username: values.username,
       password: values.password,
       phoneNumber: values.phoneNumber,
