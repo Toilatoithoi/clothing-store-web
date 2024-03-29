@@ -8,13 +8,14 @@ import { set } from 'date-fns';
 import { Bill, BillProduct } from '@/interfaces/model';
 import { useSWRWrapper } from '@/store/custom';
 import { useRouter } from 'next/navigation';
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Payment, ProductCart } from '@/components/CartDropdown/hook';
 import { integerFormatter } from '@/utils/grid';
 import { formatNumber } from '@/utils';
 import './style.scss';
 import Image from 'next/image';
 import { da } from 'date-fns/locale';
+import { formatDateToString } from '@/utils/datetime';
 
 export interface Product {
   name: string;
@@ -32,7 +33,7 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
     method: METHOD.GET
   })
   const ImageRenderer = ({ data }: ICellRendererParams) => {
-    return <Image className="object-contain overflow-hidden" src={data.image} alt="Ảnh bìa" width={70} height={70}/>;
+    return <Image className="object-contain overflow-hidden" src={data.image} alt="Ảnh bìa" width={70} height={70}  style={{ width: 'auto', height: 'auto' }} priority />;
   };
   console.log({ data })
   const router = useRouter();
@@ -105,7 +106,7 @@ const ListBillDetail = (props: { params: { billId: string; } }) => {
               <div className=''>
                 <div className='flex items-start justify-center'>
                   <div className='mr-2 font-bold text-[1.6rem] '>Thời gian đặt hàng:</div>
-                  <div className='font-bold text-[1.6rem]'>{data.created_at.split('T')[0]}</div>  
+                  <div className='font-bold text-[1.6rem]'>{formatDateToString(new Date(data.created_at), 'HH:mm:ss dd/MM/yyyy')}</div>  
                 </div>
                 <div className='flex items-start justify-center'>
                   <div className='mr-2 font-bold text-[1.6rem] '>Tên người nhận:</div>
