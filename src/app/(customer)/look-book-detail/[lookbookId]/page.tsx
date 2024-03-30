@@ -14,9 +14,9 @@ const LookBookDetail = (props: { params: { lookBookId: string; } }) => {
         <div>
             <div className='h-[4.5rem] w-full'>
                 <div className='max-w-screen-xl m-auto h-full px-[2rem] items-center flex gap-[0.4rem] font-thin text-[1.2rem]'>
-                    <div className='text-gray-500'><Link href={'/'}>Trang chủ</Link></div>
+                    <div className='text-gray-500 hover:text-gray-800'><Link href={'/'}>Trang chủ</Link></div>
                     <div className='text-gray-500'>/</div>
-                    <div className='text-gray-500'><Link href={'/look-book'}>LookBook</Link></div>
+                    <div className='text-gray-500 hover:text-gray-800'><Link href={'/look-book'}>LookBook</Link></div>
                     <div className='text-gray-500'>/</div>
                     <div className='text-gray-500'> {lookbookDetail?.title}</div>
                 </div>

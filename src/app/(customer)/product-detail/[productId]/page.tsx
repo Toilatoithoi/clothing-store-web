@@ -149,29 +149,21 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
     // sau khi thêm thành công sẽ set lại input là 1
     setQuantity(1);
   }
-  const handleAddPayment = () => {
-    const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
-    addToCart({
-      // thêm vào chỉ lấy quantity và product_model_id
-      // lý do dùng global state là để các compoment không phụ thuộc
-      ...selectedModel,
-      quantity,
-      product: product!,
-      product_model_id: selectedModel.id,
-      // productName: ''
-    })
-    if(appStatus?.isAuthenticated){
+  const handleAddPayment = () => { 
+      const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
+      addToCart({
+        // thêm vào chỉ lấy quantity và product_model_id
+        // lý do dùng global state là để các compoment không phụ thuộc
+        ...selectedModel,
+        quantity,
+        product: product!,
+        product_model_id: selectedModel.id,
+        // productName: ''
+      })
       // sau khi thêm thành công sẽ set lại input là 1
-    setQuantity(1);
-    // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
-    router.push('/payment')
-    }
-    // sau khi thêm thành công sẽ set lại input là 1
-    if(appStatus?.isAuthenticated){
       setQuantity(1);
       // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
       router.push('/payment')
-    }  
   }
   console.log({ sizes, MapSizeColorToModel: MapSizeColorToModel.current })
   // chon product_model mong muốn bằng MapSizeColorToModel.current[key] lấy giá trị
@@ -248,16 +240,16 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
           <div className='flex items-center'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Số lượng</div>
 
-            <div><InputCount value={quantity} onChange={setQuantity} min={0} max={selectedModel?.stock} /></div>
+            <div><InputCount value={quantity} onChange={setQuantity} min={1} max={selectedModel?.stock} /></div>
           </div>
           <div className='flex items-center py-[0.8rem]'>
             {
-              selectedModel?.stock&& selectedModel?.stock > 0 ? 
+              selectedModel?.stock && selectedModel?.stock > 0 && appStatus?.isAuthenticated ? 
                 <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
               : <button disabled={true} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-gray-300 flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
             }
             {
-              selectedModel?.stock&& selectedModel?.stock > 0 ? 
+              selectedModel?.stock && selectedModel?.stock > 0 && appStatus?.isAuthenticated ? 
                 <button onClick={handleAddPayment} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button>
               : <button disabled={true} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-gray-300 flex-1' type='button'>Mua ngay</button>
             }

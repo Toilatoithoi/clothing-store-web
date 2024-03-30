@@ -5,7 +5,7 @@ import ProductCard from '../ProductCard'
 import useSWR, { mutate } from 'swr'
 import { fetcher } from '@/utils/fetcher'
 import { useSWRWrapper } from '@/store/custom'
-import { ProductRes } from '@/interfaces/model'
+import { Category, ProductRes } from '@/interfaces/model'
 import { PaginationRes } from '@/interfaces';
 import { formatNumber } from '@/utils'
 import Link from 'next/link'
@@ -45,6 +45,10 @@ const ListProduct = (props: { categoryId?: string; }) => {
     }
   })
 
+  const { data: category } = useSWRWrapper<Category>(`/api/category/${props.categoryId}?level=1`, {
+    url: `/api/category/${props.categoryId}`,
+  })
+
   console.log({ data });
 
   const handleValuePage = (values: number) => {
@@ -52,7 +56,8 @@ const ListProduct = (props: { categoryId?: string; }) => {
   }
 
   useEffect(() => {
-    mutate(`/api/product?orderBy=${orderBy}${JSON.stringify(filter)}`)
+    mutate(`/api/product?orderBy=${orderBy}${JSON.stringify(filter)}`);
+    mutate(`/api/category/${props.categoryId}?level=1`);
   }, [page]);
 
 
@@ -71,7 +76,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
       <div className='h-[6rem] flex items-center text-gray-400 text-[1.6rem]'>
         <Link href={`/`}> <span className='hover:text-gray-600 cursor-pointer'>Trang chủ</span></Link>
         <span className='mx-2'>/</span>
-        <span className='hover:text-gray-600 cursor-pointer'>áo nam</span>
+        <span className='hover:text-gray-600 cursor-pointer'>{category?.name}</span>
       </div>
 
       <div className='h-[4rem] mb-[1.5rem] flex justify-between items-center bg-slate-100 px-4'>
