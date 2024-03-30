@@ -41,6 +41,7 @@ export interface ProductDetail {
   product_model: ProductModel[];
   description: string;
   image_product: ImageProduct[];
+  price: number;
 }
 
 export interface PostRes {

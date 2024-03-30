@@ -20,3 +20,14 @@ export enum SORT_TYPE {
   PRICE_DESC = 'PRICE_DESC',// cao -> thấp
   TIME = 'TIME', // mới nhất
 }
+
+export enum ROLES {
+  ADMIN = 'ADMIN',
+  CUSTOMER = 'CUSTOMER'
+}
+
+export enum PRODUCT_STATUS {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  DELETED = 'DELETED'
+}

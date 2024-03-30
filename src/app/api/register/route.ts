@@ -4,6 +4,7 @@ import { isBlank } from '@/utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { RestError, hashPassword } from '@/utils/service';
 import { INPUT_INVALID, INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
+import { ROLES } from '@/constants';
 //Create user
 export const POST = async (req: NextRequest) => {
   const body: CreateUserReq = await req.json();
@@ -46,7 +47,7 @@ export const POST = async (req: NextRequest) => {
       data: {
         ...body,
         password: hash,
-        role: "user",
+        role: ROLES.CUSTOMER,
         dob: dobDate
       },
     });

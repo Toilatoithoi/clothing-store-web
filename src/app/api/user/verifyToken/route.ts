@@ -2,7 +2,7 @@ import { RestError, hashPassword, verifyToken } from '@/utils/service';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { INTERNAL_SERVER_ERROR, UNAUTHORIZED } from '@/constants/errorCodes';
-import { UserPayload } from '@/app/user/page';
+import { UserPayload } from '@/app/(customer)/user/page';
 
 export const GET = async (req: NextRequest) => {
   // verify token
@@ -17,11 +17,12 @@ export const GET = async (req: NextRequest) => {
       select: {
         address: true,
         username: true,
-        password:true,
+        password: true,
         phoneNumber: true,
         name: true,
         dob: true,
         gender: true,
+        role: true
       },
     });
     return NextResponse.json(user);
@@ -49,7 +50,7 @@ export const PUT = async (req: NextRequest) => {
         dob: new Date(body.dob).toISOString(),
         phoneNumber: body.phoneNumber,
         address: body.address,
-        gender: body.gender      
+        gender: body.gender
       }
     })
     return NextResponse.json({ res })

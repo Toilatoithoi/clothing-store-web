@@ -7,7 +7,6 @@ import '@/styles/index.scss';
 const inter = Quicksand({ subsets: ['latin'] })
 import * as yup from 'yup';
 import 'react-rangeslider/lib/index.css';
-import Footer from '@/components/Footer';
 import { useEffect, useState } from 'react'
 import ModalProvider from '@/components/ModalProvider'
 import LoginForm from '@/components/LoginForm'
@@ -17,7 +16,6 @@ import { APP_STATUS, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify'
 import { useAppStatus, useUserInfo } from '@/store/globalSWR'
-import Preload from '@/components/Preload'
 import { usePathname, useRouter } from 'next/navigation'
 
 
@@ -119,17 +117,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ToastContainer autoClose={3000} />
         {
-          // nếu chưa lấy dữ liệu xong thì loading bằng true hiển thị preload
-          // isLoading ? <div className='h-full w-full flex items-center justify-center bg-white'><Preload /> </div> :
-          <div className='flex flex-col h-screen w-screen'>
-            <Header />
-            <div className='flex-1 overflow-y-auto bg-white'>
-              <main className=" flex flex-col max-w-screen-xl m-auto">
-                {children}
-              </main>
-              <Footer />
-            </div>
-          </div>
+          children
         }
         <ModalProvider
           onHide={() => {
