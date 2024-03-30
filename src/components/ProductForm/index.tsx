@@ -93,21 +93,23 @@ const ProductForm = (props: Props) => {
   const submit = async (values: ProductValues) => {
     setLoading(true);
     const model: ProductModelReq[] = [];
+
     for (let i = 0; i < values.colors.length; i++) {
       const color = values.colors[i];
+      const file = values.fileConfig[color];
+      let image = '';
+      if (file && typeof file !== 'string') {
+        try {
+          const res = await uploadFile(file);
+          image = res.url as string;
+        } catch (error) {}
+      } else if (typeof file === 'string') {
+        image = file;
+      }
       for (let j = 0; j < values.sizes.length; j++) {
         const size = values.sizes[j];
         const key = `${color}-${size}`;
-        const file = values.fileConfig[color];
-        let image = '';
-        if (file && typeof file !== 'string') {
-          try {
-            const res = await uploadFile(file);
-            image = res.url as string;
-          } catch (error) {}
-        } else if (typeof file === 'string') {
-          image = file;
-        }
+
         model.push({
           color,
           size,
