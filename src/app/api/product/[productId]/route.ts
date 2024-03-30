@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { CreateProductReq } from '@/interfaces/request';
 import { RestError } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
+import { CreateProductReq } from '@/interfaces/request';
 
 export const PUT = async (
   req: NextRequest,
   { params }: { params: { productId: string } }
 ) => {
   const id = Number(params.productId);
-  const body = await req.json();
+  const body = (await req.json()) as CreateProductReq;
   // validate data: user_id có hợp lệ k? .....
 
   try {
@@ -32,16 +32,25 @@ export const PUT = async (
       },
       data: {
         name: body.name,
-        status: body.status,
+        status: body.status || product.status,
         description: body.description,
-        category_id: body.category_id,
+        category_id: body.categoryId,
+        price: body.price,
+        product_model: {
+          update: body.model.map(item => ({
+            where: {
+              id: item.id!
+            },
+            data: item
+          }))
+        }
       },
     });
 
     return NextResponse.json({ id: res.id });
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), { status: 500 });
   }
 };
 
@@ -61,6 +70,7 @@ export const GET = async (
         id: true,
         description: true,
         image_product: true,
+        price: true,
       },
     });
 

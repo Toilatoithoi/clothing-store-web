@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "^6.2.0",
     "@date-io/date-fns": "^3.0.0",
     "@date-io/luxon": "^3.0.0",
     "@date-io/moment": "^3.0.0",
@@ -26,6 +27,7 @@
     "ag-grid-community": "^31.1.1",
     "ag-grid-react": "^31.1.1",
     "big.js": "^6.2.1",
+    "ckeditor5-custom-build": "file:./ckeditor5",
     "cloudinary": "^1.41.2",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.0.2-rc.1",

@@ -74,18 +74,20 @@ export enum PRODUCT_STATUS {
   DELETED = 'DELETED',
 }
 
-interface ProductModel {
+export interface ProductModelReq {
   color: string;
   size: string;
   price: number;
   stock: number;
   image: string;
+  id?: number;
 }
 
 export interface CreateProductReq {
   name: string;
   description?: string;
+  price?: number;
   status?: PRODUCT_STATUS;
-  category_id?: number;
-  model: ProductModel[];
+  categoryId?: number;
+  model: ProductModelReq[];
 }

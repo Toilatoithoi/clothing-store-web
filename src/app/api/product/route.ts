@@ -4,20 +4,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { formatNumber, isBlank } from '@/utils';
 import { category } from '@prisma/client';
-import { RestError } from '@/utils/service';
+import { RestError, verifyToken } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
-import { SORT_TYPE } from '@/constants';
+import { ROLES, SORT_TYPE } from '@/constants';
+
+
+
 export const GET = async (request: NextRequest) => {
   // lấy từ link url api
+  const data = await verifyToken(request);
+
   const url = new URL(request.url);
   // lấy từ link url api lấy giá trị categoryId
   const category_id = url.searchParams.get('categoryId');
+  const status = url.searchParams.get('status');
   // lấy từ link url api lấy giá trị fetchCount
   const fetchCount = Number(url.searchParams.get('fetchCount')) || 8; // default 8 bản ghi
   // orderBy là sort thời gian, giá từ thấp đến cap, giá từ cao đến thấp
   const orderBy = url.searchParams.get('orderBy') as SORT_TYPE ?? SORT_TYPE.TIME; // mặc định sort theo time 
   // sort theo giá lớn nhất
-  const priceMin = Number(url.searchParams.get('priceMin')) 
+  const priceMin = Number(url.searchParams.get('priceMin'))
   // sort theo giá nhỏ nhất
   const priceMax = Number(url.searchParams.get('priceMax'))
   // chuổi chuỗi category con nhận được thành mảng
@@ -48,7 +54,11 @@ export const GET = async (request: NextRequest) => {
         // phải để là || không phải ?? vì ?? chỉ khi null hoặc undefind mới mới trả về giá trị thay thế còn || thì ngoài null và undefind thì còn 0, '' sẽ coi là false đều trả về giá trị kia
         lte: priceMax || Number.MAX_SAFE_INTEGER
       },
-      status: 'PUBLISHED',
+      ...(data?.role !== ROLES.ADMIN ? {
+        status: PRODUCT_STATUS.PUBLISHED,
+      } : {
+        status: status ? status : { not: PRODUCT_STATUS.DELETED }
+      }),
       ...(category != null && {
         // hiển thị tất cả category cha và category con
         // truyền một object category vào filter
@@ -117,6 +127,11 @@ export const GET = async (request: NextRequest) => {
         price: product.price
       };
 
+      const quantity = {
+        sold: 0,
+        stock: 0,
+      }
+
       // lấy giá lớn nhất của một model
       product.product_model.forEach((mode) => {
         if (mode.price && mode.price > price.priceMax) {
@@ -125,6 +140,9 @@ export const GET = async (request: NextRequest) => {
         if (mode.price && mode.price < price.priceMin) {
           price.priceMin = mode.price;
         }
+
+        quantity.sold += (mode.sold ?? 0);
+        quantity.stock += (mode.stock ?? 0);
       });
 
       return {
@@ -134,6 +152,7 @@ export const GET = async (request: NextRequest) => {
         price,
         image: product.product_model[0]?.image,
         id: product.id,
+        ...quantity
       };
     });
 
@@ -161,15 +180,14 @@ export const POST = async (req: NextRequest) => {
   try {
     // khi người ta điền thêm size và thêm màu thì sẽ tạo ra thêm bảng product_model
     const body = (await req.json()) as CreateProductReq;
-    const priceMin = Math.min(...body.model.map(item => item.price));
 
     const product = await prisma.product.create({
       data: {
         name: body.name,
         status: PRODUCT_STATUS.DRAFT,
         description: body.description,
-        category_id: body.category_id,
-        price: priceMin,
+        category_id: body.categoryId,
+        price: body.price,
         // tạo bảng product_model
         // tạo đồng thời cả product và product_model thì nếu khi product_model bị lỗi thì product sẽ không thành công
         product_model: {
@@ -181,7 +199,7 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(product);
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), { status: 500 });
   }
 };
 

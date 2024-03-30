@@ -25,3 +25,9 @@ export enum ROLES {
   ADMIN = 'ADMIN',
   CUSTOMER = 'CUSTOMER'
 }
+
+export enum PRODUCT_STATUS {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  DELETED = 'DELETED'
+}

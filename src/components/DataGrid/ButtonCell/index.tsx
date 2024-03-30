@@ -2,6 +2,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 import React from 'react';
 import TrashIcon from '@/assets/svg/trash.svg';
 import EditIcon from '@/assets/svg/edit.svg';
+import UploadIcon from '@/assets/svg/upload.svg';
 interface ButtonCell extends ICellRendererParams {
   buttons?: Array<{
     render: React.FunctionComponent<{ onClick(): void; className?: string }>;
@@ -32,12 +33,11 @@ const ButtonCell = (props: ButtonCell) => {
 
 export default ButtonCell;
 
-
 export const Trash = (props: { onClick(): void }) => {
   return (
     <div
       onClick={props.onClick}
-      title='Xóa'
+      title="Xóa"
       className="bg-red-200 hover:opacity-80 text-red-500 w-[3.4rem] h-[3.4rem] flex items-center justify-center rounded-md"
     >
       <TrashIcon className="hover:cursor-pointer" />
@@ -49,10 +49,22 @@ export const Edit = (props: { onClick(): void }) => {
   return (
     <div
       onClick={props.onClick}
-      title='Sửa'
+      title="Sửa"
       className="bg-blue-200 hover:opacity-80 text-blue-500 w-[3.4rem] h-[3.4rem] flex items-center justify-center rounded-md"
     >
       <EditIcon className="hover:cursor-pointer" />
+    </div>
+  );
+};
+
+export const Upload = (props: { onClick(): void }) => {
+  return (
+    <div
+      onClick={props.onClick}
+      title="Đăng"
+      className="bg-yellow-200 hover:opacity-80 text-yellow-500 w-[3.4rem] h-[3.4rem] flex items-center justify-center rounded-md"
+    >
+      <UploadIcon className="hover:cursor-pointer" />
     </div>
   );
 };

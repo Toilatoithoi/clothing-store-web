@@ -10,7 +10,7 @@ import { AgGridReact, AgGridReactProps } from 'ag-grid-react'; // React Grid Log
 import 'ag-grid-community/styles/ag-grid.css'; // Core CSS
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Theme
 import './style.scss';
-import { GridApi, GridReadyEvent } from 'ag-grid-community';
+import { GridApi, GridReadyEvent, ViewportChangedEvent } from 'ag-grid-community';
 
 interface DataGridProps extends AgGridReactProps {
   onScrollToBottom?: () => void;
@@ -29,6 +29,7 @@ const DataGrid = forwardRef(
   ) => {
     const { defaultColDef, onGridReady, ...rest } = props;
     const [gridInit, setGridInit] = useState<boolean>(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const dataGridRef = useRef<{
       api?: GridApi;
@@ -49,8 +50,21 @@ const DataGrid = forwardRef(
       });
     };
 
+    const onViewportChanged = (event: ViewportChangedEvent) => {
+      if (containerRef.current && event.lastRow !== -1) {
+        const agBodyViewport: HTMLElement = containerRef.current.querySelector('.ag-body-viewport') as HTMLElement;
+        if (agBodyViewport) {
+          if (agBodyViewport.scrollHeight <= agBodyViewport.clientHeight) {
+            if (props.onScrollToBottom) {
+              props.onScrollToBottom();
+            }
+          }
+        }
+      }
+    }
+
     return (
-      <div className="ag-theme-quartz h-full data-grid">
+      <div ref={containerRef} className="ag-theme-quartz h-full data-grid">
         <AgGridReact
           onGridReady={handleGridReady}
           onBodyScroll={(event) => {
@@ -74,6 +88,7 @@ const DataGrid = forwardRef(
           suppressDragLeaveHidesColumns
           suppressRowHoverHighlight
           suppressCellFocus
+          onViewportChanged={onViewportChanged}
           {...rest}
         />
       </div>

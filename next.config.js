@@ -9,6 +9,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '360.com.vn',
       },
+      {
+        hostname: 'res.cloudinary.com',
+      },
+
     ],
   },
   reactStrictMode: true,

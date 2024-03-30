@@ -1,9 +1,10 @@
+import ProductMgmt from '@/components/ProductMgmt'
 import React from 'react'
 
 
 const ProductMgmtPage = () => {
   return (
-    <div>ProductMgmtPage</div>
+    <ProductMgmt />
   )
 }
 

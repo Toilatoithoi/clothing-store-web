@@ -22,11 +22,12 @@ export interface NotificationConfig {
   content?: string;
 }
 
+export interface IPagination {
+  totalCount: number;
+  page: number;
+  totalPage: number;
+}
 export interface PaginationRes<T> {
   items: T[];
-  pagination: {
-    totalCount: number;
-    page: number;
-    totalPage: number;
-  };
+  pagination: IPagination
 }

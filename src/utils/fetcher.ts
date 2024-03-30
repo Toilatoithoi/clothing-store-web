@@ -23,11 +23,10 @@ export const fetcher = async <T = Record<string, unknown>>(
   headers?: HeadersInit,
   noEndPoint?: boolean
 ) => {
-  let parsedUri = `${noEndPoint ? '' : process.env.BASE_API_URL ?? ''}${url}${
-    method === METHOD.GET && body
+  let parsedUri = `${noEndPoint ? '' : process.env.BASE_API_URL ?? ''}${url}${method === METHOD.GET && body
       ? `?${new URLSearchParams(body as unknown as Record<string, string>)}`
       : ''
-  }`;
+    }`;
   parsedUri = replacePlaceholder(
     parsedUri,
     (body as unknown as Record<string, unknown>) || {}
@@ -53,3 +52,12 @@ export const fetcher = async <T = Record<string, unknown>>(
 
   return res.json() as Promise<T>;
 };
+
+
+export const uploadFile = async (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await fetcher('/api/file', METHOD.POST, formData);
+
+  return res
+}
