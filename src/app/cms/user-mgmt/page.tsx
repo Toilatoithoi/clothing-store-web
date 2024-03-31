@@ -1,10 +1,8 @@
-import React from 'react'
-
+import UserMgmt from '@/components/UserMgmt';
+import React from 'react';
 
 const UserMgmtPage = () => {
-  return (
-    <div>User MGMT</div>
-  )
-}
+  return <UserMgmt />;
+};
 
-export default UserMgmtPage
+export default UserMgmtPage;

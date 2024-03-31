@@ -94,3 +94,13 @@ export interface CreateProductReq {
   categoryId?: number;
   model: ProductModelReq[];
 }
+
+export interface Summary {
+  count: {
+    product: number;
+    sold: number;
+    bill: number;
+    customer: number;
+    revenue: number;
+  };
+}

@@ -6,7 +6,7 @@ import Logout from '@/assets/svg/log-out.svg';
 
 const cmsSideBar = [
   {
-    label: 'Dashboard',
+    label: 'Tổng quan',
     route: '/cms',
   },
   {

@@ -140,10 +140,11 @@ export const POST = async (req: NextRequest) => {
         })
       )
     );
-
-    const total_price = models.reduce((prev, curr) => {
-      return prev + (curr?.price ?? 0);
-    }, 0);
+    let total_price = 0;
+    for (let i = 0; i < models.length; i++) {
+      const model = models[i];
+      total_price += (model?.price ?? 0) * body.bill_product[i].quantity;
+    }
 
     // transaction là để đồng bộ các câu lệnh sql không liên quan theo tuần tự khi một cái không thành công các cái còn lại sẽ rollback
     const [createBill] = await prisma.$transaction([

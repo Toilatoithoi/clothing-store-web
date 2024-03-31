@@ -89,6 +89,7 @@ const DataGrid = forwardRef(
             ...defaultColDef,
           }}
           overlayNoRowsTemplate="Không có dữ liệu"
+          overlayLoadingTemplate="Đang tải dữ liệu..."
           suppressDragLeaveHidesColumns
           suppressRowHoverHighlight
           suppressCellFocus
