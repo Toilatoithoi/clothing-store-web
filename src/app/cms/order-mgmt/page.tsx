@@ -1,10 +1,8 @@
-import React from 'react'
-
+import OrderMgmt from '@/components/OrderMgmt';
+import React from 'react';
 
 const OrderMgmtPage = () => {
-  return (
-    <div>OrderMgmtPage</div>
-  )
-}
+  return <OrderMgmt />;
+};
 
-export default OrderMgmtPage
+export default OrderMgmtPage;

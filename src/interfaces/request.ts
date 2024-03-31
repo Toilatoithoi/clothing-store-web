@@ -24,6 +24,9 @@ export interface CreateBillReq {
   district: string;
   wards: string;
   address: string;
+  email: string;
+  name: string;
+  phone: string;
   note: string;
   status?: BILL_STATUS;
   create_at: string;

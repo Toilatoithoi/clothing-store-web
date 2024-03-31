@@ -1,32 +1,38 @@
-'use client'
-import type { Metadata } from 'next'
-import { Quicksand } from 'next/font/google'
-import '@/styles/globals.css'
-import Header from '@/components/Header'
+'use client';
+import type { Metadata } from 'next';
+import { Quicksand } from 'next/font/google';
+import '@/styles/globals.css';
+import Header from '@/components/Header';
 import '@/styles/index.scss';
-const inter = Quicksand({ subsets: ['latin'] })
+const inter = Quicksand({ subsets: ['latin'] });
 import * as yup from 'yup';
 import 'react-rangeslider/lib/index.css';
-import { useEffect, useState } from 'react'
-import ModalProvider from '@/components/ModalProvider'
-import LoginForm from '@/components/LoginForm'
-import SignUpForm from '@/components/SignUpForm'
-import useSWR, { mutate } from 'swr'
-import { APP_STATUS, COMMON_SHOW_LOGIN, COMMON_SHOW_REGISTER, USER_INFO } from '@/store/key'
+import { useEffect, useState } from 'react';
+import ModalProvider from '@/components/ModalProvider';
+import LoginForm from '@/components/LoginForm';
+import SignUpForm from '@/components/SignUpForm';
+import useSWR, { mutate } from 'swr';
+import {
+  APP_STATUS,
+  COMMON_SHOW_LOGIN,
+  COMMON_SHOW_REGISTER,
+  USER_INFO,
+} from '@/store/key';
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify'
-import { useAppStatus, useUserInfo } from '@/store/globalSWR'
-import { usePathname, useRouter } from 'next/navigation'
-
+import { ToastContainer } from 'react-toastify';
+import { useAppStatus, useUserInfo } from '@/store/globalSWR';
+import { usePathname, useRouter } from 'next/navigation';
+import 'ag-grid-community/styles/ag-grid.css'; // Core CSS
+import 'ag-grid-community/styles/ag-theme-quartz.css'; // Theme
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   // pathname lấy ra từ loacalhost:3000/
   // const pathname = usePathname();
-  const router = useRouter()
+  const router = useRouter();
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
@@ -38,10 +44,10 @@ export default function RootLayout({
   // state COMMON_SHOW_LOGIN kiểu boolean
   // state COMMON_SHOW_REGISTER kiểu boolean
   // do cả hai đều trả về data nên phải thêm : tên mới vào để không nhầm
-  // useSWR trả về object có chứa key và data 
+  // useSWR trả về object có chứa key và data
   // Mỗi key sẽ ứng với 1 state vd: COMMON_SHOW_LOGIN có data kiểu boolean
   // lý do dùng global state vì nó không cần phải cho thằng cha truyền vào thằng con để tráng các compoment không bị phụ thuộc
-  // từ tất cả compoment đều có thể tác động lên global state đấy 
+  // từ tất cả compoment đều có thể tác động lên global state đấy
   // lấy state ra để dùng useSWR<kiểu dữ liệu>(key)
   // useSWR và useMutation là useMutation khi nào gọi trigger mới query
   // Muốn khởi tạo giá trị ban đầu cho state dùng fetch
@@ -67,58 +73,51 @@ export default function RootLayout({
   useEffect(() => {
     yup.setLocale({
       mixed: {
-        required: ({ label }: { label: string; }) => `${label} không được để trống`
+        required: ({ label }: { label: string }) =>
+          `${label} không được để trống`,
       },
-    })
-
+    });
   }, []);
 
   useEffect(() => {
     // để thay đổi giá trị của state global dùng mutate
     // nếu userInfo == null  thì APP_STATUS set bằng false
     // APP_STATUS bằng true là đã login
-    console.log({ userInfo })
-    mutate(APP_STATUS, { isAuthenticated: userInfo?.username != null })
-  }, [userInfo])
+    console.log({ userInfo });
+    mutate(APP_STATUS, { isAuthenticated: userInfo?.username != null });
+  }, [userInfo]);
 
   useEffect(() => {
     if (triggerShowLogin) {
-      handleShowLogin()
+      handleShowLogin();
     } else {
-      setShowLogin(false)
+      setShowLogin(false);
     }
-  }, [triggerShowLogin])
+  }, [triggerShowLogin]);
 
   useEffect(() => {
     if (triggerShowRegister) {
       handleShowRegister();
     } else {
-      setShowRegister(false)
+      setShowRegister(false);
     }
-  }, [triggerShowRegister])
-
-
-
+  }, [triggerShowRegister]);
 
   const handleShowRegister = () => {
     setShowLogin(false); // ẩn form login
-    setShowRegister(true);  // show form đăng ký
-  }
+    setShowRegister(true); // show form đăng ký
+  };
 
   const handleShowLogin = () => {
     setShowLogin(true); // show form login
     setShowRegister(false); // ẩn form đăng ký
-  }
-
-
+  };
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <ToastContainer autoClose={3000} />
-        {
-          children
-        }
+        {children}
         <ModalProvider
           onHide={() => {
             setShowLogin(false);
@@ -141,5 +140,5 @@ export default function RootLayout({
         </ModalProvider>
       </body>
     </html>
-  )
+  );
 }

@@ -1,16 +1,15 @@
-import { List } from '@/app/list-bill/page';
-import { UserPayload } from '@/app/user/page';
+import { List } from '@/app/(customer)/list-bill/page';
+import { UserPayload } from '@/app/(customer)/user/page';
 import { METHOD } from '@/constants';
-import { Bill, BillProduct, ProductDetail, ProductModel } from '@/interfaces/model';
+import { PaginationRes } from '@/interfaces';
+import { ProductDetail, ProductModel } from '@/interfaces/model';
 import { useMutation, useSWRWrapper } from '@/store/custom';
-import { useEffect, useState } from 'react';
-import useSWR from 'swr'
 
 export interface ProductCart extends ProductModel {
   // productName: string;
   product_model_id: number;
   quantity: number;
-  product: ProductDetail
+  product: ProductDetail;
 }
 
 export interface Payment {
@@ -39,14 +38,17 @@ export interface UserPayMENT {
 
 export const useCart = () => {
   // lấy dữ liệu cart từ api
-  const { data, mutate, isLoading } = useSWRWrapper<ProductCart[]>('/api/cart', {
-    url: '/api/cart',
-    method: METHOD.GET
-  });
+  const { data, mutate, isLoading } = useSWRWrapper<ProductCart[]>(
+    '/api/cart',
+    {
+      url: '/api/cart',
+      method: METHOD.GET,
+    }
+  );
   // gọi trigger là dữ liệu nhập vào khi cần addToCart vừa craete vừa update
   const { trigger } = useMutation<ProductCart[]>('/api/cart', {
     url: '/api/cart',
-    method: METHOD.POST
+    method: METHOD.POST,
   });
 
   // truyền {id} trong hàm api có cơ chế replance string id thay bằng giá trị tương ứng
@@ -54,12 +56,12 @@ export const useCart = () => {
   // nếu khô g phải mutute lại key get nếu không trùng key sau khi delete để refesh lại dữ liệu
   const { trigger: product } = useMutation<ProductCart[]>('/api/cart', {
     url: `/api/cart/{product_model_id}`,
-    method: METHOD.DELETE
+    method: METHOD.DELETE,
   });
   const updateCart = (cart: ProductCart[]) => {
     // hiểu là truyền value cho global state /api/cart
-    mutate(cart)
-  }
+    mutate(cart);
+  };
 
   // global state dùng key để lấy gia 1 giá trị bất kì
   // key hiểu nôm na là id để lấy ra giá trị của state
@@ -68,17 +70,15 @@ export const useCart = () => {
     trigger({
       quantity: model.quantity,
       product_model_id: model.product_model_id,
-      override
-    })
-
-  }
+      override,
+    });
+  };
 
   const deleteToCart = (model: ProductCart) => {
     product({
       product_model_id: model.product_model_id,
-    })
-
-  }
+    });
+  };
 
   return {
     // data là dữ liệu của giỏ hàng lấy từ api
@@ -87,18 +87,18 @@ export const useCart = () => {
     addToCart,
     deleteToCart,
     isLoading,
-    mutate
-  }
-}
+    mutate,
+  };
+};
 
 export const useBill = (options: {
   onCreateSuccess?: (data: Record<string, string>) => void;
   componentId?: string;
 }) => {
   // lấy dữ liệu bill từ api
-  const { data, mutate } = useSWRWrapper<Payment[]>('/api/bill', {
+  const { data, mutate } = useSWRWrapper<PaginationRes<Payment>>('/api/bill', {
     url: '/api/bill',
-    method: METHOD.GET
+    method: METHOD.GET,
   });
 
   // gọi trigger là dữ liệu nhập vào khi cần addToCart vừa craete vừa update
@@ -110,19 +110,19 @@ export const useBill = (options: {
     componentId: options.componentId,
     onSuccess(data) {
       // onCreateSuccess có thể undefine nên phải ? nếu undefine thì sẽ không thực hiện
-      options.onCreateSuccess?.(data)
+      options.onCreateSuccess?.(data);
     },
     notification: {
       title: 'Thanh toán đơn hàng',
-      content: 'Thanh toán đơn hàng thành công!'
-    }
+      content: 'Thanh toán đơn hàng thành công!',
+    },
   });
 
   const { trigger: bill } = useMutation<UserPayload>('/api/bill', {
     url: '/api/bill/{bill_id}',
     method: METHOD.PUT,
     onSuccess(data) {
-      console.log(data)
+      console.log(data);
     },
     // thực hiện loading
     componentId: options.componentId,
@@ -133,8 +133,8 @@ export const useBill = (options: {
       title: 'Huỷ đơn hàng',
       // chỉ dùng cho thành công
       content: 'Huỷ đơn hàng thành công',
-    }
-  })
+    },
+  });
 
   // global state dùng key để lấy gia 1 giá trị bất kì
   // key hiểu nôm na là id để lấy ra giá trị của state
@@ -151,8 +151,8 @@ export const useBill = (options: {
     note?: string;
   }) => {
     trigger({
-      //đầu vào của api tạo bill 
-      bill_product: data.productCart,  // {product_mode_id: number, quantity: number},
+      //đầu vào của api tạo bill
+      bill_product: data.productCart, // {product_mode_id: number, quantity: number},
       city: data.city,
       name: data.name,
       email: data.email,
@@ -161,39 +161,37 @@ export const useBill = (options: {
       wards: data.wards,
       address: data.address,
       note: data.note,
-    })
-  }
+    });
+  };
 
   const updateToBill = (data: List) => {
     bill({
-      //đầu vào của api tạo bill 
-      bill_id: data.id
-    })
-  }
+      //đầu vào của api tạo bill
+      bill_id: data.id,
+    });
+  };
 
   return {
     // data là dữ liệu của giỏ hàng lấy từ api
     data,
     addToBill,
-    updateToBill
-  }
-}
+    updateToBill,
+  };
+};
 
-export const useUser = (options: {
-  componentId?: string;
-}) => {
+export const useUser = (options: { componentId?: string }) => {
   // lấy dữ liệu user từ api
   const { data } = useSWRWrapper<UserPayMENT>('/api/user', {
     url: '/api/user',
-    method: METHOD.GET
-  })
+    method: METHOD.GET,
+  });
 
   // gọi trigger là dữ liệu nhập vào khi cần updateToUser sẽ update
   const { trigger } = useMutation<UserPayload>('/api/user/verifyToken', {
     url: '/api/user/verifyToken',
     method: METHOD.PUT,
     onSuccess(data) {
-      console.log(data)
+      console.log(data);
     },
     // thực hiện loading
     componentId: options.componentId,
@@ -204,31 +202,26 @@ export const useUser = (options: {
       title: 'Cập nhật tài khoản',
       // chỉ dùng cho thành công
       content: 'Cập nhật tài khoản thành công',
-    }
-  })
+    },
+  });
   // global state dùng key để lấy gia 1 giá trị bất kì
   // key hiểu nôm na là id để lấy ra giá trị của state
 
   const updateToUser = (data: UserPayload) => {
     trigger({
-      //đầu vào của api tạo bill 
+      //đầu vào của api tạo bill
       name: data.name,
       phoneNumber: data.phoneNumber,
       // password: string;
       gender: data.gender,
       address: data.address,
       dob: data.dob,
-    })
-  }
+    });
+  };
 
   return {
     // data là dữ liệu của giỏ hàng lấy từ api
     data,
     updateToUser,
-  }
-}
-
-
-
-
-
+  };
+};

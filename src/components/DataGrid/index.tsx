@@ -7,10 +7,13 @@ import React, {
   useState,
 } from 'react';
 import { AgGridReact, AgGridReactProps } from 'ag-grid-react'; // React Grid Logic
-import 'ag-grid-community/styles/ag-grid.css'; // Core CSS
-import 'ag-grid-community/styles/ag-theme-quartz.css'; // Theme
+
 import './style.scss';
-import { GridApi, GridReadyEvent, ViewportChangedEvent } from 'ag-grid-community';
+import {
+  GridApi,
+  GridReadyEvent,
+  ViewportChangedEvent,
+} from 'ag-grid-community';
 
 interface DataGridProps extends AgGridReactProps {
   onScrollToBottom?: () => void;
@@ -25,7 +28,7 @@ const DataGrid = forwardRef(
       | ((instance: DataGridHandle) => void)
       | React.MutableRefObject<DataGridHandle | null | undefined>
       | Ref<DataGridHandle | null | undefined>
-      | null,
+      | null
   ) => {
     const { defaultColDef, onGridReady, ...rest } = props;
     const [gridInit, setGridInit] = useState<boolean>(false);
@@ -39,7 +42,7 @@ const DataGrid = forwardRef(
       () => ({
         api: dataGridRef.current.api,
       }),
-      [gridInit],
+      [gridInit]
     );
 
     const handleGridReady = (event: GridReadyEvent) => {
@@ -52,7 +55,9 @@ const DataGrid = forwardRef(
 
     const onViewportChanged = (event: ViewportChangedEvent) => {
       if (containerRef.current && event.lastRow !== -1) {
-        const agBodyViewport: HTMLElement = containerRef.current.querySelector('.ag-body-viewport') as HTMLElement;
+        const agBodyViewport: HTMLElement = containerRef.current.querySelector(
+          '.ag-body-viewport'
+        ) as HTMLElement;
         if (agBodyViewport) {
           if (agBodyViewport.scrollHeight <= agBodyViewport.clientHeight) {
             if (props.onScrollToBottom) {
@@ -61,7 +66,7 @@ const DataGrid = forwardRef(
           }
         }
       }
-    }
+    };
 
     return (
       <div ref={containerRef} className="ag-theme-quartz h-full data-grid">
@@ -69,13 +74,12 @@ const DataGrid = forwardRef(
           onGridReady={handleGridReady}
           onBodyScroll={(event) => {
             if (event.direction === 'vertical') {
-              console.log(event.top);
               const { bottom } = event.api.getVerticalPixelRange()!;
 
               const rowHeight = event.api.getSizesForCurrentTheme().rowHeight;
               const rowCount = event.api.getDisplayedRowCount();
               if (rowHeight * rowCount - bottom <= 0) {
-                props.onScrollToBottom?.()
+                props.onScrollToBottom?.();
               }
             }
           }}
@@ -84,7 +88,7 @@ const DataGrid = forwardRef(
             minWidth: 60,
             ...defaultColDef,
           }}
-          overlayNoRowsTemplate='Không có dữ liệu'
+          overlayNoRowsTemplate="Không có dữ liệu"
           suppressDragLeaveHidesColumns
           suppressRowHoverHighlight
           suppressCellFocus
@@ -93,7 +97,7 @@ const DataGrid = forwardRef(
         />
       </div>
     );
-  },
+  }
 );
 
 DataGrid.displayName = 'DataGrid';

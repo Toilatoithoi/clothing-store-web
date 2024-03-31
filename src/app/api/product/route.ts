@@ -6,7 +6,7 @@ import { formatNumber, isBlank } from '@/utils';
 import { category } from '@prisma/client';
 import { RestError, verifyToken } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
-import { ROLES, SORT_TYPE } from '@/constants';
+import { FETCH_COUNT, ROLES, SORT_TYPE } from '@/constants';
 
 
 
@@ -19,7 +19,7 @@ export const GET = async (request: NextRequest) => {
   const category_id = url.searchParams.get('categoryId');
   const status = url.searchParams.get('status');
   // lấy từ link url api lấy giá trị fetchCount
-  const fetchCount = Number(url.searchParams.get('fetchCount')) || 8; // default 8 bản ghi
+  const fetchCount = Number(url.searchParams.get('fetchCount')) || FETCH_COUNT; // default 8 bản ghi
   // orderBy là sort thời gian, giá từ thấp đến cap, giá từ cao đến thấp
   const orderBy = url.searchParams.get('orderBy') as SORT_TYPE ?? SORT_TYPE.TIME; // mặc định sort theo time 
   // sort theo giá lớn nhất
@@ -84,7 +84,6 @@ export const GET = async (request: NextRequest) => {
     };
 
 
-    console.log(JSON.stringify(where), fetchCount)
 
     const [products, count] = await prisma.$transaction([
       prisma.product.findMany({
