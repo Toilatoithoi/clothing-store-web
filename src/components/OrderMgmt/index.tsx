@@ -77,6 +77,7 @@ const OrderMgmt = () => {
       headerName: 'Tên',
       field: 'full_name',
       minWidth: 150,
+      flex: 1,
     },
     {
       headerName: 'Email',
@@ -99,6 +100,14 @@ const OrderMgmt = () => {
       valueFormatter: (params) => {
         return OrderStatusTranslate[params.value];
       },
+    },
+    {
+      headerName: 'Ghi chú',
+      field: 'note',
+    },
+    {
+      headerName: 'Lý do',
+      field: 'reason',
     },
     {
       headerName: '',

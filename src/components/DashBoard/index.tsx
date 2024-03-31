@@ -59,8 +59,17 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <div>
-        <div className=" w-[50rem] rounded-md border border-gray-200 bg-white shadow-md">
+      <div className="flex gap-4 flex-wrap">
+        <div className=" flex-1 min-w-[50rem] rounded-md border border-gray-200 bg-white shadow-md ">
+          <div className="text-[1.8rem] flex gap-2 items-center p-8 font-bold">
+            Doanh thu
+          </div>
+          <OrderSummary />
+        </div>
+        <div className=" w-[50rem] rounded-md border border-gray-200 bg-white shadow-md ">
+          <div className="text-[1.8rem] flex gap-2 items-center p-8 font-bold">
+            Đơn hàng
+          </div>
           <OrderSummary />
         </div>
       </div>

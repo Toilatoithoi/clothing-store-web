@@ -51,7 +51,7 @@ const OrderForm = (props: Props) => {
       <div className="font-bold mb-[2.4rem]">Cập nhật đơn hàng</div>
       <Formik
         onSubmit={submit}
-        validationSchema={schema}
+        // validationSchema={schema}
         initialValues={
           props.data ?? ({ status: '', reason: '' } as IOrderValues)
         }

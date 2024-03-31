@@ -64,6 +64,7 @@ const UserMgmt = () => {
     {
       headerName: 'Tên',
       field: 'name',
+      flex: 1,
     },
     {
       headerName: 'username',
