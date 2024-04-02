@@ -166,6 +166,9 @@ const ListBill = () => {
             onClick: (data: any) => {
               (data.status == ORDER_STATUS.NEW || userInfo?.role == ROLES.ADMIN) && setModalCancel({ show: true, data });
             },
+            hide(data: Record<string, unknown>) {
+              return data.status !== ORDER_STATUS.NEW;
+            },
           },
         ],
       },
