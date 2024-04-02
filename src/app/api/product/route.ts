@@ -57,6 +57,7 @@ export const GET = async (request: NextRequest) => {
       ...(data?.role !== ROLES.ADMIN ? {
         status: PRODUCT_STATUS.PUBLISHED,
       } : {
+        // ???
         status: status ? status : { not: PRODUCT_STATUS.DELETED }
       }),
       ...(category != null && {

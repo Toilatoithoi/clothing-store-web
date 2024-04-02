@@ -228,7 +228,7 @@ const ProductForm = (props: Props) => {
 
                 <CategoryPicker
                   label="Danh mục "
-                  level="1"
+                  level="2"
                   selected={values.categoryId}
                   onChange={(value) => setFieldValue('categoryId', value)}
                 />

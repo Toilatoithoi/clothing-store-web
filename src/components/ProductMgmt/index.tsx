@@ -142,10 +142,12 @@ const ProductMgmt = () => {
             },
           },
           {
+            // khi tạo product thì có thể quyết định đăng sản phẩm hay không
             render: Upload,
             onClick: (data: any) => {
               setModalPub({ show: true, data });
             },
+            // ???
             hide(data: Record<string, unknown>) {
               return data.status !== 'DRAFT';
             },
