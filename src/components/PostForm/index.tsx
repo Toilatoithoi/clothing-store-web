@@ -106,19 +106,13 @@ const PostForm = (props: Props) => {
       const postload: CreatePostReq = {
         title: values.title,
         content: values.content,
-        createAt: values.createAt ? values.createAt + 'T00:00:00.000Z' : '',
+        createAt: values.createAt ? (values.createAt.includes('T') ? values.createAt : values.createAt + 'T00:00:00.000Z') : '',
         sapo: values.sapo,
         image: image,
       };
-      const postUpload: CreatePostReq = {
-        title: values.title,
-        content: values.content,
-        createAt: values.createAt,
-        sapo: values.sapo,
-        image: image,
-      };
+      
       if (props.data) {
-        updatePost({ ...postUpload });
+        updatePost({ ...postload });
       } else {
         trigger({ ...postload });
       }
