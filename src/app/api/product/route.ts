@@ -94,7 +94,6 @@ export const GET = async (request: NextRequest) => {
           category: true,
           id: true,
           price: true,
-          image_product: true
         },
         take: fetchCount,
         skip: Number(page ?? 0) * Number(fetchCount), // skip = (page - 1) * fetchCount

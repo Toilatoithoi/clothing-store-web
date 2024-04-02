@@ -69,7 +69,6 @@ export const GET = async (
         status: true,
         id: true,
         description: true,
-        image_product: true,
         price: true,
       },
     });

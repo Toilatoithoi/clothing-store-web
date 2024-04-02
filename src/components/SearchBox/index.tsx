@@ -61,7 +61,7 @@ const SearchBox = () => {
   const handleBlur = () => {
     setTimeout(() => {
       setIsFocus(false);
-    }, 100);
+    }, 200);
   };
 
   return (

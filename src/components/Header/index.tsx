@@ -46,48 +46,48 @@ const ListConfig = [
     ]
   },
   {
-    label: 'Bộ sưu tập',
-    path: 'look-book',
-    children: [
-      {
-        label: "MONSOON 'S COMING",
-        path: 'look-book-detail/1',
-      },
-      {
-        label: 'NEW SEASON BEGINS',
-        path: 'look-book-detail/2',
-      },
-      {
-        label: 'THE COMPLETELY PERFECT',
-        path: 'look-book-detail/3',
-      },
-      {
-        label: 'AUTUMN COMING',
-        path: 'look-book-detail/4',
-      },
-    ]
-  },
-  {
     label: 'Tin tức',
     path: 'new',
-    children: [
-      {
-        label: 'Blog',
-        path: 'promotion',
-      },
-      // {
-      //   label: '360 Blog',
-      //   path: '/tin-tuc',
-      // },
-      // {
-      //   label: 'Tin tức thời trang',
-      //   path: '/tin-tuc',
-      // },
-      // {
-      //   label: '360 Tuyển dụng',
-      //   path: '/tin-tuc',
-      // },
-    ]
+    // children: [
+    //   {
+    //     label: "MONSOON 'S COMING",
+    //     path: 'look-book-detail/1',
+    //   },
+    //   {
+    //     label: 'NEW SEASON BEGINS',
+    //     path: 'look-book-detail/2',
+    //   },
+    //   {
+    //     label: 'THE COMPLETELY PERFECT',
+    //     path: 'look-book-detail/3',
+    //   },
+    //   {
+    //     label: 'AUTUMN COMING',
+    //     path: 'look-book-detail/4',
+    //   },
+    // ]
+  },
+  {
+    label: 'Blog',
+    path: 'promotion',
+    // children: [
+    //   {
+    //     label: 'Blog',
+    //     path: 'promotion',
+    //   },
+    //   // {
+    //   //   label: '360 Blog',
+    //   //   path: '/tin-tuc',
+    //   // },
+    //   // {
+    //   //   label: 'Tin tức thời trang',
+    //   //   path: '/tin-tuc',
+    //   // },
+    //   // {
+    //   //   label: '360 Tuyển dụng',
+    //   //   path: '/tin-tuc',
+    //   // },
+    // ]
   },
   // {
   //   label: 'Khuyến mãi',
@@ -226,13 +226,17 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
                       {item.label}
                     </div>
                   </Link>
-                  <div className="bg-white list-nav shadow-sm z-10 border-t border-[#BC0517] absolute top-full left-0 w-[35vw] max-h-[40rem] p-[2.4rem] gap-[3.2rem]">
-                    <div className="grid grid-cols-2 gap-x-[2rem] flex-1">
-                      {item.children?.map((subNar, idx) =>
-                        <div key={idx} className="hover:text-black cursor-pointer text-[1.6rem] h-[4.8rem] flex items-center border-b border-gray-200"><Link href={`/${item.children[idx].path}`}>{subNar.label}</Link></div>
-                      )}
-                    </div>
-                  </div>
+                  {
+                     item.children && (
+                      <div className="bg-white list-nav shadow-sm z-10 border-t border-[#BC0517] absolute top-full left-0 w-[35vw] max-h-[40rem] p-[2.4rem] gap-[3.2rem]">
+                        <div className="grid grid-cols-2 gap-x-[2rem] flex-1">
+                          {item.children.map((subNar, idx) =>
+                            <div key={idx} className="hover:text-black cursor-pointer text-[1.6rem] h-[4.8rem] flex items-center border-b border-gray-200"><Link href={`/${item.children[idx].path}`}>{subNar.label}</Link></div>
+                          )}
+                        </div>
+                      </div>
+                     )
+                  }     
                 </div>
               ))
             }

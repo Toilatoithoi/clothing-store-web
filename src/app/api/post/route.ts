@@ -60,7 +60,7 @@ export const POST = async (req: NextRequest) => {
     const body : CreatePostReq = await req.json();
     console.log(body)
 
-    if (isBlank(body.title) || isBlank(body.content) || isBlank(body.createAt)) {
+    if (isBlank(body.title)) {
       return NextResponse.json(new RestError(INPUT_INVALID));
     }
 

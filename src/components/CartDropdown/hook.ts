@@ -34,6 +34,7 @@ export interface UserPayMENT {
   address: string;
   dob: string;
   username: string;
+  role: string;
 }
 
 export const useCart = () => {

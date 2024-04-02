@@ -58,8 +58,8 @@ export const DELETE = async (req: NextRequest, { params }: { params: { postId: s
 export const GET = async (req: NextRequest, { params }: { params: { postId: string; } }) => {
   const id = Number(params.postId);
   try {
-    const post = await prisma.post.findFirst({ where: { id } });
-
+    let post;
+    post = await prisma.post.findFirst({ where: { id } });
     // lây thông tin post trên db -> nếu mà không có thông tin post -> thông báo lỗi post not exist
     if (post == null) {
       return NextResponse.json({
@@ -67,7 +67,6 @@ export const GET = async (req: NextRequest, { params }: { params: { postId: stri
         message: "Post không tồn tại"
       }, { status: 403 })
     }
-
     return NextResponse.json(post);
   } catch (error) {
     console.log({ error })

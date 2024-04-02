@@ -47,6 +47,9 @@ const ListProduct = (props: { categoryId?: string; }) => {
 
   const { data: category } = useSWRWrapper<Category>(`/api/category/${props.categoryId}?level=1`, {
     url: `/api/category/${props.categoryId}`,
+    params:{
+      level: 1,
+    }
   })
 
   console.log({ data });

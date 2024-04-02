@@ -1,17 +1,42 @@
 'use client';
 import { AgGridReact } from 'ag-grid-react'; // Component AG Grid
-import { ColDef, ICellRendererParams } from 'ag-grid-community';
-import React, { useEffect, useState } from 'react';
+import { ColDef, ColGroupDef,ICellRendererParams, ValueFormatterParams } from 'ag-grid-community';
+import React, { useEffect, useRef, useState } from 'react';
 import { Payment, ProductCart, useBill } from '@/components/CartDropdown/hook';
 import { useRouter } from 'next/navigation';
-import { timeFormatterFromTimestamp } from '@/utils/grid';
+import { integerFormatter, timeFormatterFromTimestamp } from '@/utils/grid';
+import { FETCH_COUNT, METHOD, ORDER_STATUS, ROLES } from '@/constants';
+import DataGrid, { DataGridHandle } from '@/components/DataGrid';
+import ButtonCell, { Cancel, Eye, Upload } from '@/components/DataGrid/ButtonCell';
+import { IPagination, PaginationRes } from '@/interfaces';
+import BillDetail from '@/components/BillDetail';
+import OrderForm from '@/components/OrderMgmt/OrderForm';
+import { uuid } from '@/utils';
+import { useMutation } from '@/store/custom';
+import { ProductRes } from '@/interfaces/model';
+import ModalProvider from '@/components/ModalProvider';
+import Loader from '@/components/Loader';
+import { useUserInfo } from '@/store/globalSWR';
 
-const BILL_STATUS_TRANSLATE: Record<string, string> = {
-  SUCCESS: 'Thành công',
-  REJECT: 'Từ chối',
-  CANCEL: 'Đã hủy',
-  NEW: 'Đã đặt',
-  CONFIRM: 'Đã xác nhận',
+// const BILL_STATUS_TRANSLATE: Record<string, string> = {
+//   SUCCESS: 'Thành công',
+//   REJECT: 'Từ chối',
+//   CANCELED: 'Đã hủy',
+//   NEW: 'Đã đặt',
+//   CONFIRM: 'Đã xác nhận',
+//   FAILED: 'Thất bại',
+//   TRANSPORTED: 'Đang giao hàng'
+// };
+
+const OrderStatusTranslate: Record<string, string> = {
+  [ORDER_STATUS.NEW]: 'Đang xử lý',
+  [ORDER_STATUS.CANCELED]: 'Đã hủy',
+  [ORDER_STATUS.REQUEST_CANCEL]: 'Yêu cầu hủy',
+  [ORDER_STATUS.CONFIRM]: 'Xác nhận',
+  [ORDER_STATUS.TRANSPORTED]: 'Đang vận chuyển',
+  [ORDER_STATUS.SUCCESS]: 'Thành công',
+  [ORDER_STATUS.FAILED]: 'Thất bại',
+  [ORDER_STATUS.REJECT]: 'Từ chối',
 };
 
 export interface List {
@@ -34,87 +59,135 @@ export interface List {
 const ListBill = () => {
   // điều hướng route
   const router = useRouter();
-  // const handleViewBillProudtcPage = (value: number) => {
-  //     // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
-  //     router.push('/list-bill/' + value.toString())
-  // }
-  const CustomButtonComponent = ({ data }: ICellRendererParams) => {
-    const handleClick = () => {
-      router.push(`/list-bill/${data.id}`);
-    };
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <button
-          className="h-[3.2rem] px-[0.4rem] bg-[#BC0517] text-white rounded-[0.8rem] flex items-center justify-center"
-          onClick={handleClick}
-        >
-          Xem
-        </button>
-      </div>
-    );
-  };
-  const DeleteButtonComponent = ({ data }: ICellRendererParams) => {
-    const handleClick = () => {
-      updateToBill(data);
-    };
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        {data.status != 'SUCCESS' && data.status != 'CANCEL' ? (
-          <button
-            className="h-[3.2rem] px-[0.4rem] bg-[#BC0517] text-white rounded-[0.8rem] flex items-center justify-center"
-            onClick={handleClick}
-          >
-            Huỷ đơn
-          </button>
-        ) : (
-          <button
-            disabled={true}
-            className="h-[3.2rem] px-[0.4rem] bg-gray-300 text-white rounded-[0.8rem] flex items-center justify-center"
-          >
-            Huỷ đơn
-          </button>
-        )}
-      </div>
-    );
+  const gridRef = useRef<DataGridHandle>();
+  const pagination = useRef<IPagination>({
+    page: 0,
+    totalCount: 0,
+    totalPage: 1,
+  });
+  const componentId = useRef(uuid());
+  const [modal, setModal] = useState<{ show?: boolean; data: any } | null>();
+  const [modalDel, setModalDel] = useState<{
+    show?: boolean;
+    data: any;
+  } | null>();
+  const [modalCancel, setModalCancel] = useState<{
+    show?: boolean;
+    data: any;
+  } | null>();
+
+  
+  const { trigger } = useMutation<PaginationRes<ProductRes>>('/api/bill', {
+    url: '/api/bill',
+    method: METHOD.GET,
+    onSuccess(data, key, config) {
+      gridRef.current?.api?.hideOverlay();
+      pagination.current = data.pagination;
+      gridRef.current?.api?.applyTransaction({
+        add: data.items,
+        addIndex: gridRef.current.api.getDisplayedRowCount(),
+      });
+    },
+  });
+
+  const { data: userInfo } = useUserInfo();
+  
+  const requestData = () => {
+    const { page, totalPage } = pagination.current;
+    if (page < totalPage) {
+      gridRef.current?.api?.showLoadingOverlay();
+      trigger({
+        fetchCount: FETCH_COUNT,
+        page: page + 1,
+      });
+    }
   };
 
-  const { addToBill, data, updateToBill } = useBill({});
-  const [rowData, setRowData] = useState<Payment[]>([]);
-  const [colDefs, setColDefs] = useState<Array<ColDef>>([
+
+  const columnDefs: Array<ColDef | ColGroupDef> = [
     {
       headerName: 'Thời gian',
       field: 'created_at',
-      minWidth: 120,
-      // có 2 hàm hay dùng
-      // valueGetter và valueFormatter hai cái này hoạt động giống nhau đều trả về giá trị để render ra cell fleid
       valueFormatter: timeFormatterFromTimestamp,
+      minWidth: 150,
     },
-    { headerName: 'Tên người nhận', field: 'full_name' },
-    { headerName: 'Email', field: 'email' },
-    { headerName: 'Số điện thoại', field: 'phoneNumber' },
-    { headerName: 'Tỉnh/Thành phố', field: 'city' },
-    { headerName: 'Quận/Huyện', field: 'district' },
-    { headerName: 'Phường/Xã', field: 'wards' },
-    { headerName: 'Địa chỉ', field: 'address' },
+    {
+      headerName: 'Tên',
+      field: 'full_name',
+      minWidth: 150,
+      flex: 1,
+    },
+    {
+      headerName: 'Email',
+      field: 'email',
+      minWidth: 180,
+    },
+    {
+      headerName: 'Thành phố',
+      field: 'city',
+    },
+    {
+      headerName: 'Tổng tiền',
+      field: 'total_price',
+      maxWidth: 150,
+      valueFormatter: integerFormatter,
+    },
     {
       headerName: 'Trạng thái',
       field: 'status',
+      // parms là ColGroupDef
       valueFormatter: (params) => {
-        return BILL_STATUS_TRANSLATE[params.value];
+        return OrderStatusTranslate[params.value];
       },
     },
-    { headerName: 'Ghi chú', field: 'note' },
-    { headerName: 'Xem', field: 'id', cellRenderer: CustomButtonComponent },
     {
-      headerName: 'Huỷ đơn hàng',
-      field: 'id',
-      cellRenderer: DeleteButtonComponent,
+      headerName: 'Ghi chú',
+      field: 'note',
     },
-  ]);
+    {
+      headerName: 'Lý do',
+      field: 'reason',
+    },
+    {
+      headerName: '',
+      cellRenderer: ButtonCell,
+      maxWidth: 120,
+      pinned: 'right',
+      cellRendererParams: {
+        buttons: [
+          {
+            render: Eye,
+            onClick: (data: any) => {
+              setModal({ show: true, data });
+            },
+          },
+          {
+            render: Cancel,
+            onClick: (data: any) => {
+              (data.status == ORDER_STATUS.NEW || userInfo?.role == ROLES.ADMIN) && setModalCancel({ show: true, data });
+            },
+          },
+        ],
+      },
+    },
+  ];
 
-  useEffect(() => {
-    setRowData(data?.items ?? []);
-  }, [data]);
+  const handleCloseModal = () => {
+    setModal(null);
+  };
+  const handleCloseModalCancel = () => {
+    setModalCancel(null);
+  };
+
+  const refreshData = () => {
+    pagination.current = {
+      page: 0,
+      totalCount: 0,
+      totalPage: 1,
+    };
+    gridRef.current?.api?.updateGridOptions({ rowData: [] });
+    requestData();
+  };
 
   return (
     <div className="h-full w-full p-[1.6rem] flex flex-col flex-1">
@@ -126,16 +199,36 @@ const ListBill = () => {
         </div>
       </div>
       <div className="ag-theme-quartz h-[70vh]">
-        <AgGridReact
-          rowData={rowData}
-          columnDefs={colDefs}
-          rowSelection="multiple"
-          suppressRowClickSelection={true}
-          pagination={true}
-          paginationPageSize={20}
-          paginationPageSizeSelector={[20, 50, 100]}
+        <DataGrid
+          ref={gridRef}
+          columnDefs={columnDefs}
+          onGridReady={requestData}
+          onScrollToBottom={requestData}
         />
       </div>
+      <ModalProvider show={modal?.show} onHide={handleCloseModal}>
+        <Loader id={componentId.current} className="w-screen max-w-screen-md">
+          {modal?.data?.id && <BillDetail billId={modal?.data.id} />}
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="btn-primary flex-1"
+              onClick={handleCloseModal}
+            >
+              Xác nhận
+            </button>
+          </div>
+        </Loader>
+      </ModalProvider>
+      <ModalProvider show={modalCancel?.show} onHide={handleCloseModalCancel}>
+        {modalCancel?.data && (
+          <OrderForm
+            data={modalCancel?.data}
+            onClose={handleCloseModalCancel}
+            onRefresh={refreshData}
+          />
+        )}
+      </ModalProvider>
     </div>
   );
 };

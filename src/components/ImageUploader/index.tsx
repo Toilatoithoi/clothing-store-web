@@ -8,6 +8,7 @@ interface ImageUploaderProps {
   onChange?: (file?: File | null) => void;
   // value?: string; // linkImage to edit;
   initImage?: string | null;
+  label?: string;
 }
 
 const ImageUploader = (props: ImageUploaderProps) => {
@@ -32,38 +33,41 @@ const ImageUploader = (props: ImageUploaderProps) => {
   };
 
   return (
-    <div
-      className={`banner-uploader group relative w-full flex items-center justify-center aspect-[230/290]`}
-    >
-      {image ? (
-        <Image
-          width={400}
-          height={400}
-          src={image}
-          alt="banner"
-          className="w-full h-full object-contain aspect-[230/290]"
-        />
-      ) : (
-        <div className="banner-placeholder" onClick={handleChooseFile}>
-          <div className="icon cursor-pointer">
+    <div className='w-full'>
+      {props.label && <label className="font-bold">{props.label}</label>}
+      <div
+        className={`banner-uploader group relative w-full flex items-center justify-center aspect-[230/290]`}
+      >
+        {image ? (
+          <Image
+            width={400}
+            height={400}
+            src={image}
+            alt="banner"
+            className="w-full h-full object-contain aspect-[230/290]"
+          />
+        ) : (
+          <div className="banner-placeholder" onClick={handleChooseFile}>
+            <div className="icon cursor-pointer">
+              <UploadIcon className="text-[var(--primary)]" />
+            </div>
+          </div>
+        )}
+        <div className="absolute hidden group-hover:flex w-full h-full  items-center justify-center bg-[#ffffff40]">
+          <div className="icon cursor-pointer" onClick={handleChooseFile}>
             <UploadIcon className="text-[var(--primary)]" />
           </div>
         </div>
-      )}
-      <div className="absolute hidden group-hover:flex w-full h-full  items-center justify-center bg-[#ffffff40]">
-        <div className="icon cursor-pointer" onClick={handleChooseFile}>
-          <UploadIcon className="text-[var(--primary)]" />
-        </div>
+        <input
+          className="hidden"
+          ref={inputRef}
+          type="file"
+          onClick={(e) => ((e.target as HTMLTextAreaElement).value = '')}
+          onChange={(e) => {
+            handleFileChanged(e);
+          }}
+        />
       </div>
-      <input
-        className="hidden"
-        ref={inputRef}
-        type="file"
-        onClick={(e) => ((e.target as HTMLTextAreaElement).value = '')}
-        onChange={(e) => {
-          handleFileChanged(e);
-        }}
-      />
     </div>
   );
 };
