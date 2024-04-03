@@ -99,8 +99,8 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   useEffect(() => {
     if (product) {
       const imageList: ImageProp[] = [];
-      product.image_product.forEach((item)=>{
-        imageList.push({original: item.url, thumbnail: item.url})
+      product.product_model.forEach((item)=>{
+        imageList.push({original: item.image, thumbnail: item.image})
       })
       setImageValues(imageList)
       // 

@@ -59,9 +59,10 @@ export interface CreateCartProductReq {
 
 export interface CreatePostReq {
   title: string;
-  content: string;
-  createAt: string;
-  image: string;
+  content?: string;
+  createAt?: string;
+  image?: string;
+  sapo?: string;
 }
 
 export interface CreateLookBookReq {

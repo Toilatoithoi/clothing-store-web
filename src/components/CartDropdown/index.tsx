@@ -63,7 +63,7 @@ const CartDropdown = () => {
           </div>
           )
             : <div className='text-[1.4rem] text-center'> Chưa có sản phẩm nào </div>}
-        <div>
+        <div className='absolute bottom-0 mb-3'>
           {summary.totalPrice > 0 && data?.length != 0 && (
             <div className='text-center text-[1.6rem] font-[700] border-b-2 border-gray-300 pb-2'>
               <div>Tổng cộng: {formatNumber(summary.totalPrice)} VND</div>

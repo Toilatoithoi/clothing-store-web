@@ -5,11 +5,12 @@ import Loader from '@/components/Loader';
 import TextInput from '@/components/TextInput';
 import { METHOD, ORDER_STATUS } from '@/constants';
 import { useMutation } from '@/store/custom';
+import { useUserInfo } from '@/store/globalSWR';
 import { isBlank, uuid } from '@/utils';
 import { Formik } from 'formik';
 import React, { useRef } from 'react';
 import * as yup from 'yup';
-
+import { ROLES } from '@/constants';
 type Props = {
   onClose(): void;
   onRefresh(): void;
@@ -22,6 +23,7 @@ interface IOrderValues {
 
 const OrderForm = (props: Props) => {
   const componentId = useRef(uuid());
+  const { data: userInfo } = useUserInfo();
   const { trigger } = useMutation(`/api/bill/${props.data.id}`, {
     method: METHOD.PUT,
     loading: true,
@@ -43,12 +45,17 @@ const OrderForm = (props: Props) => {
 
   const schema = yup.object().shape({
     status: yup.string().label('Trạng thái').required(),
-    reason: yup.string().label('Note').required(),
   });
 
   return (
     <Loader id={componentId.current} className="w-screen max-w-screen-sm">
-      <div className="font-bold mb-[2.4rem]">Cập nhật đơn hàng</div>
+      <div className="font-bold mb-[2.4rem]">
+        {
+          userInfo &&  userInfo.role == ROLES.ADMIN ?
+          'Cập nhật đơn hàng'
+          : 'Huỷ đơn hàng'
+        }
+      </div>
       <Formik
         onSubmit={submit}
         // validationSchema={schema}
@@ -65,12 +72,27 @@ const OrderForm = (props: Props) => {
           setFieldValue,
           handleSubmit,
         }) => (
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          userInfo && <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            {
+            userInfo.role !== ROLES.ADMIN?
+            <Dropdown
+              label="Trạng thái"
+              options={[ 
+                {
+                  label: 'Đã hủy',
+                  value: ORDER_STATUS.CANCELED,
+                },
+              ]}
+              selected={ ORDER_STATUS.CANCELED }
+              onChange={() => setFieldValue('status', ORDER_STATUS.CANCELED,)}
+              errorMessage={errors.status}
+              hasError={touched && !isBlank(errors.status)}
+            />:
             <Dropdown
               label="Trạng thái"
               options={[
                 {
-                  label: 'Mơi tạo',
+                  label: 'Mới tạo',
                   value: ORDER_STATUS.NEW,
                   disabled: true,
                 },
@@ -109,8 +131,10 @@ const OrderForm = (props: Props) => {
               errorMessage={errors.status}
               hasError={touched && !isBlank(errors.status)}
             />
+            }
+            
             <TextInput
-              label="Ghi chú"
+              label="Lý do"
               name="reason"
               type="textarea"
               value={values.reason}

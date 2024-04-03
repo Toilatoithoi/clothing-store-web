@@ -108,19 +108,19 @@ model product_model {
 }
 
 model bill_product {
-  id               Int           @id @default(autoincrement())
+  id               Int            @id @default(autoincrement())
   bill_id          Int
-  product_model_id Int
+  product_model_id Int?
   quantity         Int
-  color            String?       @db.VarChar(255)
-  size             String?       @db.Char(3)
-  image            String?       @db.VarChar(255)
-  product_name     String?       @db.VarChar(255)
-  created_at       DateTime?     @default(now()) @db.Timestamp(0)
-  updated_at       DateTime?     @default(now()) @db.Timestamp(0)
+  color            String?        @db.VarChar(255)
+  size             String?        @db.Char(3)
+  image            String?        @db.VarChar(255)
+  product_name     String?        @db.VarChar(255)
+  created_at       DateTime?      @default(now()) @db.Timestamp(0)
+  updated_at       DateTime?      @default(now()) @db.Timestamp(0)
   price            Float?
-  product_model    product_model @relation(fields: [product_model_id], references: [id], onUpdate: Restrict, map: "bill_product_fk1")
-  bill             bill          @relation(fields: [bill_id], references: [id], onUpdate: Restrict, map: "bill_product_fk2")
+  bill             bill           @relation(fields: [bill_id], references: [id], onDelete: Cascade, map: "bill_product_fk2")
+  product_model    product_model? @relation(fields: [product_model_id], references: [id], onUpdate: SetNull, map: "bill_product_fk1")
 
   @@index([bill_id], map: "BillID")
   @@index([product_model_id], map: "ProductID")

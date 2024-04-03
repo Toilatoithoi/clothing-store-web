@@ -5,7 +5,7 @@ import { CreateBillReq } from '@/interfaces/request';
 import { RestError, verifyToken } from '@/utils/service';
 import { INPUT_INVALID, INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 import { Prisma, bill_product, product_model } from '@prisma/client';
-import { FETCH_COUNT, ROLES } from '@/constants';
+import { FETCH_COUNT, ORDER_STATUS, ROLES } from '@/constants';
 
 export const GET = async (req: NextRequest) => {
   const url = new URL(req.url);
@@ -67,6 +67,7 @@ export const GET = async (req: NextRequest) => {
           created_at: true,
           updated_at: true,
           total_price: true,
+          reason: true,
           bill_product: {
             select: {
               quantity: true,
@@ -129,7 +130,7 @@ export const POST = async (req: NextRequest) => {
     const models = await prisma.$transaction(
       body.bill_product.map((item) =>
         prisma.product_model.findFirst({
-          where: { id: item.product_model_id },
+          where: { id: item.product_model_id || 0 },
           select: {
             product: { select: { name: true } },
             price: true,
@@ -159,7 +160,7 @@ export const POST = async (req: NextRequest) => {
           full_name: body.name,
           phoneNumber: body.phone,
           email: body.email,
-          status: 'NEW',
+          status: ORDER_STATUS.NEW,
           total_price,
           bill_product: {
             // do bill_product là một mảng nên phải map
@@ -180,7 +181,7 @@ export const POST = async (req: NextRequest) => {
       ...body.bill_product.map((item: bill_product) =>
         prisma.product_model.update({
           where: {
-            id: item.product_model_id,
+            id: item.product_model_id || 0,
           },
           data: {
             sold: {

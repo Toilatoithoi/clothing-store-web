@@ -28,19 +28,12 @@ export interface ProductModel {
   id: number;
 }
 
-export interface ImageProduct {
-  id: number;
-  url: string;
-  product_model_id: number;
-}
-
 export interface ProductDetail {
   id: number;
   name: string;
   category: Category;
   product_model: ProductModel[];
   description: string;
-  image_product: ImageProduct[];
   price: number;
 }
 

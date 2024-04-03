@@ -46,6 +46,18 @@ export const Trash = (props: { onClick(): void }) => {
   );
 };
 
+export const Cancel = (props: { onClick(): void }) => {
+  return (
+    <div
+      onClick={props.onClick}
+      title="Huỷ đơn"
+      className="bg-red-200 hover:opacity-80 text-red-500 w-[3.4rem] h-[3.4rem] flex items-center justify-center rounded-md"
+    >
+      <TrashIcon className="hover:cursor-pointer" />
+    </div>
+  );
+};
+
 export const Edit = (props: { onClick(): void }) => {
   return (
     <div

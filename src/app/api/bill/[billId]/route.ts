@@ -4,6 +4,7 @@ import { RestError, verifyToken } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 import { bill_product } from '@prisma/client';
 import { ORDER_STATUS, ROLES } from '@/constants';
+import { isBlank } from '@/utils';
 
 export const PUT = async (
   req: NextRequest,
@@ -15,6 +16,8 @@ export const PUT = async (
   }
 
   const id = Number(params.billId);
+  const url = new URL(req.url);
+  const username = url.searchParams.get('username')?.toString();
   // const body = await req.json();
   // validate data: user_id có hợp lệ k? .....
 
@@ -27,9 +30,18 @@ export const PUT = async (
       },
       where: {
         id,
-        user: {
-          username: data.username,
-        },
+        ...(data.role !== ROLES.ADMIN && {
+          user: {
+            username: data.username,
+          },
+        }),
+        ...(data.role === ROLES.ADMIN && {
+          user: {
+            username: {
+              contains: username,
+            },
+          },
+        }),
       },
     });
     // // lây thông tin bill trên db -> nếu mà không có thông tin bill -> thông báo lỗi bill not exist
@@ -71,9 +83,9 @@ export const PUT = async (
       ...(body.status === ORDER_STATUS.CANCELED
         ? [
             ...bill.bill_product.map((item: bill_product) =>
-              prisma.product_model.update({
+               prisma.product_model.update({
                 where: {
-                  id: item.product_model_id,
+                  id: item.product_model_id || 0,
                 },
                 data: {
                   sold: {

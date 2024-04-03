@@ -33,6 +33,7 @@ const Promotion = (props: { promotionId?: string; }) => {
   const { data: postDetail } = useSWRWrapper<PostRes>(`/api/post/${props.promotionId}`, {
     url: `/api/post/${props.promotionId}`,
   })
+
   const { data: postData } = useSWRWrapper<PaginationRes<PostRes>>('/api/post/list', {
     url: '/api/post',
     params: {
