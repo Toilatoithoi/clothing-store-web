@@ -10,7 +10,7 @@ import { uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
 import { integerFormatter } from '@/utils/grid';
 
-const UserMgmt = () => {
+const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
   const gridRef = useRef<DataGridHandle>();
   const pagination = useRef<IPagination>({
     page: 0,
@@ -40,7 +40,7 @@ const UserMgmt = () => {
     if (page < totalPage) {
       gridRef.current?.api?.showLoadingOverlay();
       trigger({
-        fetchCount: FETCH_COUNT,
+        fetchCount: inDashboard ? 10 : FETCH_COUNT,
         page: page + 1,
       });
     }
@@ -60,15 +60,17 @@ const UserMgmt = () => {
     {
       headerName: 'ID',
       field: 'id',
+      maxWidth: 60
     },
     {
       headerName: 'Tên',
       field: 'name',
-      flex: 1,
+      minWidth: 120
     },
     {
       headerName: 'username',
       field: 'username',
+      flex: 1,
     },
     {
       headerName: 'Số điện thoại',
@@ -77,6 +79,7 @@ const UserMgmt = () => {
     {
       headerName: 'Giới tính',
       field: 'gender',
+      hide: inDashboard
     },
     {
       headerName: 'Tổng chi',
@@ -110,7 +113,7 @@ const UserMgmt = () => {
 
   return (
     <div className="h-full w-full flex flex-col gap-[1.6rem]">
-      <div className="flex justify-between">
+      {!inDashboard && <div className="flex justify-between">
         <button
           type="button"
           className="btn  bg-[#bc0517] text-white"
@@ -118,7 +121,7 @@ const UserMgmt = () => {
         >
           Tải lại
         </button>
-      </div>
+      </div>}
       <div className="w-full flex-1">
         <DataGrid
           ref={gridRef}

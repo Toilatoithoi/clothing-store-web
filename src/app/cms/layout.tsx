@@ -45,11 +45,10 @@ const PrivateLayout = ({ children }: { children: ReactNode }) => {
             <Link
               href={item.route}
               key={idx}
-              className={`h-[4rem] ${
-                activeRoute?.route === item.route
+              className={`h-[4rem] ${activeRoute?.route === item.route
                   ? 'bg-slate-200 text-black'
                   : ''
-              } hover:bg-slate-200 flex items-center px-[1.6rem] cursor-pointer !font-bold border-b border-b-gray-200`}
+                } hover:bg-slate-200 flex items-center px-[1.6rem] cursor-pointer !font-bold border-b border-b-gray-200`}
             >
               {item.label}
             </Link>
@@ -67,7 +66,7 @@ const PrivateLayout = ({ children }: { children: ReactNode }) => {
         <div className="title p-[1.6rem] border-b border-b-gray-200">
           <div className="font-bold text-[2.4rem]">{activeRoute?.label}</div>
         </div>
-        <div className="flex-1 p-[1.6rem]">{children}</div>
+        <div className="flex-1 p-[1.6rem] overflow-auto">{children}</div>
       </div>
     </div>
   );

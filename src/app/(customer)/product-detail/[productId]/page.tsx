@@ -94,13 +94,13 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
 
   // điều hướng route
   const router = useRouter();
-  
+
   // bắt sự thay đổi của product
   useEffect(() => {
     if (product) {
       const imageList: ImageProp[] = [];
-      product.product_model.forEach((item)=>{
-        imageList.push({original: item.image, thumbnail: item.image})
+      product.product_model.forEach((item) => {
+        imageList.push({ original: item.image, thumbnail: item.image })
       })
       setImageValues(imageList)
       // 
@@ -149,30 +149,30 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
     // sau khi thêm thành công sẽ set lại input là 1
     setQuantity(1);
   }
-  const handleAddPayment = () => { 
-      const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
-      addToCart({
-        // thêm vào chỉ lấy quantity và product_model_id
-        // lý do dùng global state là để các compoment không phụ thuộc
-        ...selectedModel,
-        quantity,
-        product: product!,
-        product_model_id: selectedModel.id,
-        // productName: ''
-      })
-      // sau khi thêm thành công sẽ set lại input là 1
-      setQuantity(1);
-      // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
-      router.push('/payment')
+  const handleAddPayment = () => {
+    const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
+    addToCart({
+      // thêm vào chỉ lấy quantity và product_model_id
+      // lý do dùng global state là để các compoment không phụ thuộc
+      ...selectedModel,
+      quantity,
+      product: product!,
+      product_model_id: selectedModel.id,
+      // productName: ''
+    })
+    // sau khi thêm thành công sẽ set lại input là 1
+    setQuantity(1);
+    // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
+    router.push('/payment')
   }
   console.log({ sizes, MapSizeColorToModel: MapSizeColorToModel.current })
   // chon product_model mong muốn bằng MapSizeColorToModel.current[key] lấy giá trị
   // mặc định khi render ban đầu sẽ hiển thị MapSizeColorToModel đầu tiên của product nếu không chọn
   // selectdModel là product_model chọn
   let selectedModel;
-  if(selectedSize){
+  if (selectedSize) {
     selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
-  }else{
+  } else {
     selectedModel = MapSizeColorToModel.current["null" + selectedColor] ?? product?.product_model[0];
   }
   return (
@@ -182,8 +182,8 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
         <a className='text-[1.6rem] text-gray-500' href="">{product?.category?.name}</a>/
       </div>
       <div className='flex mb-[8rem]'>
-        <div className='flex-1 max-w-[60%] mr-[2.4rem]' ><ImageGallery items={imageValues} thumbnailPosition="left"/></div>
-        <div className='flex flex-col flex-1 p-[1.6rem]'>
+        <div className='flex-1 max-w-[60%] mr-[2.4rem]' ><ImageGallery items={imageValues} thumbnailPosition="left" /></div>
+        <div className='flex flex-col flex-1 p-[1.6rem] '>
           <div className='border-dashed border-b border-[#6d6d6d1a]'>
             <div className='text-[2.7rem]'>{product?.name}</div>
             {/* <div className='flex mb-[1.6rem]'>
@@ -195,8 +195,8 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
             </div> */}
             <div className="flex text-[1.6rem] items-center" >
               <span className='mr-1'>Tình trạng:</span> <strong className='text-green-600'>
-              {selectedModel?.stock && selectedModel?.stock> 0? selectedModel?.stock + ' ': 0 + ' '} 
-              sản phẩm sẵn có</strong>
+                {selectedModel?.stock && selectedModel?.stock > 0 ? selectedModel?.stock + ' ' : 0 + ' '}
+                sản phẩm sẵn có</strong>
             </div>
             <div className='text-[2.4rem] font-semibold'>{formatNumber(selectedModel?.price)} VND</div>
           </div>
@@ -215,7 +215,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
                     setSelectedColor(key)
                   }}
                   className={`mr-4 rounded-[0.4rem] cursor-pointer border border-gray-400 hover:border-gray-600 ${selectedColor === key ? 'border-gray-600 border-[2px]' : ''}`}>
-                    {/* render ra image dùng colors[truyền key].thuộc tính muốn lấy giá trị */}
+                  {/* render ra image dùng colors[truyền key].thuộc tính muốn lấy giá trị */}
                   <a data-tooltip-id="my-tooltip" data-tooltip-content={colors[key].color}><Image src={colors[key].image} className='w-[3rem] h-[3rem] object-contain' width={30} height={30} alt={'size'} objectFit='cover' /></a>
                   <Tooltip id="my-tooltip" />
                 </div>)
@@ -244,14 +244,14 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
           </div>
           <div className='flex items-center py-[0.8rem]'>
             {
-              selectedModel?.stock && selectedModel?.stock > 0 && appStatus?.isAuthenticated ? 
+              selectedModel?.stock && selectedModel?.stock > 0 && appStatus?.isAuthenticated ?
                 <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
-              : <button disabled={true} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-gray-300 flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
+                : <button disabled={true} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-gray-300 flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button>
             }
             {
-              selectedModel?.stock && selectedModel?.stock > 0 && appStatus?.isAuthenticated ? 
+              selectedModel?.stock && selectedModel?.stock > 0 && appStatus?.isAuthenticated ?
                 <button onClick={handleAddPayment} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button>
-              : <button disabled={true} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-gray-300 flex-1' type='button'>Mua ngay</button>
+                : <button disabled={true} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-gray-300 flex-1' type='button'>Mua ngay</button>
             }
             {/* <button onClick={handleAddCart} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-[2] mr-[1.6rem]' type='button'>Thêm vào giỏ hàng</button> */}
             {/* <button onClick={handleAddPayment} className='h-[4rem] flex items-center justify-center text-[1.6rem] font-bold text-white uppercase bg-[#bc0516] flex-1' type='button'>Mua ngay</button> */}

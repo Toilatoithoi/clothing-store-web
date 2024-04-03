@@ -9,6 +9,7 @@ interface ImageUploaderProps {
   // value?: string; // linkImage to edit;
   initImage?: string | null;
   label?: string;
+  aspectRatio?: string;
 }
 
 const ImageUploader = (props: ImageUploaderProps) => {
@@ -32,10 +33,13 @@ const ImageUploader = (props: ImageUploaderProps) => {
     props.onChange?.(files?.[0]);
   };
 
+  const aspectRatio = props.aspectRatio ?? '230/290'
+
   return (
     <div className='w-full'>
       {props.label && <label className="font-bold">{props.label}</label>}
       <div
+        style={{ aspectRatio }}
         className={`banner-uploader group relative w-full flex items-center justify-center aspect-[230/290]`}
       >
         {image ? (
@@ -43,6 +47,7 @@ const ImageUploader = (props: ImageUploaderProps) => {
             width={400}
             height={400}
             src={image}
+            style={{ aspectRatio }}
             alt="banner"
             className="w-full h-full object-contain aspect-[230/290]"
           />

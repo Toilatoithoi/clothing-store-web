@@ -5,7 +5,7 @@ import { useMutation } from '@/store/custom';
 import React, { useRef, useState } from 'react';
 import ModalProvider from '../ModalProvider';
 import { ColDef, ColGroupDef, ICellRendererParams } from 'ag-grid-community';
-import ButtonCell, { Edit, Trash, Upload } from '../DataGrid/ButtonCell';
+import ButtonCell, { Edit, Eye, Trash, Upload } from '../DataGrid/ButtonCell';
 import { uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
 import { integerFormatter, timeFormatterFromTimestamp } from '@/utils/grid';
@@ -15,6 +15,9 @@ import Loader from '../Loader';
 import Image from 'next/image';
 import { PostRes } from '@/interfaces/model';
 import PostForm from '../PostForm';
+import { useRouter } from 'next/navigation';
+import { Formik } from 'formik';
+import TextInput from '../TextInput';
 
 
 const PostMgmt = () => {
@@ -24,6 +27,8 @@ const PostMgmt = () => {
         totalCount: 0,
         totalPage: 1,
     });
+    const filter = useRef<{ searchKey?: string }>()
+    const router = useRouter();
     const componentId = useRef(uuid());
     const [modal, setModal] = useState<{ show?: boolean, data: any } | null>()
     const [modalDel, setModalDel] = useState<{
@@ -69,27 +74,28 @@ const PostMgmt = () => {
         return tempDiv.textContent || tempDiv.innerText || '';
     };
 
-    const { trigger: deletePost} = useMutation(`/api/post/{postId}`, {
+    const { trigger: deletePost } = useMutation(`/api/post/{postId}`, {
         method: METHOD.DELETE,
         loading: true,
         url: `/api/post/{postId}`,
         notification: {
-          title: 'Xóa bài viết',
-          content: 'Xóa bài viết thành công'
+            title: 'Xóa bài viết',
+            content: 'Xóa bài viết thành công'
         },
         componentId: componentId.current,
         onSuccess() {
-          refreshData();
+            refreshData();
         }
-      })
+    })
 
-      const requestData = () => {
+    const requestData = () => {
         const { page, totalPage } = pagination.current;
-        if (page < totalPage && gridRef.current && gridRef.current.api) {
-            gridRef.current.api.showLoadingOverlay();
+        if (page < totalPage) {
+            gridRef.current?.api?.showLoadingOverlay();
             trigger({
                 fetchCount: FETCH_COUNT,
                 page: page + 1,
+                searchKey: filter.current?.searchKey
             });
         }
     };
@@ -103,23 +109,15 @@ const PostMgmt = () => {
             maxWidth: 60,
         },
         {
-            headerName: 'Tiêu đề',
-            field: 'title',
-            flex: 1,
-        },
-
-        {
             headerName: 'Thời gian',
             field: 'createAt',
             valueFormatter: timeFormatterFromTimestamp,
             minWidth: 150,
         },
         {
-            headerName: 'Ảnh bìa',
-            field: 'image',
-            cellClass: 'text-right p-[1rem]',
-            cellRenderer: ImageRenderer,
-            autoHeight: true,
+            headerName: 'Tiêu đề',
+            field: 'title',
+            flex: 1,
         },
         {
             headerName: 'Tóm tắt',
@@ -138,15 +136,19 @@ const PostMgmt = () => {
                     {
                         render: Edit,
                         onClick: (data: any) => {
-                          console.log({data})
-                          setModal({ show: true, data })
+                            setModal({ show: true, data })
                         }
                     },
                     {
                         render: Trash,
                         onClick: (data: any) => {
-                          console.log(data)
-                          deletePost({ postId: data.id });
+                            setModalDel({ show: true, data });
+                        }
+                    },
+                    {
+                        render: Eye,
+                        onClick: (data: any) => {
+                            window.open(`${window.location.origin}/promotion/${data.id}`, 'blank')
                         }
                     },
                 ],
@@ -158,8 +160,15 @@ const PostMgmt = () => {
         setModal(null);
     };
 
+
+    const handleDelete = () => {
+        deletePost({ postId: modalDel?.data.id });
+    };
     const handleShowModal = (data?: Record<string, string>) => {
         setModal({ show: true, data });
+    };
+    const handleCloseModalDel = () => {
+        setModalDel(null);
     };
 
     const refreshData = () => {
@@ -174,13 +183,33 @@ const PostMgmt = () => {
     return (
         <div className="h-full w-full flex flex-col gap-[1.6rem]">
             <div className="flex justify-between">
-                <button
-                    type="button"
-                    className="btn  bg-[#bc0517] text-white"
-                    onClick={refreshData}
+                <Formik
+                    initialValues={{ searchKey: '' }}
+                    onSubmit={(values) => {
+                        filter.current = values;
+                        refreshData();
+                    }}
                 >
-                    Tìm kiếm
-                </button>
+                    {({ values, handleSubmit, handleChange }) => <form
+                        className='flex gap-4 items-center'
+                        onSubmit={handleSubmit}>
+                        <TextInput
+                            inputClassName='h-[4rem]'
+                            placeholder='Nhập từ khóa tìm kiếm...'
+                            name='searchKey'
+                            className='w-[20rem]'
+                            onChange={handleChange}
+                            value={values.searchKey}
+                        />
+
+                        <button
+                            type="submit"
+                            className="btn  bg-[#bc0517] text-white"
+                        >
+                            Tìm kiếm
+                        </button>
+                    </form>}
+                </Formik>
                 <button
                     type="button"
                     className="btn bg-green-500 text-white"
@@ -203,6 +232,17 @@ const PostMgmt = () => {
                     onRefresh={refreshData}
                     data={modal?.data}
                 />
+            </ModalProvider>
+            <ModalProvider show={modalDel?.show} onHide={handleCloseModalDel}>
+                <Loader id={componentId.current}>
+                    <ConfirmModal
+                        title="Xóa bài viết"
+                        content="Bạn có chắc chán muốn xóa bài viết này không"
+                        type="warning"
+                        onCancel={handleCloseModalDel}
+                        onConfirm={handleDelete}
+                    />
+                </Loader>
             </ModalProvider>
         </div>
     );

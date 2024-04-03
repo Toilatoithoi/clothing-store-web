@@ -5,6 +5,8 @@ import { useSWRWrapper } from '@/store/custom';
 import { formatNumber } from '@/utils';
 import React from 'react';
 import OrderSummary from '../OrderSummary';
+import RevenueChart from '../RevenueChart';
+import UserMgmt from '../UserMgmt';
 
 const Dashboard = () => {
   const { data: summary } = useSWRWrapper<Summary>('/api/admin/summary', {
@@ -12,7 +14,7 @@ const Dashboard = () => {
     url: '/api/admin/summary',
   });
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 overflow-auto">
       <div className="flex gap-4">
         <div className="flex flex-1 flex-col rounded-lg  overflow-hidden  items-center shadow-md bg-white">
           <div className="h-[1rem] bg-blue-400 w-full"></div>
@@ -59,18 +61,28 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex gap-4 flex-wrap h">
         <div className=" flex-1 min-w-[50rem] rounded-md border border-gray-200 bg-white shadow-md ">
           <div className="text-[1.8rem] flex gap-2 items-center p-8 font-bold">
             Doanh thu
           </div>
-          <OrderSummary />
+          <RevenueChart />
         </div>
         <div className=" w-[50rem] rounded-md border border-gray-200 bg-white shadow-md ">
           <div className="text-[1.8rem] flex gap-2 items-center p-8 font-bold">
             Đơn hàng
           </div>
           <OrderSummary />
+        </div>
+      </div>
+      <div>
+        <div className=" flex-1 min-w-[50rem] rounded-md border border-gray-200 bg-white shadow-md ">
+          <div className="text-[1.8rem] flex gap-2 items-center p-8 font-bold">
+            Top khách hàng
+          </div>
+          <div className='h-[50rem]'>
+            <UserMgmt inDashboard />
+          </div>
         </div>
       </div>
     </div>

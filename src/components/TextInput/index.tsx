@@ -7,6 +7,7 @@ interface TextInputProps
   hasError?: boolean;
   errorMessage?: string;
   className?: string;
+  inputClassName?: string;
   rows?: number;
   cols?: number;
   type?: string;
@@ -15,7 +16,7 @@ interface TextInputProps
 const TextInput = (props: TextInputProps) => {
   // loại bỏ label ra khỏi props
   // lấy những thứ ngoài label về rest từ props
-  const { label, hasError, errorMessage, className, cols, rows, ...rest } =
+  const { label, hasError, errorMessage, className, cols, rows, inputClassName, ...rest } =
     props;
   // thuộc tính cùng tên khi ghép thì tên nào lấy sau sẽ được lấy
   //  const a = {name: 'a'}
@@ -51,6 +52,7 @@ const TextInput = (props: TextInputProps) => {
           className={`h-[3.2rem] px-[0.8rem] flex items-center border
       border-gray-300 outline-none focus:border-[#052abc]
       ${hasError ? 'border-red-500' : ''}
+      ${inputClassName ?? ''}
      `}
           {...rest}
         />

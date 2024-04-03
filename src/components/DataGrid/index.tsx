@@ -85,7 +85,7 @@ const DataGrid = forwardRef(
           }}
           defaultColDef={{
             resizable: false,
-            minWidth: 60,
+            minWidth: 80,
             ...defaultColDef,
           }}
           overlayNoRowsTemplate="Không có dữ liệu"

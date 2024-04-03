@@ -86,7 +86,7 @@ export const Eye = (props: { onClick(): void }) => {
   return (
     <div
       onClick={props.onClick}
-      title="Đăng"
+      title="Xem"
       className="bg-pink-200 hover:opacity-80 text-pink-500 w-[3.4rem] h-[3.4rem] flex items-center justify-center rounded-md"
     >
       <EyeIcon className="hover:cursor-pointer" />

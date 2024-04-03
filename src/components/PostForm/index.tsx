@@ -110,7 +110,7 @@ const PostForm = (props: Props) => {
         sapo: values.sapo,
         image: image,
       };
-      
+
       if (props.data) {
         updatePost({ ...postload });
       } else {
@@ -118,7 +118,7 @@ const PostForm = (props: Props) => {
       }
       console.log({ postload });
     }
-    console.log({values})
+    console.log({ values })
   };
 
   const schema = yup.object().shape({
@@ -150,7 +150,7 @@ const PostForm = (props: Props) => {
   return (
     <Loader loading={loading} className="w-screen max-w-screen-md product-form">
       <div className="font-bold mb-[2.4rem]"> Tạo bài viết</div>
-      <div className="max-h-[80vh] overflow-y-auto">
+      <div className="max-h-[80vh] overflow-y-auto p-2">
         {props.data && isLoading ? (
           <div>Đang tải dữ liệu</div>
         ) : (
@@ -168,44 +168,45 @@ const PostForm = (props: Props) => {
               setFieldValue,
               handleSubmit,
             }) => (
-              <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>
-                <TextInput
-                  label="Tiêu đề"
-                  name="title"
-                  className="col-span-2"
-                  value={values.title}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errorMessage={errors.title}
-                  hasError={touched && !isBlank(errors.title)}
-                />
-                <FieldContainer label="Nội dung" className="col-span-2">
-                  <Editor />
-                </FieldContainer>
-
-                <TextInput
-                  label='Ngày tạo'
-                  value={values.createAt?.toString().split('T')[0]}
-                  className='w-[15rem]'
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  name="createAt"
-                  type='date'
-                  hasError={!isBlank(errors.createAt) && touched.createAt}
-                  errorMessage={errors.createAt}
-                />
-                <FieldContainer label="Tóm tắt" className="col-span-2">
-                  <Editor />
-                </FieldContainer>
-
+              <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                <div className='w-full'>
                   <ImageUploader
+                    aspectRatio='16/9'
                     label="Ảnh bìa"
                     initImage={values.fileConfig && typeof values.fileConfig.image === 'string' ? values.fileConfig.image : null}
                     onChange={(file) => setFieldValue('fileConfig', { ...values.fileConfig, image: file })}
                   />
+                </div>
+                <div className='flex gap-4'>
+                  <TextInput
+                    label="Tiêu đề"
+                    name="title"
+                    className="flex-1"
+                    value={values.title}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errorMessage={errors.title}
+                    hasError={touched && !isBlank(errors.title)}
+                  />
 
-
-                
+                  <TextInput
+                    label='Ngày tạo'
+                    value={values.createAt?.toString().split('T')[0]}
+                    className='w-[15rem]'
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    name="createAt"
+                    type='date'
+                    hasError={!isBlank(errors.createAt) && touched.createAt}
+                    errorMessage={errors.createAt}
+                  />
+                </div>
+                <FieldContainer label="Tóm tắt" className="col-span-2">
+                  <Editor data={values.sapo} onChange={(data) => setFieldValue('sapo', data)} />
+                </FieldContainer>
+                <FieldContainer label="Nội dung" className="col-span-2">
+                  <Editor data={values.content} onChange={(data) => setFieldValue('content', data)} />
+                </FieldContainer>
                 <div className="flex gap-2 col-span-2 mt-[5rem]">
                   <button
                     type="button"

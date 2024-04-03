@@ -25,6 +25,9 @@ const OrderSummary = () => {
     title: {
       text: '',
     },
+    chart: {
+      height: 400
+    },
     credits: { enabled: false },
     subtitle: {
       useHTML: true,
@@ -39,12 +42,15 @@ const OrderSummary = () => {
 
     legend: {
       enabled: true,
+      itemStyle: {
+        fontSize: '14px'
+      }
     },
     tooltip: {
       valueDecimals: 0,
       valueSuffix: ' Đơn',
       style: {
-        fontSize: '16px',
+        fontSize: '14px',
       },
       outside: true,
     },
@@ -56,12 +62,13 @@ const OrderSummary = () => {
         innerSize: '70%',
       },
     },
-    colors: ['#FCE700', '#F8C4B4', '#f6e1ea', '#B8E8FC', '#BCE29E'],
+    colors: ['#4ade80', '#F8C4B4', '#f6e1ea', '#B8E8FC', '#BCE29E'],
     series: [
       {
         type: 'pie',
         name: 'Đơn hàng',
         minSize: 10,
+        showInLegend: true,
         data: [
           ['Thành công', orderSummary?.success ?? 0],
           ['Thất bại', orderSummary?.failed ?? 0],
@@ -69,14 +76,14 @@ const OrderSummary = () => {
           [
             'Khác',
             (orderSummary?.total ?? 0) -
-              (orderSummary?.success ?? 0) -
-              (orderSummary?.failed ?? 0) -
-              (orderSummary?.reject ?? 0) -
-              (orderSummary?.canceled ?? 0),
+            (orderSummary?.success ?? 0) -
+            (orderSummary?.failed ?? 0) -
+            (orderSummary?.reject ?? 0) -
+            (orderSummary?.canceled ?? 0),
           ],
         ],
         dataLabels: {
-          enabled: true,
+          enabled: false,
           style: {
             fontWeight: 'bold',
             fontSize: '14px',

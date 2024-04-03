@@ -11,52 +11,39 @@ export const GET = async (req: NextRequest) => {
   }
   const url = new URL(req.url);
 
-  const fetchCount = Number(url.searchParams.get('fetchCount')) || FETCH_COUNT; // default 8 bản ghi
+  const fetchCount = Number(url.searchParams.get('fetchCount')); // default 8 bản ghi
   let page = Number(url.searchParams.get('page') ?? 0) - 1;
   if (page < 0) {
     page = 0;
   }
 
-  // const query: Prisma.UserFindManyArgs = {
-  //   where
-  // }
+  console.log(`SELECT user.*, subquery.totalPrice
+FROM user
+JOIN (
+    SELECT user_id, SUM(total_price) AS totalPrice
+    FROM bill
+    GROUP BY user_id
+) AS subquery ON user.id = subquery.user_id
+ORDER BY subquery.totalPrice DESC
+LIMIT ${fetchCount} OFFSET  ${Number(page ?? 0) * Number(fetchCount)}
+;`)
+  const users = await prisma.$queryRawUnsafe(`SELECT user.*, subquery.totalPrice
+  FROM user
+  JOIN (
+      SELECT user_id, SUM(total_price) AS totalPrice
+      FROM bill
+      WHERE status = 'SUCCESS'
+      GROUP BY user_id
+  ) AS subquery ON user.id = subquery.user_id
+  ORDER BY subquery.totalPrice DESC
+  LIMIT ${fetchCount} OFFSET  ${Number(page ?? 0) * Number(fetchCount)}
+  ;`)
 
-  const groupBuy = await prisma.bill.groupBy({
-    by: 'user_id',
-    _sum: {
-      total_price: true,
-    },
-    where: {
-      status: ORDER_STATUS.SUCCESS,
-    },
-  });
 
-  const mapUserToPrice: Record<string, number> = {};
-  groupBuy.forEach((group) => {
-    mapUserToPrice[group.user_id] = group._sum.total_price ?? 0;
-  });
-  const [users, count] = await prisma.$transaction([
-    prisma.user.findMany({
-      take: fetchCount,
-      skip: Number(page ?? 0) * Number(fetchCount),
-      select: {
-        name: true,
-        phoneNumber: true,
-        username: true,
-        dob: true,
-        gender: true,
-        address: true,
-        id: true,
-      },
-    }),
-    prisma.user.count(),
-  ]);
+  const count = await prisma.user.count()
 
   return NextResponse.json({
-    items: users.map((user) => ({
-      ...user,
-      totalPrice: mapUserToPrice[user.id] ?? 0,
-    })),
+    items: users,
     pagination: {
       totalCount: count,
       page: page <= 0 ? 1 : page + 1,
