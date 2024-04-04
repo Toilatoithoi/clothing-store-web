@@ -12,6 +12,7 @@ interface ImageUploaderProps {
   aspectRatio?: string;
 }
 
+// ???
 const ImageUploader = (props: ImageUploaderProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState(props.initImage ?? '');

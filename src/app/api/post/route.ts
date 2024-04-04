@@ -51,6 +51,8 @@ export const GET = async (req: NextRequest) => {
         },
       })
     ])
+
+    console.log({post})
     return NextResponse.json({
       items: post,
       // phân trang

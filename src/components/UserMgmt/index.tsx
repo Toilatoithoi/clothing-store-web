@@ -74,7 +74,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
     },
     {
       headerName: 'Số điện thoại',
-      field: 'phoneNumber',
+      field: 'phone_number',
     },
     {
       headerName: 'Giới tính',
