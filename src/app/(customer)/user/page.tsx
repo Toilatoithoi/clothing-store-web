@@ -135,7 +135,7 @@ const User = () => {
           errors,
           setFieldValue
         }) => <form className='w-full flex flex-col gap-8 m-4 p-4 border border-gray-800 ' onSubmit={handleSubmit} >
-            <div className='w-full text-center text-[3rem] font-bold text-black'>Thông tin khách hàng</div>
+            <div className='w-full text-center text-[3rem] font-bold text-black'>Thông tin cá nhân</div>
             {/* kiểm tra có lỗi hay không */}
             {/* {error?.message && <div className='text-red-500 text-center w-full'>{error.message}</div>} */}
             <TextInput

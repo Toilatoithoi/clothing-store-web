@@ -95,7 +95,7 @@ const PostMgmt = () => {
             trigger({
                 fetchCount: FETCH_COUNT,
                 page: page + 1,
-                searchKey: filter.current?.searchKey
+                searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
             });
         }
     };
