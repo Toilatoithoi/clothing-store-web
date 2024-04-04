@@ -17,19 +17,9 @@ export const GET = async (req: NextRequest) => {
     page = 0;
   }
 
-  console.log(`SELECT user.*, subquery.totalPrice
-FROM user
-JOIN (
-    SELECT user_id, SUM(total_price) AS totalPrice
-    FROM bill
-    GROUP BY user_id
-) AS subquery ON user.id = subquery.user_id
-ORDER BY subquery.totalPrice DESC
-LIMIT ${fetchCount} OFFSET  ${Number(page ?? 0) * Number(fetchCount)}
-;`)
   const users = await prisma.$queryRawUnsafe(`SELECT user.*, subquery.totalPrice
   FROM user
-  JOIN (
+  LEFT JOIN (
       SELECT user_id, SUM(total_price) AS totalPrice
       FROM bill
       WHERE status = 'SUCCESS'

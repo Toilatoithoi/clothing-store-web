@@ -82,24 +82,24 @@ export const PUT = async (
       // cập nhật lại stock và sold
       ...(body.status === ORDER_STATUS.CANCELED
         ? [
-            ...bill.bill_product.map((item: bill_product) =>
-               prisma.product_model.update({
-                where: {
-                  id: item.product_model_id || 0,
+          ...bill.bill_product.map((item: bill_product) =>
+            prisma.product_model.update({
+              where: {
+                id: item.product_model_id || 0,
+              },
+              data: {
+                sold: {
+                  // công thêm item.quantity
+                  decrement: item.quantity,
                 },
-                data: {
-                  sold: {
-                    // công thêm item.quantity
-                    decrement: item.quantity,
-                  },
-                  stock: {
-                    // trừ đi item.quantity
-                    increment: item.quantity,
-                  },
+                stock: {
+                  // trừ đi item.quantity
+                  increment: item.quantity,
                 },
-              })
-            ),
-          ]
+              },
+            })
+          ),
+        ]
         : []),
     ]);
     return NextResponse.json({ updateBill });
@@ -122,9 +122,11 @@ export const GET = async (
     const bill = await prisma.bill.findFirst({
       where: {
         id,
-        user: {
-          username: data.username,
-        },
+        ...(data.role !== ROLES.ADMIN) && {
+          user: {
+            username: data.username,
+          },
+        }
       },
       select: {
         id: true,
@@ -179,6 +181,6 @@ export const GET = async (
     return NextResponse.json(bill);
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), { status: 500 });
   }
 };

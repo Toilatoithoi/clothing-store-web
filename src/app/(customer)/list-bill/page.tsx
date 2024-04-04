@@ -1,6 +1,6 @@
 'use client';
 import { AgGridReact } from 'ag-grid-react'; // Component AG Grid
-import { ColDef, ColGroupDef,ICellRendererParams, ValueFormatterParams } from 'ag-grid-community';
+import { ColDef, ColGroupDef, ICellRendererParams, ValueFormatterParams } from 'ag-grid-community';
 import React, { useEffect, useRef, useState } from 'react';
 import { Payment, ProductCart, useBill } from '@/components/CartDropdown/hook';
 import { useRouter } from 'next/navigation';
@@ -76,7 +76,7 @@ const ListBill = () => {
     data: any;
   } | null>();
 
-  
+
   const { trigger } = useMutation<PaginationRes<ProductRes>>('/api/bill', {
     url: '/api/bill',
     method: METHOD.GET,
@@ -91,7 +91,8 @@ const ListBill = () => {
   });
 
   const { data: userInfo } = useUserInfo();
-  
+  console.log(userInfo)
+
   const requestData = () => {
     const { page, totalPage } = pagination.current;
     if (page < totalPage) {
@@ -99,6 +100,8 @@ const ListBill = () => {
       trigger({
         fetchCount: FETCH_COUNT,
         page: page + 1,
+        username: userInfo?.username,
+        isMine: true
       });
     }
   };

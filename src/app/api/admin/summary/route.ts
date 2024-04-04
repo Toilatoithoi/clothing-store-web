@@ -10,7 +10,7 @@ export const GET = async (req: NextRequest) => {
 
   const product = await prisma?.product.count();
   const sold = await prisma?.product_model.aggregate({
-    _count: {
+    _sum: {
       sold: true,
     },
   });
@@ -29,12 +29,25 @@ export const GET = async (req: NextRequest) => {
     _sum: {
       total_price: true,
     },
+    where: {
+      status: ORDER_STATUS.SUCCESS
+    }
   });
+
+
+  const billRows = await prisma.$queryRawUnsafe(`SELECT  SUM(subquery.quantity) as totalQuantity
+  FROM bill
+  JOIN (
+      SELECT bill_id, SUM(quantity) AS quantity
+      FROM bill_product
+      GROUP BY bill_id
+  ) AS subquery ON bill.id = subquery.bill_id
+	WHERE status = 'SUCCESS';`)
 
   return NextResponse.json({
     count: {
       product,
-      sold: sold?._count.sold,
+      sold: (billRows as any)[0]?.totalQuantity,
       bill,
       customer,
       revenue: revenue._sum.total_price,

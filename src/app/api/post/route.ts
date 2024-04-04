@@ -16,43 +16,19 @@ export const GET = async (req: NextRequest) => {
   if (page < 0) {
     page = 0;
   }
-
+  const key = `SELECT * FROM post
+WHERE title COLLATE utf8mb4_general_ci LIKE '%${searchKey}%' 
+ORDER BY createAt DESC
+LIMIT ${isBlank(limit) ? fetchCount : limit} OFFSET ${Number(page ?? 0) * Number(fetchCount)}
+`
   try {
-    const [post, count] = await prisma.$transaction([
-      prisma.post.findMany({
-        orderBy: {
-          createAt: 'desc',
-        },
-        ...!isBlank(searchKey) && {
-          where: {
-            title: {
-              contains: searchKey
-            }
-          }
-        },
-        ...(!isBlank(fetchCount) && (isBlank(limit)) && {
-          take: Number(fetchCount),
-          skip: Number(page ?? 0) * Number(fetchCount), // skip = (page - 1) * fetchCount
-        }),
-        ...(!isBlank(limit)) && {
-          take: Number(limit),
-          skip: Number(0), // skip = (page - 1) * fetchCount
-        }
-
-      }
-      ),
-      prisma.post.count({
-        ...!isBlank(searchKey) && {
-          where: {
-            title: {
-              contains: searchKey
-            }
-          }
-        },
-      })
+    const [post, counts] = await prisma.$transaction([
+      prisma.$queryRawUnsafe(key),
+      prisma.$queryRawUnsafe(`SELECT COUNT(id) as count FROM post
+      WHERE title COLLATE utf8mb4_general_ci LIKE '%${searchKey}%' 
+      `)
     ])
-
-    console.log({post})
+    const count = Number((counts as any)[0]?.count)
     return NextResponse.json({
       items: post,
       // phân trang

@@ -27,6 +27,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { categoryId: 
       },
       data: {
         ...body,
+        parent_id: Number(body.level) === 1 ? null : body.parent_id || category.parent_id
       }
     })
 
@@ -86,13 +87,13 @@ export const GET = async (req: NextRequest, { params }: { params: { categoryId: 
     const level = searchParams.get('level');
     const id = Number(params.categoryId);
     let category;
-    if(Number(level) == 1){
+    if (Number(level) == 1) {
       category = await prisma.category.findFirst({
-          where: {
-            id: id,
-          },
+        where: {
+          id: id,
+        },
       });
-    }else{
+    } else {
       category = await prisma.category.findMany({
         ...(!isBlank(level) && {
           where: {
@@ -107,7 +108,7 @@ export const GET = async (req: NextRequest, { params }: { params: { categoryId: 
         },
       });
     }
-  
+
     return NextResponse.json(category);
   } catch (error) {
     console.log({ error })

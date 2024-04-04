@@ -13,6 +13,7 @@ export const GET = async (req: NextRequest) => {
   const toDate = url.searchParams.get('toDate')?.toString();
   const username = url.searchParams.get('username')?.toString();
   const status = url.searchParams.get('status')?.toString();
+  const isMine = url.searchParams.get('isMine')?.toString() === 'true';
   const fetchCount = Number(url.searchParams.get('fetchCount')) || FETCH_COUNT; // default 8 bản ghi
   let page = Number(url.searchParams.get('page') ?? 0) - 1;
   if (page < 0) {
@@ -28,16 +29,16 @@ export const GET = async (req: NextRequest) => {
 
     const query: Prisma.billFindManyArgs = {
       where: {
-        ...(data.role !== ROLES.ADMIN && {
-          user: {
-            username: data.username,
-          },
-        }),
         ...(data.role === ROLES.ADMIN && {
           user: {
             username: {
               contains: username,
             },
+          },
+        }),
+        ...((data.role !== ROLES.ADMIN || isMine) && {
+          user: {
+            username: data.username,
           },
         }),
         status,
