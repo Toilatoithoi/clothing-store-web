@@ -22,6 +22,7 @@ export const GET = async (request: NextRequest) => {
   const fetchCount = Number(url.searchParams.get('fetchCount')) || FETCH_COUNT; // default 8 bản ghi
   // orderBy là sort thời gian, giá từ thấp đến cap, giá từ cao đến thấp
   const orderBy = url.searchParams.get('orderBy') as SORT_TYPE ?? SORT_TYPE.TIME; // mặc định sort theo time 
+  const isList = url.searchParams.get('isList');
   // sort theo giá lớn nhất
   const priceMin = Number(url.searchParams.get('priceMin'))
   // sort theo giá nhỏ nhất
@@ -54,11 +55,11 @@ export const GET = async (request: NextRequest) => {
         // phải để là || không phải ?? vì ?? chỉ khi null hoặc undefind mới mới trả về giá trị thay thế còn || thì ngoài null và undefind thì còn 0, '' sẽ coi là false đều trả về giá trị kia
         lte: priceMax || Number.MAX_SAFE_INTEGER
       },
-      ...(data?.role !== ROLES.ADMIN ? {
-        status: PRODUCT_STATUS.PUBLISHED,
+      ...(data?.role == ROLES.ADMIN && isList == null? {
+        status: status ? status : { not: PRODUCT_STATUS.DELETED }
       } : {
         // ???
-        status: status ? status : { not: PRODUCT_STATUS.DELETED }
+        status: PRODUCT_STATUS.PUBLISHED,
       }),
       ...(category != null && {
         // hiển thị tất cả category cha và category con
