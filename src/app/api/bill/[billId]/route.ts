@@ -80,7 +80,7 @@ export const PUT = async (
         },
       }),
       // cập nhật lại stock và sold
-      ...(body.status === ORDER_STATUS.CANCELED
+      ...(body.status === ORDER_STATUS.CANCELED || body.status === ORDER_STATUS.FAILED
         ? [
           ...bill.bill_product.map((item: bill_product) =>
             prisma.product_model.update({
@@ -89,11 +89,11 @@ export const PUT = async (
               },
               data: {
                 sold: {
-                  // công thêm item.quantity
+                  // giảm thêm item.quantity
                   decrement: item.quantity,
                 },
                 stock: {
-                  // trừ đi item.quantity
+                  // tăng đi item.quantity
                   increment: item.quantity,
                 },
               },
@@ -101,11 +101,28 @@ export const PUT = async (
           ),
         ]
         : []),
+        ...(body.status === ORDER_STATUS.SUCCESS 
+          ? [
+            ...bill.bill_product.map((item: bill_product) =>
+              prisma.product_model.update({
+                where: {
+                  id: item.product_model_id || 0,
+                },
+                data: {
+                  sold: {
+                    // cộng thêm item.quantity
+                    increment: item.quantity,
+                  }
+                },
+              })
+            ),
+          ]
+          : []),
     ]);
     return NextResponse.json({ updateBill });
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 };
 

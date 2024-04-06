@@ -55,6 +55,6 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ id: createdUser.id });
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 };

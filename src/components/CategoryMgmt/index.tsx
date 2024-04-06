@@ -8,12 +8,16 @@ import CategoryForm from './CategoryForm';
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 import ButtonCell, { Edit, Trash } from '../DataGrid/ButtonCell';
 import { uuid } from '@/utils';
+import { Formik } from 'formik';
+import TextInput from '../TextInput';
 
 
 const CategoryMgmt = () => {
   const gridRef = useRef<DataGridHandle>();
   const componentId = useRef(uuid());
   const [modal, setModal] = useState<{ show?: boolean, data: any } | null>()
+  const filter = useRef<{ searchKey?: string }>()
+
   const { trigger } = useMutation<Record<string, unknown>[]>('/api/category', {
     url: '/api/category',
     method: METHOD.GET,
@@ -39,7 +43,11 @@ const CategoryMgmt = () => {
 
   const requestData = () => {
     gridRef.current?.api?.showLoadingOverlay();
-    trigger();
+    trigger(
+      {
+        searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
+      }
+    );
   }
 
   const columnDefs: Array<ColDef | ColGroupDef> = [
@@ -96,7 +104,33 @@ const CategoryMgmt = () => {
   return (
     <div className='h-full w-full flex flex-col gap-[1.6rem]'>
       <div className='flex justify-between'>
-        <button type="button" className='btn  bg-[#bc0517] text-white' onClick={refreshData}>Tải lại</button>
+        <Formik
+          initialValues={{ searchKey: '' }}
+          onSubmit={(values) => {
+            filter.current = values;
+            refreshData();
+          }}
+        >
+          {({ values, handleSubmit, handleChange }) => <form
+            className='flex gap-4 items-center'
+            onSubmit={handleSubmit}>
+            <TextInput
+              inputClassName='h-[4rem]'
+              placeholder='Nhập từ khóa tìm kiếm...'
+              name='searchKey'
+              className='w-[20rem]'
+              onChange={handleChange}
+              value={values.searchKey}
+            />
+
+            <button
+              type="submit"
+              className="btn  bg-[#bc0517] text-white"
+            >
+              Tìm kiếm
+            </button>
+          </form>}
+        </Formik>
         <button type="button" className='btn bg-green-500 text-white' onClick={() => handleShowModal()}>Tạo danh mục</button>
       </div>
       <div className='w-full flex-1'>

@@ -76,7 +76,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: { categoryI
     return NextResponse.json({})
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 }
 
@@ -112,7 +112,7 @@ export const GET = async (req: NextRequest, { params }: { params: { categoryId: 
     return NextResponse.json(category);
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 
 }

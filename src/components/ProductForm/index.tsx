@@ -138,6 +138,7 @@ const ProductForm = (props: Props) => {
 
   const schema = yup.object().shape({
     name: yup.string().label('Tên').required(),
+    price: yup.string().label('Giá').required(),
   });
 
   const getInitialValues = (product?: ProductDetail): ProductValues => {
@@ -195,6 +196,7 @@ const ProductForm = (props: Props) => {
             onSubmit={submit}
             // validationSchema={schema}
             initialValues={getInitialValues(product)}
+            validationSchema={schema}
           >
             {({
               values,
@@ -214,7 +216,7 @@ const ProductForm = (props: Props) => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   errorMessage={errors.name}
-                  hasError={touched && !isBlank(errors.name)}
+                  hasError={touched.name && !isBlank(errors.name)}
                 />
                 <TextInput
                   label="Giá"
@@ -223,7 +225,7 @@ const ProductForm = (props: Props) => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   errorMessage={errors.price}
-                  hasError={touched && !isBlank(errors.price)}
+                  hasError={touched.price && !isBlank(errors.price)}
                 />
 
                 <CategoryPicker

@@ -41,6 +41,7 @@ const Promotion = (props: { promotionId?: string; }) => {
       page: page,
     }
   })
+
   // Sử dụng hook useRouter để lấy đối tượng router
   const route = useRouter();
   useEffect(() => {

@@ -29,14 +29,14 @@ import { useUserInfo } from '@/store/globalSWR';
 // };
 
 const OrderStatusTranslate: Record<string, string> = {
-  [ORDER_STATUS.NEW]: 'Đang xử lý',
+  [ORDER_STATUS.NEW]: 'Chờ xác nhận',
+  [ORDER_STATUS.CONFIRM]: 'Đã xác nhận',
+  [ORDER_STATUS.REJECT]: 'Từ chối',
+  [ORDER_STATUS.TRANSPORTED]: 'Đang vận chuyển',
+  [ORDER_STATUS.SUCCESS]: 'Giao hàng thành công',
+  [ORDER_STATUS.FAILED]: 'Giao hàng thất bại',
   [ORDER_STATUS.CANCELED]: 'Đã hủy',
   [ORDER_STATUS.REQUEST_CANCEL]: 'Yêu cầu hủy',
-  [ORDER_STATUS.CONFIRM]: 'Xác nhận',
-  [ORDER_STATUS.TRANSPORTED]: 'Đang vận chuyển',
-  [ORDER_STATUS.SUCCESS]: 'Thành công',
-  [ORDER_STATUS.FAILED]: 'Thất bại',
-  [ORDER_STATUS.REJECT]: 'Từ chối',
 };
 
 export interface List {

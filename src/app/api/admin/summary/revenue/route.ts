@@ -9,7 +9,7 @@ export const GET = async (req: NextRequest) => {
   }
 
   const fromDate = '2024-03-01';
-  const toDate = '2024-04-04';
+  const toDate = '2024-10-04';
 
   try {
     const query = `

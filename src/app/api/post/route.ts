@@ -10,11 +10,14 @@ export const GET = async (req: NextRequest) => {
   const url = new URL(req.url);
   const fetchCount = url.searchParams.get('fetchCount');
   const limit = url.searchParams.get('limit');
-  const searchKey = url.searchParams.get('searchKey') as string
+  let searchKey = url.searchParams.get('searchKey') as string
   // lấy từ link url api lấy giá trị page nếu bằng null thig gán bằng 0 và trừ 1
   let page = Number(url.searchParams.get('page') ?? 0) - 1;
   if (page < 0) {
     page = 0;
+  }
+  if(isBlank(searchKey)){
+    searchKey = ''
   }
   const key = `SELECT * FROM post
 WHERE title COLLATE utf8mb4_general_ci LIKE '%${searchKey}%' 
@@ -67,6 +70,6 @@ export const POST = async (req: NextRequest) => {
 
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 }

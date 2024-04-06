@@ -42,7 +42,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { userId: stri
 
     return NextResponse.json({ id: res.id })
   } catch (error) {
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 }
 

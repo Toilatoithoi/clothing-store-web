@@ -9,6 +9,8 @@ import ButtonCell, { Edit, Trash } from '../DataGrid/ButtonCell';
 import { uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
 import { integerFormatter } from '@/utils/grid';
+import { Formik } from 'formik';
+import TextInput from '../TextInput';
 
 const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
   const gridRef = useRef<DataGridHandle>();
@@ -19,6 +21,8 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
   });
   const componentId = useRef(uuid());
   const [modal, setModal] = useState<{ show?: boolean; data: any } | null>();
+  const filter = useRef<{ searchKey?: string }>()
+
   const { trigger } = useMutation<PaginationRes<Record<string, unknown>>>(
     '/api/admin/user',
     {
@@ -42,6 +46,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
       trigger({
         fetchCount: inDashboard ? 10 : FETCH_COUNT,
         page: page + 1,
+        searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
       });
     }
   };
@@ -114,13 +119,33 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
   return (
     <div className="h-full w-full flex flex-col gap-[1.6rem]">
       {!inDashboard && <div className="flex justify-between">
-        <button
-          type="button"
-          className="btn  bg-[#bc0517] text-white"
-          onClick={refreshData}
+        <Formik
+          initialValues={{ searchKey: '' }}
+          onSubmit={(values) => {
+            filter.current = values;
+            refreshData();
+          }}
         >
-          Tải lại
-        </button>
+          {({ values, handleSubmit, handleChange }) => <form
+            className='flex gap-4 items-center'
+            onSubmit={handleSubmit}>
+            <TextInput
+              inputClassName='h-[4rem]'
+              placeholder='Nhập từ khóa tìm kiếm...'
+              name='searchKey'
+              className='w-[20rem]'
+              onChange={handleChange}
+              value={values.searchKey}
+            />
+
+            <button
+              type="submit"
+              className="btn  bg-[#bc0517] text-white"
+            >
+              Tìm kiếm
+            </button>
+          </form>}
+        </Formik>
       </div>}
       <div className="w-full flex-1">
         <DataGrid

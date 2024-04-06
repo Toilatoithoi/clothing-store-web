@@ -20,7 +20,7 @@ const OrderSummary = () => {
         </span>`;
   }
 
-  console.log(orderSummary);
+  console.log({orderSummary});
   const options: Highcharts.Options = {
     title: {
       text: '',
@@ -70,9 +70,10 @@ const OrderSummary = () => {
         minSize: 10,
         showInLegend: true,
         data: [
-          ['Thành công', orderSummary?.success ?? 0],
-          ['Thất bại', orderSummary?.failed ?? 0],
+          ['Giao hàng thành công', orderSummary?.success ?? 0],
+          ['Giao hàng thất bại', orderSummary?.failed ?? 0],
           ['Đã hủy', orderSummary?.canceled ?? 0],
+          ['Từ chối', orderSummary?.reject ?? 0],
           [
             'Khác',
             (orderSummary?.total ?? 0) -

@@ -14,6 +14,8 @@ import { integerFormatter } from '@/utils/grid';
 import ProductForm from '../ProductForm';
 import ConfirmModal from '../ConfirmModal';
 import Loader from '../Loader';
+import { Formik } from 'formik';
+import TextInput from '../TextInput';
 
 const ProductStatusTranslate: Record<string, string> = {
   [PRODUCT_STATUS.DRAFT]: 'Nháp',
@@ -37,6 +39,8 @@ const ProductMgmt = () => {
     show?: boolean;
     data: any;
   } | null>();
+  const filter = useRef<{ searchKey?: string }>()
+
   const { trigger } = useMutation<PaginationRes<ProductRes>>('/api/product', {
     url: '/api/product',
     method: METHOD.GET,
@@ -78,6 +82,7 @@ const ProductMgmt = () => {
       trigger({
         fetchCount: FETCH_COUNT,
         page: page + 1,
+        searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
       });
     }
   };
@@ -198,13 +203,33 @@ const ProductMgmt = () => {
   return (
     <div className="h-full w-full flex flex-col gap-[1.6rem]">
       <div className="flex justify-between">
-        <button
-          type="button"
-          className="btn  bg-[#bc0517] text-white"
-          onClick={refreshData}
+        <Formik
+          initialValues={{ searchKey: '' }}
+          onSubmit={(values) => {
+            filter.current = values;
+            refreshData();
+          }}
         >
-          Tìm kiếm
-        </button>
+          {({ values, handleSubmit, handleChange }) => <form
+            className='flex gap-4 items-center'
+            onSubmit={handleSubmit}>
+            <TextInput
+              inputClassName='h-[4rem]'
+              placeholder='Nhập từ khóa tìm kiếm...'
+              name='searchKey'
+              className='w-[20rem]'
+              onChange={handleChange}
+              value={values.searchKey}
+            />
+
+            <button
+              type="submit"
+              className="btn  bg-[#bc0517] text-white"
+            >
+              Tìm kiếm
+            </button>
+          </form>}
+        </Formik>
         <button
           type="button"
           className="btn bg-green-500 text-white"
