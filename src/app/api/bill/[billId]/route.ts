@@ -64,6 +64,7 @@ export const PUT = async (
         { status: 403 }
       );
     }
+
     //TODO: nếu status là CANCEL thì tính toán lại stock và sold của product_model tương tự lúc tạo bill
     //TODO: vì hàng hoàn có thế bị hỏng nên xem xét thêm 1 param để có thể ignore việc cộng lại sản phẩm vào stock ( vẫn phải trừ đã sold)
     // update data vào hệ thống
@@ -80,7 +81,7 @@ export const PUT = async (
         },
       }),
       // cập nhật lại stock và sold
-      ...(body.status === ORDER_STATUS.CANCELED || body.status === ORDER_STATUS.FAILED || body.status === ORDER_STATUS.REJECT
+      ...(bill.status == ORDER_STATUS.SUCCESS && body.status === ORDER_STATUS.CANCELED || body.status === ORDER_STATUS.FAILED || body.status === ORDER_STATUS.REJECT
         ? [
           ...bill.bill_product.map((item: bill_product) =>
             prisma.product_model.update({
@@ -101,6 +102,23 @@ export const PUT = async (
           ),
         ]
         : []),
+        ...(body.status === ORDER_STATUS.CANCELED || body.status === ORDER_STATUS.FAILED || body.status === ORDER_STATUS.REJECT
+          ? [
+            ...bill.bill_product.map((item: bill_product) =>
+              prisma.product_model.update({
+                where: {
+                  id: item.product_model_id || 0,
+                },
+                data: {
+                  stock: {
+                    // tăng đi item.quantity
+                    increment: item.quantity,
+                  },
+                },
+              })
+            ),
+          ]
+          : []),
         ...(body.status === ORDER_STATUS.SUCCESS 
           ? [
             ...bill.bill_product.map((item: bill_product) =>
