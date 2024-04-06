@@ -80,7 +80,7 @@ export const PUT = async (
         },
       }),
       // cập nhật lại stock và sold
-      ...(body.status === ORDER_STATUS.CANCELED || body.status === ORDER_STATUS.FAILED
+      ...(body.status === ORDER_STATUS.CANCELED || body.status === ORDER_STATUS.FAILED || body.status === ORDER_STATUS.REJECT
         ? [
           ...bill.bill_product.map((item: bill_product) =>
             prisma.product_model.update({
