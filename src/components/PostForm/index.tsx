@@ -106,7 +106,6 @@ const PostForm = (props: Props) => {
       const postload: CreatePostReq = {
         title: values.title,
         content: values.content,
-        createAt: values.createAt ? (values.createAt.includes('T') ? values.createAt : values.createAt + 'T00:00:00.000Z') : '',
         sapo: values.sapo,
         image: image,
       };
@@ -130,7 +129,6 @@ const PostForm = (props: Props) => {
       const values: PostValues = {
         title: post.title,
         content: post.content,
-        createAt: post.createAt,
         sapo: post.sapo,
         fileConfig: post.image ? { image: post.image } : undefined
       };
@@ -187,18 +185,6 @@ const PostForm = (props: Props) => {
                     onBlur={handleBlur}
                     errorMessage={errors.title}
                     hasError={touched && !isBlank(errors.title)}
-                  />
-
-                  <TextInput
-                    label='Ngày tạo'
-                    value={values.createAt?.toString().split('T')[0]}
-                    className='w-[15rem]'
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    name="createAt"
-                    type='date'
-                    hasError={!isBlank(errors.createAt) && touched.createAt}
-                    errorMessage={errors.createAt}
                   />
                 </div>
                 <FieldContainer label="Tóm tắt" className="col-span-2">

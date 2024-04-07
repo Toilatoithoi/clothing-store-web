@@ -16,6 +16,8 @@ import OrderForm from './OrderForm';
 import { Formik } from 'formik';
 import TextInput from '../TextInput';
 import Dropdown from '../Dropdown';
+import { subMonths } from 'date-fns';
+import { formatDateToString } from '@/utils/datetime';
 
 const OrderStatusTranslate: Record<string, string> = {
   // [ORDER_STATUS.NEW]: 'Đang xử lý',
@@ -44,7 +46,7 @@ const OrderMgmt = () => {
     totalPage: 1,
   });
   const componentId = useRef(uuid());
-  const filter = useRef<{ searchKey?: string; status?: string }>()
+  const filter = useRef<{ searchKey?: string; status?: string; toDate?: string; fromDate?: string }>()
   const [modal, setModal] = useState<{ show?: boolean; data: any } | null>();
   const [modalDel, setModalDel] = useState<{
     show?: boolean;
@@ -77,7 +79,9 @@ const OrderMgmt = () => {
         searchKey: filter.current?.searchKey ? filter.current?.searchKey : '',
         ...!isBlank(filter.current?.status ?? '') && filter.current?.status !== 'ALL' && {
           status: filter.current?.status,
-        }
+        },
+        fromDate: filter.current?.fromDate,
+        toDate: filter.current?.toDate,
       });
     }
   };
@@ -175,7 +179,7 @@ const OrderMgmt = () => {
     <div className="h-full w-full flex flex-col gap-[1.6rem]">
       <div className="flex justify-between">
         <Formik
-          initialValues={{ searchKey: '', status: 'ALL' }}
+          initialValues={{ searchKey: '', status: 'ALL', fromDate: formatDateToString(subMonths(new Date(), 1), 'yyyy-MM-dd') || '', toDate: formatDateToString(new Date(), 'yyyy-MM-dd') || '' }}
           onSubmit={(values) => {
             filter.current = values;
             refreshData();
@@ -239,6 +243,27 @@ const OrderMgmt = () => {
               selected={values.status}
               onChange={(value) => setFieldValue('status', value)}
             />
+
+            <div className="flex gap-4">
+              <TextInput
+                label='Từ Ngày'
+                inputClassName='h-[4rem]'
+                name='fromDate'
+                className='w-[20rem]'
+                onChange={handleChange}
+                type='date'
+                value={values.fromDate as string}
+              />
+              <TextInput
+                label='Đến ngày'
+                inputClassName='h-[4rem]'
+                name='toDate'
+                className='w-[20rem]'
+                onChange={handleChange}
+                type='date'
+                value={values.toDate as string}
+              />
+            </div>
             <button
               type="submit"
               className="btn  bg-[#bc0517] text-white"

@@ -6,11 +6,13 @@ import { RestError, verifyToken } from '@/utils/service';
 import { INPUT_INVALID, INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 import { Prisma, bill_product, product_model } from '@prisma/client';
 import { FETCH_COUNT, ORDER_STATUS, ROLES } from '@/constants';
+import { formatStringToDate } from '@/utils/datetime';
+import { addDays } from 'date-fns';
 
 export const GET = async (req: NextRequest) => {
   const url = new URL(req.url);
-  const fromDate = url.searchParams.get('fromDate')?.toString();
-  const toDate = url.searchParams.get('toDate')?.toString();
+  const fromDate = formatStringToDate(url.searchParams.get('fromDate')?.toString(), 'yyyy-MM-dd');
+  const toDate = formatStringToDate(url.searchParams.get('toDate')?.toString(), 'yyyy-MM-dd');
   const username = url.searchParams.get('username')?.toString();
   const status = url.searchParams.get('status')?.toString();
   const isMine = url.searchParams.get('isMine')?.toString() === 'true';
@@ -53,11 +55,12 @@ export const GET = async (req: NextRequest) => {
           }
         }),
         status,
-        // dùng gte, lte để filter theo from date, to date
-        // created_at: {
-        //   gte: firstDay,
-        //   lte: lastDay
-        // }
+        ...fromDate && toDate && {
+          created_at: {
+            gte: fromDate,
+            lte: addDays(toDate!, 1)
+          }
+        }
       },
     };
 

@@ -16,3 +16,9 @@ export const formatDateToString = (date: Date | null | undefined, formatOutput =
 
   return dateFns.format(date, formatOutput);
 };
+
+declare global {
+  var formatDateToString: (date: Date | null | undefined, formatOutput?: string) => string | null
+}
+
+globalThis.formatDateToString = formatDateToString
