@@ -47,7 +47,7 @@ const SearchBox = () => {
     // sau khi nhập xong một lúc mới thử hiện tìm kiếm để tránh tìm kiếm khi người ta chưa nhập xong
     timer.current = setTimeout(() => {
       console.log(key);
-      trigger({ searchKey: key, page: 1, fetchCount: FETCH_COUNT });
+      trigger({ searchKey: key, page: 1, fetchCount: FETCH_COUNT, isList: true });
       //search Theo key
     }, 500);
   };
@@ -59,6 +59,7 @@ const SearchBox = () => {
 
   // khi nhập xong chuyển qua cái khác
   const handleBlur = () => {
+    // do khi onBlur nó sẽ ẩn focus đi nên phải setTimeout không thì khi bấm vào sản phẩm muốn chọn sẽ bị ẩn luôn do khi onBlur là sẽ ẩn focus 
     setTimeout(() => {
       setIsFocus(false);
     }, 200);
