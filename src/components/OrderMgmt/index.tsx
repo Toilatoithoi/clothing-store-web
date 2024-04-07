@@ -90,13 +90,19 @@ const OrderMgmt = () => {
       minWidth: 150,
     },
     {
-      headerName: 'Tên',
+      headerName: 'Tài khoản',
+      field: 'user.username',
+      minWidth: 150,
+      flex: 1,
+    },
+    {
+      headerName: 'Tên người nhận',
       field: 'full_name',
       minWidth: 150,
       flex: 1,
     },
     {
-      headerName: 'Email',
+      headerName: 'Email người nhận',
       field: 'email',
       minWidth: 180,
     },

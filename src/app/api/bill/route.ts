@@ -79,6 +79,7 @@ export const GET = async (req: NextRequest) => {
           created_at: true,
           updated_at: true,
           total_price: true,
+          user: true,
           reason: true,
           bill_product: {
             select: {
