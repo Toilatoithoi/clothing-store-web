@@ -235,7 +235,7 @@ const ProductForm = (props: Props) => {
                   onChange={(value) => setFieldValue('categoryId', value)}
                 />
                 <FieldContainer label="Mô tả" className="col-span-2">
-                  <Editor />
+                  <Editor data={values.description} onChange={(data) => setFieldValue('description', data)} />
                 </FieldContainer>
 
                 <FieldContainer label="Kích thước" className="col-span-2">

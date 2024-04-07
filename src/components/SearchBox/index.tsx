@@ -84,7 +84,7 @@ const SearchBox = () => {
         </button>
       </form>
       {isFocus && data && data.items && (
-        <div className="absolute top-full left-0 w-full max-h-[40rem] overflow-y-scroll bg-white shadow-md mt-[0.8rem]">
+        <div className="absolute top-full left-0 w-full max-h-[40rem] overflow-y-scroll bg-white shadow-md mt-[0.8rem] z-10">
           {data.items.map((item) => (
             <Link
               href={`/product-detail/${item.id}`}

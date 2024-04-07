@@ -85,6 +85,7 @@ export const Menu = () => {
       orderBy: SORT_TYPE.TIME,
       priceMin: filter.price.min,
       priceMax: filter.price.max,
+      isList: true,
     }
   })
 
