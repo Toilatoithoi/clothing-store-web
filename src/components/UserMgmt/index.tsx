@@ -5,12 +5,15 @@ import { useMutation } from '@/store/custom';
 import React, { useRef, useState } from 'react';
 import ModalProvider from '../ModalProvider';
 import { ColDef, ColGroupDef } from 'ag-grid-community';
-import ButtonCell, { Edit, Trash } from '../DataGrid/ButtonCell';
+import ButtonCell, { Edit, Eye, Lock, Trash, Unlock } from '../DataGrid/ButtonCell';
 import { uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
 import { integerFormatter } from '@/utils/grid';
 import { Formik } from 'formik';
 import TextInput from '../TextInput';
+import ConfirmModal from '../ConfirmModal';
+import Loader from '../Loader';
+import ListBill from '@/app/(customer)/list-bill/page';
 
 const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
   const gridRef = useRef<DataGridHandle>();
@@ -21,6 +24,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
   });
   const componentId = useRef(uuid());
   const [modal, setModal] = useState<{ show?: boolean; data: any } | null>();
+  const [modalView, setModalView] = useState<{ show?: boolean; data: any } | null>();
   const filter = useRef<{ searchKey?: string }>()
 
   const { trigger } = useMutation<PaginationRes<Record<string, unknown>>>(
@@ -39,6 +43,21 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
     }
   );
 
+  const { trigger: updateUser } = useMutation('UPDATE_USER', {
+    url: '/api/admin/user',
+    method: METHOD.PUT,
+    loading: true,
+    componentId: componentId.current,
+    notification: {
+      title: 'Khóa tài khoản',
+      content: 'Mở khóa tài khoản thành công'
+    },
+    onSuccess() {
+      refreshData();
+      setModal(null)
+    }
+  })
+
   const requestData = () => {
     const { page, totalPage } = pagination.current;
     if (page < totalPage) {
@@ -46,7 +65,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
       trigger({
         fetchCount: inDashboard ? 10 : FETCH_COUNT,
         page: page + 1,
-        searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
+        searchKey: filter.current?.searchKey ? filter.current?.searchKey : '',
       });
     }
   };
@@ -60,7 +79,9 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
     gridRef.current?.api?.updateGridOptions({ rowData: [] });
     requestData();
   };
-
+  const handleShowModal = (data?: Record<string, string>) => {
+    setModal({ show: true, data });
+  };
   const columnDefs: Array<ColDef | ColGroupDef> = [
     {
       headerName: 'ID',
@@ -91,30 +112,50 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
       field: 'totalPrice',
       valueFormatter: integerFormatter,
     },
-    // {
-    //   headerName: '',
-    //   cellRenderer: ButtonCell,
-    //   maxWidth: 120,
-    //   cellRendererParams: {
-    //     buttons: [
-    //       {
-    //         render: Edit,
-    //         onClick: (data: any) => {
-    //           setModal({ show: true, data });
-    //         },
-    //       },
-    //     ],
-    //   },
-    // },
+    {
+      headerName: '',
+      cellRenderer: ButtonCell,
+      maxWidth: 120,
+      cellRendererParams: {
+        buttons: [
+          {
+            render: Lock,
+            onClick: handleShowModal,
+            hide: (data: any) => {
+              return data.is_lock
+            },
+
+          },
+          {
+            render: Unlock,
+            onClick: handleShowModal,
+            hide: (data: any) => {
+              return !data.is_lock
+            },
+          },
+          {
+            render: Eye,
+            onClick: (data: any) => {
+              setModalView({ show: true, data });
+            },
+          },
+        ],
+      },
+    },
   ];
 
   const handleCloseModal = () => {
     setModal(null);
   };
 
-  const handleShowModal = (data?: Record<string, string>) => {
-    setModal({ show: true, data });
-  };
+
+
+  const handleConfirmModal = () => {
+    updateUser({
+      id: modal?.data.id,
+      isLock: modal?.data.is_lock === 1 ? 0 : 1
+    })
+  }
 
   return (
     <div className="h-full w-full flex flex-col gap-[1.6rem]">
@@ -154,6 +195,43 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
           onGridReady={requestData}
         />
       </div>
+
+      <ModalProvider
+        show={modal?.show}
+        onHide={handleCloseModal}
+
+      >
+        <Loader id={componentId.current}>
+          <ConfirmModal
+            type='warning'
+            onConfirm={handleConfirmModal}
+            onCancel={handleCloseModal}
+            title={modal?.data.is_lock ? 'Mở khóa tài khoản' : 'Khóa tài khoản'}
+            content={modal?.data.is_lock ? 'Tài khoản sau khi bị khóa sẽ không thể đăng nhập và đặt đơn hàng. Bạn có chắc chắn muốn khóa tài khoản này không?' :
+              'Tài khoản sau khi mở khóa sẽ có thể đăng nhập và đặt đơn hàng. Bạn có chắc chắn muốn mở khóa tài khoản này không'
+            }
+          />
+        </Loader>
+      </ModalProvider>
+
+      <ModalProvider
+
+        show={modalView?.show}
+        onHide={() => setModalView(null)}
+      >
+        <div className='w-screen max-w-screen-lg'>
+          <ListBill username={modalView?.data.username} />
+          <div className="flex gap-2 h-[4rem]">
+            <button
+              type="submit"
+              className="btn-primary flex-1"
+              onClick={() => setModalView(null)}
+            >
+              Xác nhận
+            </button>
+          </div>
+        </div>
+      </ModalProvider>
     </div>
   );
 };

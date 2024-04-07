@@ -6,7 +6,7 @@ import React, { useRef, useState } from 'react';
 import ModalProvider from '../ModalProvider';
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 import ButtonCell, { Edit, Eye, Upload } from '../DataGrid/ButtonCell';
-import { uuid } from '@/utils';
+import { isBlank, uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
 import { ProductRes } from '@/interfaces/model';
 import { integerFormatter, timeFormatterFromTimestamp } from '@/utils/grid';
@@ -15,6 +15,7 @@ import BillDetail from '../BillDetail';
 import OrderForm from './OrderForm';
 import { Formik } from 'formik';
 import TextInput from '../TextInput';
+import Dropdown from '../Dropdown';
 
 const OrderStatusTranslate: Record<string, string> = {
   // [ORDER_STATUS.NEW]: 'Đang xử lý',
@@ -43,7 +44,7 @@ const OrderMgmt = () => {
     totalPage: 1,
   });
   const componentId = useRef(uuid());
-  const filter = useRef<{ searchKey?: string }>()
+  const filter = useRef<{ searchKey?: string; status?: string }>()
   const [modal, setModal] = useState<{ show?: boolean; data: any } | null>();
   const [modalDel, setModalDel] = useState<{
     show?: boolean;
@@ -73,7 +74,10 @@ const OrderMgmt = () => {
       trigger({
         fetchCount: FETCH_COUNT,
         page: page + 1,
-        searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
+        searchKey: filter.current?.searchKey ? filter.current?.searchKey : '',
+        ...!isBlank(filter.current?.status ?? '') && filter.current?.status !== 'ALL' && {
+          status: filter.current?.status,
+        }
       });
     }
   };
@@ -165,16 +169,17 @@ const OrderMgmt = () => {
     <div className="h-full w-full flex flex-col gap-[1.6rem]">
       <div className="flex justify-between">
         <Formik
-          initialValues={{ searchKey: '' }}
+          initialValues={{ searchKey: '', status: 'ALL' }}
           onSubmit={(values) => {
             filter.current = values;
             refreshData();
           }}
         >
-          {({ values, handleSubmit, handleChange }) => <form
-            className='flex gap-4 items-center'
+          {({ values, handleSubmit, handleChange, setFieldValue }) => <form
+            className='flex gap-8 items-end'
             onSubmit={handleSubmit}>
             <TextInput
+              label='Tìm kiếm'
               inputClassName='h-[4rem]'
               placeholder='Nhập từ khóa tìm kiếm...'
               name='searchKey'
@@ -183,6 +188,51 @@ const OrderMgmt = () => {
               value={values.searchKey}
             />
 
+            <Dropdown
+              label="Trạng thái"
+              inSearch
+              className='w-[20rem]'
+              options={[
+                {
+                  label: 'Tất cả',
+                  value: 'ALL',
+                },
+                {
+                  label: 'Chờ xác nhận',
+                  value: ORDER_STATUS.NEW,
+                },
+                {
+                  label: 'Đã xác nhận',
+                  value: ORDER_STATUS.CONFIRM,
+                },
+                {
+                  label: 'Từ chối',
+                  value: ORDER_STATUS.REJECT,
+                },
+                {
+                  label: 'Đang vận chuyển',
+                  value: ORDER_STATUS.TRANSPORTED,
+                },
+                {
+                  label: 'Giao hàng thành công',
+                  value: ORDER_STATUS.SUCCESS,
+                },
+                {
+                  label: 'Giao hàng thất bại',
+                  value: ORDER_STATUS.FAILED,
+                },
+                {
+                  label: 'Đã hủy',
+                  value: ORDER_STATUS.CANCELED,
+                },
+                {
+                  label: 'Yêu cầu hủy',
+                  value: ORDER_STATUS.REQUEST_CANCEL,
+                },
+              ]}
+              selected={values.status}
+              onChange={(value) => setFieldValue('status', value)}
+            />
             <button
               type="submit"
               className="btn  bg-[#bc0517] text-white"
@@ -203,7 +253,7 @@ const OrderMgmt = () => {
       <ModalProvider show={modal?.show} onHide={handleCloseModal}>
         <Loader id={componentId.current} className="w-screen max-w-screen-md">
           {modal?.data?.id && <BillDetail billId={modal?.data.id} />}
-          <div className="flex gap-2">
+          <div className="flex gap-2 h-[3.2rem]">
             <button
               type="submit"
               className="btn-primary flex-1"

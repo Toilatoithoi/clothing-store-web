@@ -18,7 +18,7 @@ export const GET = async (req: NextRequest) => {
   if (page < 0) {
     page = 0;
   }
-  if(isBlank(searchKey)){
+  if (isBlank(searchKey)) {
     searchKey = ''
   }
   const users = await prisma.$queryRawUnsafe(`SELECT user.*, subquery.totalPrice
@@ -46,3 +46,34 @@ export const GET = async (req: NextRequest) => {
     },
   });
 };
+
+
+
+export const PUT = async (req: NextRequest) => {
+  const data = await verifyToken(req);
+  if (data == null || data.role !== ROLES.ADMIN) {
+    return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 })
+  }
+  const body = await req.json();
+  const id = body.id;
+  const isLock = body.isLock;
+  const user = await prisma.user.findFirst({ where: { id } });
+
+
+
+  try {
+    await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        is_lock: isLock,
+      }
+    })
+  } catch (error) {
+    console.log(error)
+    return NextResponse.json({ code: 'INTERNAL_SERVER_ERROR' }, { status: 500 })
+  }
+
+  return NextResponse.json(user);
+}

@@ -21,15 +21,15 @@ export const GET = async (req: NextRequest) => {
   if (page < 0) {
     page = 0;
   }
-  if(isBlank(searchKey)){
+  if (isBlank(searchKey)) {
     searchKey = ''
   }
-  
+
   try {
     // input fromDate, toDate, status
     // verify token
     const data = await verifyToken(req);
-    if (data == null) {
+    if (data == null || data.is_lock) {
       return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 });
     }
 
@@ -48,9 +48,9 @@ export const GET = async (req: NextRequest) => {
           },
         }),
         ...((searchKey != '') && {
-          full_name:{
+          full_name: {
             contains: searchKey,
-          } 
+          }
         }),
         status,
         // dùng gte, lte để filter theo from date, to date
@@ -113,13 +113,13 @@ export const GET = async (req: NextRequest) => {
     });
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), { status: 500 });
   }
 };
 
 export const POST = async (req: NextRequest) => {
   const data = await verifyToken(req);
-  if (data == null) {
+  if (data == null || data.is_lock) {
     return NextResponse.json({ code: 'UNAUTHORIZED' }, { status: 400 });
   }
 

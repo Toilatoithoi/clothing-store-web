@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
 }
 
 datasource db {
@@ -20,6 +20,7 @@ model User {
   role        String    @default("CUSTOMER") @db.VarChar(255)
   created_at  DateTime? @default(now()) @db.Timestamp(0)
   updated_at  DateTime? @default(now()) @db.Timestamp(0)
+  is_lock     Int?      @db.TinyInt
   bill        bill[]
   cart        cart[]
 
@@ -49,19 +50,6 @@ model bill {
   @@index([user_id], map: "UserID")
 }
 
-model image_product {
-  id               Int       @id @default(autoincrement())
-  url              String    @db.VarChar(255)
-  product_id       Int
-  is_edit          Boolean?  @default(dbgenerated("(b'0')")) @db.Bit(1)
-  product_model_id Int?
-  created_at       DateTime? @default(now()) @db.Timestamp(0)
-  updated_at       DateTime? @default(now()) @db.Timestamp(0)
-  product          product   @relation(fields: [product_id], references: [id], onUpdate: Restrict, map: "image_product_ibfk_1")
-
-  @@index([product_id], map: "ProductID")
-}
-
 model post {
   id         Int       @id @default(autoincrement())
   title      String?   @db.VarChar(255)
@@ -82,7 +70,6 @@ model product {
   price         Float?
   created_at    DateTime?       @default(now()) @db.Timestamp(0)
   updated_at    DateTime?       @default(now()) @db.Timestamp(0)
-  image_product image_product[]
   category      category?       @relation(fields: [category_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_product_category")
   product_model product_model[]
 

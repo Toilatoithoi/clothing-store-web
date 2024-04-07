@@ -11,7 +11,7 @@ import ButtonCell, { Cancel, Eye, Upload } from '@/components/DataGrid/ButtonCel
 import { IPagination, PaginationRes } from '@/interfaces';
 import BillDetail from '@/components/BillDetail';
 import OrderForm from '@/components/OrderMgmt/OrderForm';
-import { uuid } from '@/utils';
+import { isBlank, uuid } from '@/utils';
 import { useMutation } from '@/store/custom';
 import { ProductRes } from '@/interfaces/model';
 import ModalProvider from '@/components/ModalProvider';
@@ -56,7 +56,7 @@ export interface List {
   id: number;
 }
 
-const ListBill = () => {
+const ListBill = ({ username }: { username?: string }) => {
   // điều hướng route
   const router = useRouter();
   const gridRef = useRef<DataGridHandle>();
@@ -100,8 +100,8 @@ const ListBill = () => {
       trigger({
         fetchCount: FETCH_COUNT,
         page: page + 1,
-        username: userInfo?.username,
-        isMine: true
+        username: username ?? userInfo?.username,
+        isMine: isBlank(username),
       });
     }
   };
@@ -156,6 +156,7 @@ const ListBill = () => {
       cellRenderer: ButtonCell,
       maxWidth: 120,
       pinned: 'right',
+      hide: !isBlank(username),
       cellRendererParams: {
         buttons: [
           {

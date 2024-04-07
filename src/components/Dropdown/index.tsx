@@ -15,6 +15,7 @@ export type DropdownProps = {
   className?: string;
   initial?: boolean;
   menuAlignRight?: boolean;
+  inSearch?: boolean;
 };
 
 interface DropdownOption {
@@ -67,7 +68,7 @@ const Dropdown = (props: DropdownProps) => {
       )}
       <Listbox value={selected} onChange={handleChange}>
         <div className="relative w-full">
-          <Listbox.Button className={`h-[3.2rem] w-full px-[0.8rem] flex items-center justify-between border
+          <Listbox.Button className={`${props.inSearch ? 'h-[4rem]' : 'h-[3.2rem]'}  w-full px-[0.8rem] flex items-center justify-between border
             border-gray-300 outline-none focus:border-[#052abc]
             ${props.hasError ? 'border-red-500' : ''}
            `}>
@@ -95,7 +96,7 @@ const Dropdown = (props: DropdownProps) => {
                 <Listbox.Option
                   key={idx}
                   className={({ active }) =>
-                    `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active
+                    `relative cursor-pointer flex items-center h-[3rem] select-none  pl-10 pr-4 ${active
                       ? 'bg-slate-200 text-primary-900'
                       : 'text-gray-900'
                     }`
@@ -105,7 +106,7 @@ const Dropdown = (props: DropdownProps) => {
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block text-[1.4rem] truncate ${selected ? 'font-medium ' : 'font-normal'
+                        className={` text-[1.4rem] h-full flex items-center truncate ${selected ? 'font-medium ' : 'font-normal'
                           }`}
                       >
                         {option.label}

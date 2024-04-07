@@ -31,7 +31,17 @@ export const POST = async (req: NextRequest) => {
       }
     );
   }
-
+  if (user.is_lock) {
+    return NextResponse.json(
+      {
+        code: 'USER_LOCKED',
+        message: 'Tài khoản của bạn đã bị khóa',
+      },
+      {
+        status: 404,
+      }
+    );
+  }
   // check password
   const currPassword = user.password;
   const comparePassword = hashPassword(body.password);

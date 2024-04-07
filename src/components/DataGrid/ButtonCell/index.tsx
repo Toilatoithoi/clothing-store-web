@@ -4,6 +4,8 @@ import TrashIcon from '@/assets/svg/trash.svg';
 import EditIcon from '@/assets/svg/edit.svg';
 import UploadIcon from '@/assets/svg/upload.svg';
 import EyeIcon from '@/assets/svg/eye.svg';
+import LockIcon from '@/assets/svg/lock.svg';
+import UnlockIcon from '@/assets/svg/unlock.svg';
 interface ButtonCell extends ICellRendererParams {
   buttons?: Array<{
     render: React.FunctionComponent<{ onClick(): void; className?: string }>;
@@ -13,7 +15,7 @@ interface ButtonCell extends ICellRendererParams {
 }
 const ButtonCell = (props: ButtonCell) => {
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 h-full  items-center">
       {props.buttons?.map((item, idx) => {
         if (item.hide?.(props.data)) {
           return null;
@@ -87,9 +89,31 @@ export const Eye = (props: { onClick(): void }) => {
     <div
       onClick={props.onClick}
       title="Xem"
-      className="bg-pink-200 hover:opacity-80 text-pink-500 w-[3.4rem] h-[3.4rem] flex items-center justify-center rounded-md"
+      className="bg-yellow-200 hover:opacity-80 text-yellow-500 w-[3.4rem] h-[3.4rem] flex items-center justify-center rounded-md"
     >
       <EyeIcon className="hover:cursor-pointer" />
+    </div>
+  );
+};
+export const Lock = (props: { onClick(): void }) => {
+  return (
+    <div
+      onClick={props.onClick}
+      title="Khóa"
+      className="bg-pink-200 hover:opacity-80 text-pink-500 w-[3.4rem] h-[3.4rem] flex items-center justify-center rounded-md"
+    >
+      <LockIcon className="hover:cursor-pointer" />
+    </div>
+  );
+};
+export const Unlock = (props: { onClick(): void }) => {
+  return (
+    <div
+      onClick={props.onClick}
+      title="Mở khóa"
+      className="bg-green-200 hover:opacity-80 text-green-500 w-[3.4rem] h-[3.4rem] flex items-center justify-center rounded-md"
+    >
+      <UnlockIcon className="hover:cursor-pointer" />
     </div>
   );
 };
