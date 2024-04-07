@@ -92,39 +92,39 @@ const OrderForm = (props: Props) => {
               label="Trạng thái"
               options={[
                 {
-                  label: 'Mới tạo',
+                  label: 'Chờ xác nhận',
                   value: ORDER_STATUS.NEW,
                   disabled: true,
                 },
                 {
-                  label: 'Đã hủy',
-                  value: ORDER_STATUS.CANCELED,
-                },
-                {
-                  label: 'Xác nhận',
+                  label: 'Đã xác nhận',
                   value: ORDER_STATUS.CONFIRM,
-                },
-                {
-                  label: 'Thất bại',
-                  value: ORDER_STATUS.FAILED,
                 },
                 {
                   label: 'Từ chối',
                   value: ORDER_STATUS.REJECT,
                 },
                 {
-                  label: 'Yêu cầu hủy',
-                  value: ORDER_STATUS.REQUEST_CANCEL,
-                  disabled: true,
-                },
-                {
-                  label: 'Thành công',
-                  value: ORDER_STATUS.SUCCESS,
-                },
-                {
                   label: 'Đang vận chuyển',
                   value: ORDER_STATUS.TRANSPORTED,
                 },
+                {
+                  label: 'Giao hàng thành công',
+                  value: ORDER_STATUS.SUCCESS,
+                },
+                {
+                  label: 'Giao hàng thất bại',
+                  value: ORDER_STATUS.FAILED,
+                }, 
+                {
+                  label: 'Đã hủy',
+                  value: ORDER_STATUS.CANCELED,
+                },  
+                {
+                  label: 'Yêu cầu hủy',
+                  value: ORDER_STATUS.REQUEST_CANCEL,
+                  disabled: true,
+                },      
               ]}
               selected={values.status}
               onChange={(value) => setFieldValue('status', value)}

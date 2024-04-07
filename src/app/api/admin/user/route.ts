@@ -3,6 +3,7 @@ import { verifyToken } from '@/utils/service';
 import { Prisma } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { isBlank } from '@/utils';
 
 export const GET = async (req: NextRequest) => {
   const user = await verifyToken(req);
@@ -13,10 +14,13 @@ export const GET = async (req: NextRequest) => {
 
   const fetchCount = Number(url.searchParams.get('fetchCount')); // default 8 bản ghi
   let page = Number(url.searchParams.get('page') ?? 0) - 1;
+  let searchKey = url.searchParams.get('searchKey') as string
   if (page < 0) {
     page = 0;
   }
-
+  if(isBlank(searchKey)){
+    searchKey = ''
+  }
   const users = await prisma.$queryRawUnsafe(`SELECT user.*, subquery.totalPrice
   FROM user
   LEFT JOIN (
@@ -25,6 +29,7 @@ export const GET = async (req: NextRequest) => {
       WHERE status = 'SUCCESS'
       GROUP BY user_id
   ) AS subquery ON user.id = subquery.user_id
+  WHERE name COLLATE utf8mb4_general_ci LIKE '%${searchKey}%' 
   ORDER BY subquery.totalPrice DESC
   LIMIT ${fetchCount} OFFSET  ${Number(page ?? 0) * Number(fetchCount)}
   ;`)

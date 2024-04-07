@@ -8,13 +8,25 @@ import { group } from 'console';
 export const GET = async (req: NextRequest) => {
   try {
     const searchParams = new URL(req.url).searchParams;
+    let searchKey = searchParams.get('searchKey') as string
     const level = searchParams.get('level');
+    if(isBlank(searchKey)){
+      searchKey = ''
+    }
     const category = await prisma.category.findMany({
       ...(!isBlank(level) && {
         where: {
           level: Number(level),
         },
       }),
+      ...(searchKey != '' && {
+        where: {
+          name:{
+            contains: searchKey
+          }
+        },
+      }),
+      
       orderBy: {
         name: 'desc'
       },
@@ -23,7 +35,7 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json(category);
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 };
 

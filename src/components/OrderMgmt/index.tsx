@@ -13,16 +13,26 @@ import { integerFormatter, timeFormatterFromTimestamp } from '@/utils/grid';
 import Loader from '../Loader';
 import BillDetail from '../BillDetail';
 import OrderForm from './OrderForm';
+import { Formik } from 'formik';
+import TextInput from '../TextInput';
 
 const OrderStatusTranslate: Record<string, string> = {
-  [ORDER_STATUS.NEW]: 'Đang xử lý',
+  // [ORDER_STATUS.NEW]: 'Đang xử lý',
+  // [ORDER_STATUS.CANCELED]: 'Đã hủy',
+  // [ORDER_STATUS.REQUEST_CANCEL]: 'Yêu cầu hủy',
+  // [ORDER_STATUS.CONFIRM]: 'Xác nhận',
+  // [ORDER_STATUS.TRANSPORTED]: 'Đang vận chuyển',
+  // [ORDER_STATUS.SUCCESS]: 'Thành công',
+  // [ORDER_STATUS.FAILED]: 'Thất bại',
+  // [ORDER_STATUS.REJECT]: 'Từ chối',
+  [ORDER_STATUS.NEW]: 'Chờ xác nhận',
+  [ORDER_STATUS.CONFIRM]: 'Đã xác nhận',
+  [ORDER_STATUS.REJECT]: 'Từ chối',
+  [ORDER_STATUS.TRANSPORTED]: 'Đang vận chuyển',
+  [ORDER_STATUS.SUCCESS]: 'Giao hàng thành công',
+  [ORDER_STATUS.FAILED]: 'Giao hàng thất bại',
   [ORDER_STATUS.CANCELED]: 'Đã hủy',
   [ORDER_STATUS.REQUEST_CANCEL]: 'Yêu cầu hủy',
-  [ORDER_STATUS.CONFIRM]: 'Xác nhận',
-  [ORDER_STATUS.TRANSPORTED]: 'Đang vận chuyển',
-  [ORDER_STATUS.SUCCESS]: 'Thành công',
-  [ORDER_STATUS.FAILED]: 'Thất bại',
-  [ORDER_STATUS.REJECT]: 'Từ chối',
 };
 
 const OrderMgmt = () => {
@@ -33,6 +43,7 @@ const OrderMgmt = () => {
     totalPage: 1,
   });
   const componentId = useRef(uuid());
+  const filter = useRef<{ searchKey?: string }>()
   const [modal, setModal] = useState<{ show?: boolean; data: any } | null>();
   const [modalDel, setModalDel] = useState<{
     show?: boolean;
@@ -62,6 +73,7 @@ const OrderMgmt = () => {
       trigger({
         fetchCount: FETCH_COUNT,
         page: page + 1,
+        searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
       });
     }
   };
@@ -152,13 +164,33 @@ const OrderMgmt = () => {
   return (
     <div className="h-full w-full flex flex-col gap-[1.6rem]">
       <div className="flex justify-between">
-        <button
-          type="button"
-          className="btn  bg-[#bc0517] text-white"
-          onClick={refreshData}
+        <Formik
+          initialValues={{ searchKey: '' }}
+          onSubmit={(values) => {
+            filter.current = values;
+            refreshData();
+          }}
         >
-          Tìm kiếm
-        </button>
+          {({ values, handleSubmit, handleChange }) => <form
+            className='flex gap-4 items-center'
+            onSubmit={handleSubmit}>
+            <TextInput
+              inputClassName='h-[4rem]'
+              placeholder='Nhập từ khóa tìm kiếm...'
+              name='searchKey'
+              className='w-[20rem]'
+              onChange={handleChange}
+              value={values.searchKey}
+            />
+
+            <button
+              type="submit"
+              className="btn  bg-[#bc0517] text-white"
+            >
+              Tìm kiếm
+            </button>
+          </form>}
+        </Formik>
       </div>
       <div className="w-full flex-1">
         <DataGrid

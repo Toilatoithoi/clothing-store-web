@@ -86,6 +86,6 @@ export const GET = async (
     return NextResponse.json(product);
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 };

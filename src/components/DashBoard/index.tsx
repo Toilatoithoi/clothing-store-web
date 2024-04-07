@@ -31,7 +31,7 @@ const Dashboard = () => {
           <div className="h-[1rem] bg-red-400 w-full"></div>
           <div className="flex flex-col w-full items-center p-2 gap-2">
             <div className="text-[1.8rem] flex gap-2 items-center">
-              Tổng lượt bán
+              Tổng sản phẩm bán thành công
             </div>
             <div className="font-bold text-[2.4rem]">
               {formatNumber(summary?.count?.sold ?? 0)}
@@ -42,7 +42,7 @@ const Dashboard = () => {
           <div className="h-[1rem] bg-yellow-400 w-full"></div>
           <div className="flex flex-col w-full items-center p-2 gap-2">
             <div className="text-[1.8rem] flex gap-2 items-center">
-              Tổng đơn hàng
+              Tổng đơn hàng thành công
             </div>
             <div className="font-bold text-[2.4rem]">
               {formatNumber(summary?.count?.bill ?? 0)}

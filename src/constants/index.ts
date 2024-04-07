@@ -37,7 +37,7 @@ export enum ORDER_STATUS {
   CONFIRM = 'CONFIRM', // Đã xác nhận, chuẩn bị hàng 
   REJECT = 'REJECT', // Từ chối -> lý do (hết hàng ...)
   TRANSPORTED = 'TRANSPORTED',// đang vận chuyển -> không được phép hủy sửa
-  SUCCESS = 'SUCCESS', // iao hàng thành công
+  SUCCESS = 'SUCCESS', // Giao hàng thành công
   FAILED = 'FAILED', //Giao hàng thất bại -> hàng hỏng, khách hàng bom ....
   CANCELED = 'CANCELED', // hủy -> lý do 
   REQUEST_CANCEL = 'REQUEST_CANCEL' //yêu cầu hủy -> lý do 

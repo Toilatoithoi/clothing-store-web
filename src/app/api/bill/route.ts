@@ -15,10 +15,16 @@ export const GET = async (req: NextRequest) => {
   const status = url.searchParams.get('status')?.toString();
   const isMine = url.searchParams.get('isMine')?.toString() === 'true';
   const fetchCount = Number(url.searchParams.get('fetchCount')) || FETCH_COUNT; // default 8 bản ghi
+  let searchKey = url.searchParams.get('searchKey') as string
+
   let page = Number(url.searchParams.get('page') ?? 0) - 1;
   if (page < 0) {
     page = 0;
   }
+  if(isBlank(searchKey)){
+    searchKey = ''
+  }
+  
   try {
     // input fromDate, toDate, status
     // verify token
@@ -40,6 +46,11 @@ export const GET = async (req: NextRequest) => {
           user: {
             username: data.username,
           },
+        }),
+        ...((searchKey != '') && {
+          full_name:{
+            contains: searchKey,
+          } 
         }),
         status,
         // dùng gte, lte để filter theo from date, to date
@@ -102,7 +113,7 @@ export const GET = async (req: NextRequest) => {
     });
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 };
 
@@ -185,10 +196,6 @@ export const POST = async (req: NextRequest) => {
             id: item.product_model_id || 0,
           },
           data: {
-            sold: {
-              // công thêm item.quantity
-              increment: item.quantity,
-            },
             stock: {
               // trừ đi item.quantity
               decrement: item.quantity,

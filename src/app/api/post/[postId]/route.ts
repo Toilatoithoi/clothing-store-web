@@ -3,6 +3,7 @@ import prisma from '@/lib/db';
 import { CreatePostReq } from '@/interfaces/request';
 import { RestError } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
+import { isBlank } from '@/utils';
 
 export const PUT = async (req: NextRequest, { params }: { params: { postId: string; } }) => {
   const id = Number(params.postId);
@@ -32,7 +33,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { postId: stri
     return NextResponse.json({ id: res.id })
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 }
 
@@ -51,7 +52,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: { postId: s
     return NextResponse.json({})
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 }
 
@@ -59,7 +60,15 @@ export const GET = async (req: NextRequest, { params }: { params: { postId: stri
   const id = Number(params.postId);
   try {
     let post;
-    post = await prisma.post.findFirst({ where: { id } });
+    post = await prisma.post.findFirst(
+      { 
+        ...(id && id != 0 && {
+          where: {
+            id
+          },
+        }),
+      }
+    );
     // lây thông tin post trên db -> nếu mà không có thông tin post -> thông báo lỗi post not exist
     if (post == null) {
       return NextResponse.json({
@@ -70,7 +79,7 @@ export const GET = async (req: NextRequest, { params }: { params: { postId: stri
     return NextResponse.json(post);
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 
 }

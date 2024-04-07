@@ -57,7 +57,7 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json(res);
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 }
 
@@ -106,7 +106,7 @@ export const POST = async (req: NextRequest) => {
 
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 }
 
@@ -128,6 +128,6 @@ export const PUT = async (req: NextRequest) => {
 
   } catch (error) {
     console.log({ error })
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 }

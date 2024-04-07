@@ -64,6 +64,7 @@ export const PUT = async (
         { status: 403 }
       );
     }
+
     //TODO: nếu status là CANCEL thì tính toán lại stock và sold của product_model tương tự lúc tạo bill
     //TODO: vì hàng hoàn có thế bị hỏng nên xem xét thêm 1 param để có thể ignore việc cộng lại sản phẩm vào stock ( vẫn phải trừ đã sold)
     // update data vào hệ thống
@@ -80,7 +81,8 @@ export const PUT = async (
         },
       }),
       // cập nhật lại stock và sold
-      ...(body.status === ORDER_STATUS.CANCELED
+      // khi từ trạng thái Giao hàng thành công -> Đã hủy, Giao hàng thất bại, Từ chối thì số hàng đã bán sẽ giảm, số hàng trong kho sẽ tăng
+      ...(bill.status === ORDER_STATUS.SUCCESS && body.status === ORDER_STATUS.CANCELED || body.status === ORDER_STATUS.FAILED || body.status === ORDER_STATUS.REJECT
         ? [
           ...bill.bill_product.map((item: bill_product) =>
             prisma.product_model.update({
@@ -89,11 +91,11 @@ export const PUT = async (
               },
               data: {
                 sold: {
-                  // công thêm item.quantity
+                  // giảm thêm item.quantity
                   decrement: item.quantity,
                 },
                 stock: {
-                  // trừ đi item.quantity
+                  // tăng đi item.quantity
                   increment: item.quantity,
                 },
               },
@@ -101,11 +103,87 @@ export const PUT = async (
           ),
         ]
         : []),
+        // khi từ trạng thái Giao hàng thành công -> Chờ xác nhận, Đã xác nhận, Đang vận chuyển thì số hàng đã bán sẽ giảm
+        ...(bill.status === ORDER_STATUS.SUCCESS && body.status === ORDER_STATUS.NEW || body.status === ORDER_STATUS.CONFIRM || body.status === ORDER_STATUS.TRANSPORTED 
+          ? [
+            ...bill.bill_product.map((item: bill_product) =>
+              prisma.product_model.update({
+                where: {
+                  id: item.product_model_id || 0,
+                },
+                data: {
+                  sold: {
+                    // giảm thêm item.quantity
+                    decrement: item.quantity,
+                  }
+                },
+              })
+            ),
+          ]
+          : []),
+        // khi từ trạng thái Chờ xác nhận, Đã xác nhận, Đang vận chuyển -> Đã hủy, Giao hàng thất bại, Từ chối thì số hàng trong kho sẽ tăng  
+        ...(bill.status !== ORDER_STATUS.SUCCESS && body.status === ORDER_STATUS.CANCELED || body.status === ORDER_STATUS.FAILED || body.status === ORDER_STATUS.REJECT
+          ? [
+            ...bill.bill_product.map((item: bill_product) =>
+              prisma.product_model.update({
+                where: {
+                  id: item.product_model_id || 0,
+                },
+                data: {
+                  stock: {
+                    // tăng đi item.quantity
+                    increment: item.quantity,
+                  },
+                },
+              })
+            ),
+          ]
+          : []),
+        // khi từ trạng thái Chờ xác nhận, Đã xác nhận, Đang vận chuyển -> Giao hàng thành công thì số hàng đã bán sẽ tăng  
+        ...(bill.status === ORDER_STATUS.NEW || bill.status === ORDER_STATUS.CONFIRM || bill.status === ORDER_STATUS.TRANSPORTED && body.status === ORDER_STATUS.SUCCESS 
+          ? [
+            ...bill.bill_product.map((item: bill_product) =>
+              prisma.product_model.update({
+                where: {
+                  id: item.product_model_id || 0,
+                },
+                data: {
+                  sold: {
+                    // cộng thêm item.quantity
+                    increment: item.quantity,
+                  },
+                },
+              })
+            ),
+          ]
+          : []),
+          // khi từ trạng thái Đã hủy, Giao hàng thất bại, Từ chối -> Giao hàng thành công thì số hàng đã bán sẽ tăng, số hàng trong kho sẽ giảm
+          ...(bill.status === ORDER_STATUS.CANCELED || bill.status === ORDER_STATUS.FAILED || bill.status === ORDER_STATUS.REJECT && body.status === ORDER_STATUS.SUCCESS 
+            ? [
+              ...bill.bill_product.map((item: bill_product) =>
+                prisma.product_model.update({
+                  where: {
+                    id: item.product_model_id || 0,
+                  },
+                  data: {
+                    sold: {
+                      // cộng thêm item.quantity
+                      increment: item.quantity,
+                    },
+                    stock: {
+                      // tăng đi item.quantity
+                      decrement: item.quantity,
+                    },
+                  },
+                })
+              ),
+            ]
+            : []),
     ]);
     return NextResponse.json({ updateBill });
   } catch (error) {
     console.log({ error });
-    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR));
+    return NextResponse.json(new RestError(INTERNAL_SERVER_ERROR), {status: 500});
   }
 };
 

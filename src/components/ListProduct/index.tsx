@@ -41,7 +41,8 @@ const ListProduct = (props: { categoryId?: string; }) => {
       priceMin: filter.price.min,
       priceMax: filter.price.max,
       // khi truyền filterCategories sử dụng một kĩ thuật join để tạo chuỗi là các category con
-      filterCategories: filter.categories.join('|')
+      filterCategories: filter.categories.join('|'),
+      isList: true,
     }
   })
 
