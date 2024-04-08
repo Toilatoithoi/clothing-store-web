@@ -5,6 +5,7 @@ import UploadIcon from '@/assets/svg/upload.svg';
 import './style.scss';
 
 interface ImageUploaderProps {
+  // khi onChange để set file ra ngoài
   onChange?: (file?: File | null) => void;
   // value?: string; // linkImage to edit;
   initImage?: string | null;
@@ -12,21 +13,23 @@ interface ImageUploaderProps {
   aspectRatio?: string;
 }
 
-// ???
 const ImageUploader = (props: ImageUploaderProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState(props.initImage ?? '');
 
   const handleChooseFile = () => {
+    // handleChooseFile chỉ đến input
     inputRef.current?.click();
   };
 
   const handleFileChanged: ChangeEventHandler<HTMLInputElement> = (event) => {
     event.preventDefault();
+    // lấy ra được file
     const files = event.target.files;
     if (files) {
       const reader = new FileReader();
       reader.onload = () => {
+        // khi nó loading sẽ trả về string base 64 url trả về image để render lên
         setImage(reader.result as string);
       };
       reader.readAsDataURL(files[0]);
@@ -44,6 +47,7 @@ const ImageUploader = (props: ImageUploaderProps) => {
         className={`banner-uploader group relative w-full flex items-center justify-center aspect-[230/290]`}
       >
         {image ? (
+          // render ảnh tải lên
           <Image
             width={400}
             height={400}
@@ -55,6 +59,7 @@ const ImageUploader = (props: ImageUploaderProps) => {
         ) : (
           <div className="banner-placeholder" onClick={handleChooseFile}>
             <div className="icon cursor-pointer">
+              {/* khi click vào uploadIcon thì sẽ gọi đến thẻ input qua handleChooseFile*/}
               <UploadIcon className="text-[var(--primary)]" />
             </div>
           </div>
@@ -64,6 +69,8 @@ const ImageUploader = (props: ImageUploaderProps) => {
             <UploadIcon className="text-[var(--primary)]" />
           </div>
         </div>
+        {/* ẩn đi */}
+        {/* mở ra chọn file */}
         <input
           className="hidden"
           ref={inputRef}

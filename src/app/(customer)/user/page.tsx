@@ -69,7 +69,7 @@ const User = () => {
   //   method: METHOD.GET
   // })
 
-  const { data, updateToUser } = useUser({})
+  const { data, updateToUser } = useUser({componentId: componentId.current})
 
 
   useEffect(() => {

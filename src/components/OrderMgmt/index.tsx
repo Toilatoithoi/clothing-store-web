@@ -96,7 +96,7 @@ const OrderMgmt = () => {
     {
       headerName: 'Tài khoản',
       field: 'user.username',
-      minWidth: 150,
+      minWidth: 180,
       flex: 1,
     },
     {

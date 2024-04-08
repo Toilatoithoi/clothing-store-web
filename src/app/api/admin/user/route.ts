@@ -21,6 +21,9 @@ export const GET = async (req: NextRequest) => {
   if (isBlank(searchKey)) {
     searchKey = ''
   }
+  // queryRawUnsafe sử dụng để dùng câu lệnh sql thuần
+  // limit là số bản ghi sẽ lấy
+  // offset là số bản ghi bỏ qua
   const users = await prisma.$queryRawUnsafe(`SELECT user.*, subquery.totalPrice
   FROM user
   LEFT JOIN (

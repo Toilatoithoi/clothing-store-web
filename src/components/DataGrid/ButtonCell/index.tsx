@@ -1,6 +1,7 @@
 import { ICellRendererParams } from 'ag-grid-community';
 import React from 'react';
 import TrashIcon from '@/assets/svg/trash.svg';
+import CancelIcon from '@/assets/svg/x.svg';
 import EditIcon from '@/assets/svg/edit.svg';
 import UploadIcon from '@/assets/svg/upload.svg';
 import EyeIcon from '@/assets/svg/eye.svg';
@@ -55,7 +56,7 @@ export const Cancel = (props: { onClick(): void }) => {
       title="Huỷ đơn"
       className="bg-red-200 hover:opacity-80 text-red-500 w-[3.4rem] h-[3.4rem] flex items-center justify-center rounded-md"
     >
-      <TrashIcon className="hover:cursor-pointer" />
+      <CancelIcon className="hover:cursor-pointer" />
     </div>
   );
 };

@@ -15,7 +15,7 @@ import { formatDateToString } from '@/utils/datetime';
 export interface Product {
   name: string;
   quantity: number;
-  size: number;
+  size: string;
   color: string;
   price: string;
   image: string;
@@ -27,6 +27,7 @@ const BillDetail = (props: { billId: string }) => {
     url: `/api/bill/${props.billId}`,
     method: METHOD.GET,
   });
+  
   const ImageRenderer = ({ data }: ICellRendererParams) => {
     return (
       <Image
@@ -40,7 +41,7 @@ const BillDetail = (props: { billId: string }) => {
       />
     );
   };
-  console.log({ data });
+
   const router = useRouter();
   const [summary, setSummary] = useState(0);
   const [rowData, setRowData] = useState<Product[]>([]);
@@ -75,21 +76,21 @@ const BillDetail = (props: { billId: string }) => {
     if (data) {
       data.bill_product.forEach((product) => {
         row.push({
-          image: product.product_model.image,
-          name: product.product_model?.product.name,
-          size: product.product_model.size,
-          color: product.product_model.color,
+          image: product.image,
+          name: product.product_name,
+          size: product.size,
+          color: product.color,
           quantity: product.quantity,
           price:
-            formatNumber(product.product_model.price).toString() + ' ' + 'VND',
+            formatNumber(product.price).toString() + ' ' + 'VND',
           buy:
             formatNumber(
-              product.product_model.price * product.quantity
+              product.price * product.quantity
             ).toString() +
             ' ' +
             'VND',
         });
-        total = Number(total + product.product_model.price * product.quantity);
+        total = Number(data.total_price);
       });
       setSummary(total);
     } else {

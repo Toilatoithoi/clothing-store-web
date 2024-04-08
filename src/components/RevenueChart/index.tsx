@@ -11,7 +11,7 @@ import { subMonths } from 'date-fns';
 
 const RevenueChart = (props:{toDate?: string; fromDate?: string }) => {
 
-  const { data } = useSWRWrapper<{ ti: string, sum: number }[]>('/api/admin/summary/revenue', {
+  const { data } = useSWRWrapper<{ ti: string, sum: number }[]>(`/api/admin/summary/revenue?fromDate=${props.fromDate}&toDate=${props.toDate}`, {
     url: '/api/admin/summary/revenue',
     method: METHOD.GET,
     params: {

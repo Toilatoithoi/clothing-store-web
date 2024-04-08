@@ -87,6 +87,7 @@ const ProductMgmt = () => {
     // có totalPage thì nếu check page bé hơn totalPage thì mới query
     const { page, totalPage } = pagination.current;
     if (page < totalPage) {
+      // trước khi query thì showLoadingOverlay để cho người ta biết không thao tác 
       gridRef.current?.api?.showLoadingOverlay();
       // query data truyền page hiện tại và fetchCount
       trigger({
@@ -143,9 +144,12 @@ const ProductMgmt = () => {
       maxWidth: 180,
       pinned: 'right',
       cellRendererParams: {
+        // danh sách các button
         buttons: [
           {
+            // render ra cái gì
             render: Edit,
+            // khi onClick
             // data là dữ liệu của cả hàng cell 
             onClick: (data: any) => {
               setModal({ show: true, data });
@@ -163,6 +167,7 @@ const ProductMgmt = () => {
             onClick: (data: any) => {
               setModalPub({ show: true, data });
             },
+            // khi ẩn
             hide(data: Record<string, unknown>) {
               return data.status !== 'DRAFT';
             },
@@ -248,6 +253,7 @@ const ProductMgmt = () => {
         </button>
       </div>
       <div className="w-full flex-1">
+        {/* lúc grid được load lên sẽ chạy requestData */}
         <DataGrid
           ref={gridRef}
           columnDefs={columnDefs}

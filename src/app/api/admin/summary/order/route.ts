@@ -11,6 +11,8 @@ export const GET = async (req: NextRequest) => {
   const order = await prisma.bill.findMany({ select: { status: true } });
 
   const summary = order.reduce(
+    // prev là giá trị tích luỹ
+    // curr la giá trị hiện tại
     (prev, curr) => {
       const result = { ...prev };
       if (curr.status === ORDER_STATUS.SUCCESS) {

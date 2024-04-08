@@ -214,6 +214,7 @@ export const GET = async (
         address: true,
         note: true,
         created_at: true,
+        total_price: true,
         user: {
           select: {
             name: true,
@@ -226,19 +227,24 @@ export const GET = async (
         full_name: true,
         bill_product: {
           select: {
-            product_model: {
-              select: {
-                product: {
-                  select: {
-                    name: true,
-                  },
-                },
-                price: true,
-                size: true,
-                color: true,
-                image: true,
-              },
-            },
+            // product_model: {
+            //   select: {
+            //     product: {
+            //       select: {
+            //         name: true,
+            //       },
+            //     },
+            //     price: true,
+            //     size: true,
+            //     color: true,
+            //     image: true,
+            //   },
+            // },
+            product_name: true,
+            price: true,
+            size: true,
+            color: true,
+            image: true,
             quantity: true,
           },
         },

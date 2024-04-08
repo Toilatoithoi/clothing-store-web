@@ -29,10 +29,13 @@ interface ProductValues {
   categoryId?: string;
   price?: number;
   description?: string;
+  // danh sách màu sắc và size hiển thị 
   colors: string[];
   sizes: string[];
+  // danh sách màu sắc và size theo product_model ở input thêm
   sizeTmp?: string;
   colorTmp?: string;
+  // record vì có nhiều giá nên không thể đặt mỗi giá là một biến được nên đặt là record là 1 object có key là string và value là number
   priceConfig: Record<string, number>;
   quantityConfig: Record<string, number>;
   idModelConfig?: Record<string, number>;
@@ -93,19 +96,24 @@ const ProductForm = (props: Props) => {
   const submit = async (values: ProductValues) => {
     setLoading(true);
     const model: ProductModelReq[] = [];
-
+      
     for (let i = 0; i < values.colors.length; i++) {
       const color = values.colors[i];
+      // lấy được file theo key là color
       const file = values.fileConfig[color];
       let image = '';
+      // file có thể là string vì lúc sửa chỉ cần load file string lên nếu không thay đổi dile thì file vẫn là string thì không cần upload nữa
       if (file && typeof file !== 'string') {
         try {
+          // upload file lên cloudinary
           const res = await uploadFile(file);
+          // thu về url sau khi upload ảnh
           image = res.url as string;
         } catch (error) {}
       } else if (typeof file === 'string') {
         image = file;
       }
+      // for sizes tạo model
       for (let j = 0; j < values.sizes.length; j++) {
         const size = values.sizes[j];
         const key = `${color}-${size}`;
@@ -113,9 +121,11 @@ const ProductForm = (props: Props) => {
         model.push({
           color,
           size,
+          // dự vào key để lấy ra giá và số lượng
           price: Number(values.priceConfig[key] ?? values.price),
           stock: Number(values.quantityConfig[key]),
           image,
+          // id dùng cho lúc sửa
           id: values.idModelConfig?.[key],
         });
       }
@@ -237,7 +247,8 @@ const ProductForm = (props: Props) => {
                 <FieldContainer label="Mô tả" className="col-span-2">
                   <Editor data={values.description} onChange={(data) => setFieldValue('description', data)} />
                 </FieldContainer>
-
+                
+                {/* render kích thước */}
                 <FieldContainer label="Kích thước" className="col-span-2">
                   <div>
                     <div className="flex gap-4 py-8">
@@ -248,7 +259,9 @@ const ProductForm = (props: Props) => {
                         >
                           {item}
                           <div
+                            // xoá kích thước
                             onClick={() => {
+                              // dùng filter để tìm ra size cần xoá
                               const sizes = values.sizes.filter(
                                 (size) => size !== item
                               );
@@ -262,6 +275,7 @@ const ProductForm = (props: Props) => {
                       ))}
                     </div>
                     <div className="flex gap-8">
+                      {/* lúc add vào list sizes */}
                       <TextInput
                         name="sizeTmp"
                         value={values.sizeTmp}
@@ -271,6 +285,7 @@ const ProductForm = (props: Props) => {
                         type="button"
                         className="btn-primary !w-fit px-8"
                         onClick={() => {
+                          // lúc nhấn thêm nếu sizeTmp khác null thì add thằng sizeTmp vào bảng sizes đồng thời là clear textInput xoá sizeTmp
                           if (!isBlank(values.sizeTmp)) {
                             const sizes = [...values.sizes, values.sizeTmp];
                             setFieldValue('sizes', sizes);
@@ -351,17 +366,22 @@ const ProductForm = (props: Props) => {
                         </tr>
                       </thead>
                       <tbody>
+                        {/* for theo colors */}
                         {values.colors.map((color, idx) => {
+                          // for theo sizes mỗi size sẽ một hàng
                           return values.sizes.map((size, sizeIdx) => {
+                            // key để định danh đối tượng giá và size của đối tượng nào
                             const key = `${color}-${size}`;
                             return (
                               <tr key={key}>
                                 {sizeIdx === 0 && (
                                   <td
+                                    // rowSpan là chiếm bao nhiêu dòng do ảnh chỉ cần 1 dòng cho tất cả các kích cỡ
                                     rowSpan={values.sizes.length}
                                     className="border border-slate-600 text-center w-[15rem]"
                                   >
                                     <div className="w-full flex items-center justify-center p-2 min-w-[10rem] min-h-[20rem] h-full">
+                                      {/* do image chỉ liên đến màu sắc nên key chỉ là color */}
                                       <ImageUploader
                                         initImage={
                                           typeof values.fileConfig[color] ===
@@ -383,6 +403,7 @@ const ProductForm = (props: Props) => {
                                 )}
                                 {sizeIdx === 0 && (
                                   <td
+                                  // rowSpan là chiếm bao nhiêu dòng do màu sắc chỉ cần 1 dòng cho tất cả các kích cỡ
                                     rowSpan={values.sizes.length}
                                     className="border border-slate-600 text-center"
                                   >
@@ -398,6 +419,7 @@ const ProductForm = (props: Props) => {
                                       name={`priceConfig[${key}]`}
                                       onChange={handleChange}
                                       value={
+                                        // nếu values.priceConfig[key] rỗng thì lấy giá chung ở input giá
                                         values.priceConfig[key] ?? values.price
                                       }
                                       className="w-full"

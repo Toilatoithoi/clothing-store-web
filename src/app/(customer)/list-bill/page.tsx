@@ -17,6 +17,10 @@ import { ProductRes } from '@/interfaces/model';
 import ModalProvider from '@/components/ModalProvider';
 import Loader from '@/components/Loader';
 import { useUserInfo } from '@/store/globalSWR';
+import { Formik } from 'formik';
+import Dropdown from '@/components/Dropdown';
+import TextInput from '@/components/TextInput';
+import { subMonths } from 'date-fns';
 
 // const BILL_STATUS_TRANSLATE: Record<string, string> = {
 //   SUCCESS: 'Thành công',
@@ -67,6 +71,7 @@ const ListBill = ({ username }: { username?: string }) => {
   });
   const componentId = useRef(uuid());
   const [modal, setModal] = useState<{ show?: boolean; data: any } | null>();
+  const filter = useRef<{ status?: string; toDate?: string; fromDate?: string }>()
   const [modalDel, setModalDel] = useState<{
     show?: boolean;
     data: any;
@@ -75,7 +80,6 @@ const ListBill = ({ username }: { username?: string }) => {
     show?: boolean;
     data: any;
   } | null>();
-
 
   const { trigger } = useMutation<PaginationRes<ProductRes>>('/api/bill', {
     url: '/api/bill',
@@ -102,6 +106,11 @@ const ListBill = ({ username }: { username?: string }) => {
         page: page + 1,
         username: username ?? userInfo?.username,
         isMine: isBlank(username),
+        ...!isBlank(filter.current?.status ?? '') && filter.current?.status !== 'ALL' && {
+          status: filter.current?.status,
+        },
+        fromDate: filter.current?.fromDate,
+        toDate: filter.current?.toDate,
       });
     }
   };
@@ -198,11 +207,99 @@ const ListBill = ({ username }: { username?: string }) => {
 
   return (
     <div className="h-full w-full p-[1.6rem] flex flex-col flex-1">
-      <div className="h-[4.5rem] w-full mb-2">
-        <div className="max-w-screen-xl m-auto h-full px-[2rem] items-center flex justify-center text-center">
+      <div className="h-[10rem] w-full mb-2">
+        <div className="max-w-screen-xl m-auto h-[3rem] px-[2rem] items-center flex justify-center text-center">
           <div className="uppercase font-[900] text-[2rem] text-[#2d2d2d]">
             Lịch sử mua hàng
           </div>
+        </div>
+        <div className='flex items-center justify-center'>
+          <Formik
+            initialValues={{ status: 'ALL', fromDate: formatDateToString(subMonths(new Date(), 1), 'yyyy-MM-dd') || '', toDate: formatDateToString(new Date(), 'yyyy-MM-dd') || '' }}
+            onSubmit={(values) => {
+              filter.current = values;
+              refreshData();
+            }}
+          >
+            {({ values, handleSubmit, handleChange, setFieldValue }) => <form
+              className='flex gap-8 items-end'
+              onSubmit={handleSubmit}>
+
+
+              <Dropdown
+                label="Trạng thái"
+                inSearch
+                className='w-[20rem]'
+                options={[
+                  {
+                    label: 'Tất cả',
+                    value: 'ALL',
+                  },
+                  {
+                    label: 'Chờ xác nhận',
+                    value: ORDER_STATUS.NEW,
+                  },
+                  {
+                    label: 'Đã xác nhận',
+                    value: ORDER_STATUS.CONFIRM,
+                  },
+                  {
+                    label: 'Từ chối',
+                    value: ORDER_STATUS.REJECT,
+                  },
+                  {
+                    label: 'Đang vận chuyển',
+                    value: ORDER_STATUS.TRANSPORTED,
+                  },
+                  {
+                    label: 'Giao hàng thành công',
+                    value: ORDER_STATUS.SUCCESS,
+                  },
+                  {
+                    label: 'Giao hàng thất bại',
+                    value: ORDER_STATUS.FAILED,
+                  },
+                  {
+                    label: 'Đã hủy',
+                    value: ORDER_STATUS.CANCELED,
+                  },
+                  {
+                    label: 'Yêu cầu hủy',
+                    value: ORDER_STATUS.REQUEST_CANCEL,
+                  },
+                ]}
+                selected={values.status}
+                onChange={(value) => setFieldValue('status', value)}
+              />
+
+              <div className="flex gap-4">
+                <TextInput
+                  label='Từ Ngày'
+                  inputClassName='h-[4rem]'
+                  name='fromDate'
+                  className='w-[20rem]'
+                  onChange={handleChange}
+                  type='date'
+                  value={values.fromDate as string}
+                />
+                <TextInput
+                  label='Đến ngày'
+                  inputClassName='h-[4rem]'
+                  name='toDate'
+                  className='w-[20rem]'
+                  onChange={handleChange}
+                  type='date'
+                  value={values.toDate as string}
+                />
+              </div>
+              <button
+                type="submit"
+                className="btn  bg-[#bc0517] text-white"
+              >
+                Tìm kiếm
+              </button>
+            </form>}
+          </Formik>
         </div>
       </div>
       <div className="ag-theme-quartz h-[70vh]">
