@@ -122,7 +122,7 @@ export const PUT = async (
           ]
           : []),
         // khi từ trạng thái Chờ xác nhận, Đã xác nhận, Đang vận chuyển -> Đã hủy, Giao hàng thất bại, Từ chối thì số hàng trong kho sẽ tăng  
-        ...(bill.status !== ORDER_STATUS.SUCCESS && body.status === ORDER_STATUS.CANCELED || body.status === ORDER_STATUS.FAILED || body.status === ORDER_STATUS.REJECT
+        ...(body.status === ORDER_STATUS.CANCELED || body.status === ORDER_STATUS.FAILED || body.status === ORDER_STATUS.REJECT
           ? [
             ...bill.bill_product.map((item: bill_product) =>
               prisma.product_model.update({

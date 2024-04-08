@@ -30,6 +30,7 @@ const DataGrid = forwardRef(
       | Ref<DataGridHandle | null | undefined>
       | null
   ) => {
+    // ghi đè thuộc tính mặc định
     const { defaultColDef, onGridReady, ...rest } = props;
     const [gridInit, setGridInit] = useState<boolean>(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -85,6 +86,7 @@ const DataGrid = forwardRef(
             }
           }}
           defaultColDef={{
+            // các thuộct tính mặc định
             resizable: false,
             minWidth: 80,
             ...defaultColDef,
@@ -95,6 +97,7 @@ const DataGrid = forwardRef(
           suppressRowHoverHighlight
           suppressCellFocus
           onViewportChanged={onViewportChanged}
+          // tuỳ vào từng cách dùng có thể ghi đè thuộc tính là props
           {...rest}
         />
       </div>

@@ -24,7 +24,9 @@ const ProductStatusTranslate: Record<string, string> = {
 
 const ProductMgmt = () => {
   const gridRef = useRef<DataGridHandle>();
+  // khởi tạo pagination
   const pagination = useRef<IPagination>({
+    // để page = 0 và totalPage = 1 để nó luôn bé hơn để query
     page: 0,
     totalCount: 0,
     totalPage: 1,
@@ -44,11 +46,17 @@ const ProductMgmt = () => {
   const { trigger } = useMutation<PaginationRes<ProductRes>>('/api/product', {
     url: '/api/product',
     method: METHOD.GET,
+    // lần đầu tiên nó query rồi nó add vào
     onSuccess(data, key, config) {
       gridRef.current?.api?.hideOverlay();
+      // khi thành công thì sẽ có data.pagination
       pagination.current = data.pagination;
+      // khi thành công sẽ gọi hàm này để add vào bảng DataGrid
       gridRef.current?.api?.applyTransaction({
+        // add là add những phần tử
         add: data.items,
+        // add index là add vào đâu: getDisplayedRowCount() là add vào cuối
+        // add vào đầu addIndex: 0
         addIndex: gridRef.current.api.getDisplayedRowCount(),
       });
     },
@@ -76,9 +84,11 @@ const ProductMgmt = () => {
   );
 
   const requestData = () => {
+    // có totalPage thì nếu check page bé hơn totalPage thì mới query
     const { page, totalPage } = pagination.current;
     if (page < totalPage) {
       gridRef.current?.api?.showLoadingOverlay();
+      // query data truyền page hiện tại và fetchCount
       trigger({
         fetchCount: FETCH_COUNT,
         page: page + 1,
@@ -136,6 +146,7 @@ const ProductMgmt = () => {
         buttons: [
           {
             render: Edit,
+            // data là dữ liệu của cả hàng cell 
             onClick: (data: any) => {
               setModal({ show: true, data });
             },
@@ -152,7 +163,6 @@ const ProductMgmt = () => {
             onClick: (data: any) => {
               setModalPub({ show: true, data });
             },
-            // ???
             hide(data: Record<string, unknown>) {
               return data.status !== 'DRAFT';
             },
@@ -191,7 +201,6 @@ const ProductMgmt = () => {
   };
 
   const refreshData = () => {
-    // ???
     pagination.current = {
       page: 0,
       totalCount: 0,
@@ -242,7 +251,10 @@ const ProductMgmt = () => {
         <DataGrid
           ref={gridRef}
           columnDefs={columnDefs}
+          // phải chờ onGridReady thì mới query data
           onGridReady={requestData}
+          // lần thứ 2 trở đi là scoll đến cuối bảng thì hàm onScrollToBottom sẽ check xem là còn data không nếu còn data sẽ query tiếp
+          // rồi add vào cho đến khi nào hết thì thôi
           onScrollToBottom={requestData}
         />
       </div>

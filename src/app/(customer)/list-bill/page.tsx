@@ -115,13 +115,13 @@ const ListBill = ({ username }: { username?: string }) => {
       minWidth: 150,
     },
     {
-      headerName: 'Tên',
+      headerName: 'Tên người nhận',
       field: 'full_name',
       minWidth: 150,
       flex: 1,
     },
     {
-      headerName: 'Email',
+      headerName: 'Email người nhận',
       field: 'email',
       minWidth: 180,
     },

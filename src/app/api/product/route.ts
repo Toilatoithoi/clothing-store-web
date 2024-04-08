@@ -56,9 +56,9 @@ export const GET = async (request: NextRequest) => {
         lte: priceMax || Number.MAX_SAFE_INTEGER
       },
       ...(data?.role == ROLES.ADMIN && isList == null? {
+        // ???
         status: status ? status : { not: PRODUCT_STATUS.DELETED }
       } : {
-        // ???
         status: PRODUCT_STATUS.PUBLISHED,
       }),
       ...(category != null && {

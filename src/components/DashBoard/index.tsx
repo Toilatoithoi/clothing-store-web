@@ -3,16 +3,27 @@ import { METHOD } from '@/constants';
 import { Summary } from '@/interfaces/request';
 import { useSWRWrapper } from '@/store/custom';
 import { formatNumber } from '@/utils';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import OrderSummary from '../OrderSummary';
 import RevenueChart from '../RevenueChart';
 import UserMgmt from '../UserMgmt';
+import { Formik } from 'formik';
+import TextInput from '../TextInput';
+import { subMonths } from 'date-fns';
 
 const Dashboard = () => {
   const { data: summary } = useSWRWrapper<Summary>('/api/admin/summary', {
     method: METHOD.GET,
     url: '/api/admin/summary',
   });
+  const filter = useRef<{ fromDate?: string; toDate?: string }>()
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+
+  const handleRevenue = (values: { fromDate?: string; toDate?: string }) => {
+    setFromDate(values.fromDate || '')
+    setToDate(values.toDate || '')
+  }
   return (
     <div className="flex flex-col gap-4 overflow-auto">
       <div className="flex gap-4">
@@ -63,10 +74,45 @@ const Dashboard = () => {
       </div>
       <div className="flex gap-4 flex-wrap h">
         <div className=" flex-1 min-w-[50rem] rounded-md border border-gray-200 bg-white shadow-md ">
-          <div className="text-[1.8rem] flex gap-2 items-center p-8 font-bold">
-            Doanh thu
+          <div className="text-[1.2rem] flex gap-2 items-center p-8 font-bold">
+            <div className='text-[1.8rem] font-bold'>Doanh thu từ: </div>
+            <Formik
+              initialValues={{ fromDate: formatDateToString(subMonths(new Date(), 1), 'yyyy-MM-dd') || '', toDate: formatDateToString(new Date(), 'yyyy-MM-dd') || '' }}
+              onSubmit={handleRevenue}
+            >
+              {({ values, handleSubmit, handleChange, setFieldValue }) => <form
+                className='flex gap-8 items-end'
+                onSubmit={handleSubmit}>
+                <div className="flex gap-4">
+                  <TextInput
+                    label='Từ Ngày'
+                    inputClassName='h-[3rem]'
+                    name='fromDate'
+                    className='w-[14rem]'
+                    onChange={handleChange}
+                    type='date'
+                    value={values.fromDate as string}
+                  />
+                  <TextInput
+                    label='Đến ngày'
+                    inputClassName='h-[3rem]'
+                    name='toDate'
+                    className='w-[14rem]'
+                    onChange={handleChange}
+                    type='date'
+                    value={values.toDate as string}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn  bg-[#bc0517] text-white "
+                >
+                  Tìm kiếm
+                </button>
+              </form>}
+            </Formik>
           </div>
-          <RevenueChart />
+        <RevenueChart fromDate={fromDate} toDate={toDate} />
         </div>
         <div className=" w-[50rem] rounded-md border border-gray-200 bg-white shadow-md ">
           <div className="text-[1.8rem] flex gap-2 items-center p-8 font-bold">

@@ -8,15 +8,15 @@ import { useSWRWrapper } from '@/store/custom';
 import { METHOD } from '@/constants';
 import { formatDateToString } from '@/utils/datetime';
 import { subMonths } from 'date-fns';
-// ???
-const RevenueChart = () => {
+
+const RevenueChart = (props:{toDate?: string; fromDate?: string }) => {
 
   const { data } = useSWRWrapper<{ ti: string, sum: number }[]>('/api/admin/summary/revenue', {
     url: '/api/admin/summary/revenue',
     method: METHOD.GET,
     params: {
-      fromDate: formatDateToString(subMonths(new Date(), 1), 'yyyy-MM-dd'),
-      toDate: formatDateToString(new Date(), 'yyyy-MM-dd'),
+      fromDate: props.fromDate,
+      toDate: props.toDate,
     }
   })
 
@@ -74,7 +74,7 @@ const RevenueChart = () => {
       },
     ],
   };
-  console.log(options)
+  // console.log(options)
   if (!data) {
     return null
   }
