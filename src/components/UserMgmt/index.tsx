@@ -8,12 +8,13 @@ import { ColDef, ColGroupDef } from 'ag-grid-community';
 import ButtonCell, { Edit, Eye, Lock, Trash, Unlock } from '../DataGrid/ButtonCell';
 import { uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
-import { integerFormatter } from '@/utils/grid';
+import { integerFormatter, integerFormatterVND } from '@/utils/grid';
 import { Formik } from 'formik';
 import TextInput from '../TextInput';
 import ConfirmModal from '../ConfirmModal';
 import Loader from '../Loader';
 import ListBill from '@/app/(customer)/list-bill/page';
+
 
 const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
   const gridRef = useRef<DataGridHandle>();
@@ -110,7 +111,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
     {
       headerName: 'Tổng chi',
       field: 'totalPrice',
-      valueFormatter: integerFormatter,
+      valueFormatter: integerFormatterVND,
     },
     {
       headerName: '',

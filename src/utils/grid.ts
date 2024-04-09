@@ -16,3 +16,14 @@ export const timeFormatterFromTimestamp = (params: ValueFormatterParams) => {
 export const integerFormatter = (params: ValueFormatterParams) => {
   return formatNumber(params.value, 0, undefined, false, params.value ?? '');
 };
+
+export const integerFormatterVND = (params: any) => {
+  // Format the value as an integer
+  let formattedValue = Number(params.value).toLocaleString('en-US');
+
+  // Add 'vnd' suffix to the formatted value
+  formattedValue += ' VND';
+
+  // Return the formatted value
+  return formattedValue;
+};

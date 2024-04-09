@@ -4,7 +4,7 @@ import { ColDef, ColGroupDef, ICellRendererParams, ValueFormatterParams } from '
 import React, { useEffect, useRef, useState } from 'react';
 import { Payment, ProductCart, useBill } from '@/components/CartDropdown/hook';
 import { useRouter } from 'next/navigation';
-import { integerFormatter, timeFormatterFromTimestamp } from '@/utils/grid';
+import { integerFormatter, integerFormatterVND, timeFormatterFromTimestamp } from '@/utils/grid';
 import { FETCH_COUNT, METHOD, ORDER_STATUS, ROLES } from '@/constants';
 import DataGrid, { DataGridHandle } from '@/components/DataGrid';
 import ButtonCell, { Cancel, Eye, Upload } from '@/components/DataGrid/ButtonCell';
@@ -104,7 +104,9 @@ const ListBill = ({ username }: { username?: string }) => {
       trigger({
         fetchCount: FETCH_COUNT,
         page: page + 1,
+        // truyền username
         username: username ?? userInfo?.username,
+        // nếu có username isMine bằng false
         isMine: isBlank(username),
         ...!isBlank(filter.current?.status ?? '') && filter.current?.status !== 'ALL' && {
           status: filter.current?.status,
@@ -142,7 +144,7 @@ const ListBill = ({ username }: { username?: string }) => {
       headerName: 'Tổng tiền',
       field: 'total_price',
       maxWidth: 150,
-      valueFormatter: integerFormatter,
+      valueFormatter: integerFormatterVND,
     },
     {
       headerName: 'Trạng thái',

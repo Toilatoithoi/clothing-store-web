@@ -37,6 +37,7 @@ export const GET = async (req: NextRequest) => {
 
     const query: Prisma.billFindManyArgs = {
       where: {
+        // nếu là admin thì hiển thị hết
         ...(data.role === ROLES.ADMIN && {
           user: {
             username: {
@@ -44,6 +45,7 @@ export const GET = async (req: NextRequest) => {
             },
           },
         }),
+        // nếu không là admin hoặc không ở trang quản trị thì chỉ hiện thị riêng bill của bản thân
         ...((data.role !== ROLES.ADMIN || isMine) && {
           user: {
             username: data.username,

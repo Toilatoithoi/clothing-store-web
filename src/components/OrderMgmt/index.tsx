@@ -9,7 +9,7 @@ import ButtonCell, { Edit, Eye, Upload } from '../DataGrid/ButtonCell';
 import { isBlank, uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
 import { Bill, ProductRes } from '@/interfaces/model';
-import { integerFormatter, timeFormatterFromTimestamp } from '@/utils/grid';
+import { integerFormatter, integerFormatterVND, timeFormatterFromTimestamp } from '@/utils/grid';
 import Loader from '../Loader';
 import BillDetail from '../BillDetail';
 import OrderForm from './OrderForm';
@@ -118,7 +118,7 @@ const OrderMgmt = () => {
       headerName: 'Tổng tiền',
       field: 'total_price',
       maxWidth: 150,
-      valueFormatter: integerFormatter,
+      valueFormatter: integerFormatterVND,
     },
     {
       headerName: 'Trạng thái',
