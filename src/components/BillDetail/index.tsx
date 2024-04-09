@@ -27,11 +27,10 @@ const BillDetail = (props: { billId: string }) => {
     url: `/api/bill/${props.billId}`,
     method: METHOD.GET,
   });
-  
   const ImageRenderer = ({ data }: ICellRendererParams) => {
     return (
       <Image
-        className="object-contain overflow-hidden"
+        className="object-contain overflow-hidden text-[1.3rem]"
         src={data.image}
         alt="Ảnh bìa"
         width={70}
@@ -41,32 +40,32 @@ const BillDetail = (props: { billId: string }) => {
       />
     );
   };
-
+  console.log({ data });
   const router = useRouter();
   const [summary, setSummary] = useState(0);
   const [rowData, setRowData] = useState<Product[]>([]);
   const [colDefs, setColDefs] = useState<Array<ColDef>>([
     {
-      headerName: 'Image',
+      headerName: 'Ảnh sản phẩm',
       field: 'image',
-      cellClass: 'text-start p-[1rem]',
+      cellClass: 'text-center p-[1rem]',
       autoHeight: true,
       cellRenderer: ImageRenderer,
     },
-    { headerName: 'Tên', field: 'name' },
-    { headerName: 'Size', field: 'size', cellClass: 'text-end' },
-    { headerName: 'Màu sắc', field: 'color', cellClass: 'text-end' },
-    { headerName: 'Số lượng', field: 'quantity', cellClass: 'text-end' },
+    { headerName: 'Tên sản phẩm', field: 'name' },
+    { headerName: 'Kích cỡ', field: 'size', cellClass: 'text-end text-[1.3rem]' },
+    { headerName: 'Màu sắc', field: 'color', cellClass: 'text-end text-[1.3rem]' },
+    { headerName: 'Số lượng', field: 'quantity', cellClass: 'text-end text-[1.3rem]' },
     {
       headerName: 'Giá',
       field: 'price',
-      cellClass: 'text-end',
+      cellClass: 'text-end text-[1.3rem]',
       valueFormatter: integerFormatter,
     },
     {
       headerName: 'Thành tiền',
       field: 'buy',
-      cellClass: 'text-end',
+      cellClass: 'text-end text-[1.3rem]',
       valueFormatter: integerFormatter,
     },
   ]);
@@ -109,10 +108,10 @@ const BillDetail = (props: { billId: string }) => {
             {data && (
               <div className="">
                 <div className="flex items-start justify-center">
-                  <div className="mr-2 font-bold text-[1.6rem] ">
+                  <div className="mr-2 font-bold text-[1.3rem] ">
                     Thời gian đặt hàng:
                   </div>
-                  <div className="font-bold text-[1.6rem]">
+                  <div className="font-bold text-[1.3rem]">
                     {formatDateToString(
                       new Date(data.created_at),
                       'HH:mm:ss dd/MM/yyyy'
@@ -120,24 +119,24 @@ const BillDetail = (props: { billId: string }) => {
                   </div>
                 </div>
                 <div className="flex items-start justify-center">
-                  <div className="mr-2 font-bold text-[1.6rem] ">
+                  <div className="mr-2 font-bold text-[1.3rem] ">
                     Tên người nhận:
                   </div>
-                  <div className="font-bold text-[1.6rem]">
+                  <div className="font-bold text-[1.3rem]">
                     {data.full_name}
                   </div>
                 </div>
                 <div className="flex items-start justify-center">
-                  <div className="mr-2 font-bold text-[1.6rem] ">
-                    Số điện thoại:
+                  <div className="mr-2 font-bold text-[1.3rem] ">
+                    Số điện thoại người nhận:
                   </div>
-                  <div className="font-bold text-[1.6rem]">
-                    {data.user.phoneNumber}
+                  <div className="font-bold text-[1.3rem]">
+                    {data.phoneNumber}
                   </div>
                 </div>
                 <div className="flex items-start justify-center">
-                  <div className="mr-2 font-bold text-[1.6rem] ">Địa chỉ:</div>
-                  <div className="font-bold text-[1.6rem]">{data.address}</div>
+                  <div className="mr-2 font-bold text-[1.3rem] ">Địa chỉ:</div>
+                  <div className="font-bold text-[1.3rem]">{data.city + ' ' + data.district + ' ' + data.wards + ' ' + data.address}</div>
                 </div>
               </div>
             )}
@@ -146,7 +145,7 @@ const BillDetail = (props: { billId: string }) => {
       </div>
       <div className="ag-theme-quartz w-full m-auto" style={{ height: 500 }}>
         <AgGridReact
-          className="ag-height"
+          className="ag-height text-[1.3rem]"
           rowData={rowData}
           columnDefs={colDefs}
           rowSelection="multiple"

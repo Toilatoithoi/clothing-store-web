@@ -8,7 +8,7 @@ import { ColDef, ColGroupDef } from 'ag-grid-community';
 import ButtonCell, { Edit, Eye, Upload } from '../DataGrid/ButtonCell';
 import { isBlank, uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
-import { ProductRes } from '@/interfaces/model';
+import { Bill, ProductRes } from '@/interfaces/model';
 import { integerFormatter, timeFormatterFromTimestamp } from '@/utils/grid';
 import Loader from '../Loader';
 import BillDetail from '../BillDetail';
@@ -56,7 +56,7 @@ const OrderMgmt = () => {
     show?: boolean;
     data: any;
   } | null>();
-  const { trigger } = useMutation<PaginationRes<ProductRes>>('/api/bill', {
+  const { trigger } = useMutation<PaginationRes<Bill>>('/api/bill', {
     url: '/api/bill',
     method: METHOD.GET,
     onSuccess(data, key, config) {
@@ -102,7 +102,7 @@ const OrderMgmt = () => {
     {
       headerName: 'Tên người nhận',
       field: 'full_name',
-      minWidth: 150,
+      minWidth: 180,
       flex: 1,
     },
     {

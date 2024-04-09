@@ -122,7 +122,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
             render: Lock,
             onClick: handleShowModal,
             hide: (data: any) => {
-              return data.is_lock
+              return data.is_lock || inDashboard
             },
 
           },
@@ -130,7 +130,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
             render: Unlock,
             onClick: handleShowModal,
             hide: (data: any) => {
-              return !data.is_lock
+              return !data.is_lock || inDashboard
             },
           },
           {

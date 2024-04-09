@@ -13,7 +13,7 @@ import BillDetail from '@/components/BillDetail';
 import OrderForm from '@/components/OrderMgmt/OrderForm';
 import { isBlank, uuid } from '@/utils';
 import { useMutation } from '@/store/custom';
-import { ProductRes } from '@/interfaces/model';
+import { Bill, ProductRes } from '@/interfaces/model';
 import ModalProvider from '@/components/ModalProvider';
 import Loader from '@/components/Loader';
 import { useUserInfo } from '@/store/globalSWR';
@@ -81,7 +81,7 @@ const ListBill = ({ username }: { username?: string }) => {
     data: any;
   } | null>();
 
-  const { trigger } = useMutation<PaginationRes<ProductRes>>('/api/bill', {
+  const { trigger } = useMutation<PaginationRes<Bill>>('/api/bill', {
     url: '/api/bill',
     method: METHOD.GET,
     onSuccess(data, key, config) {
