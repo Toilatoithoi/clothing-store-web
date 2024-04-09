@@ -8,6 +8,7 @@ import { useSWRWrapper } from '@/store/custom';
 import { METHOD } from '@/constants';
 import { formatDateToString } from '@/utils/datetime';
 import { subMonths } from 'date-fns';
+import { integerFormatterVND } from '@/utils/grid';
 
 const RevenueChart = (props:{toDate?: string; fromDate?: string }) => {
 
@@ -51,6 +52,7 @@ const RevenueChart = (props:{toDate?: string; fromDate?: string }) => {
         fontSize: '12px',
       },
       xDateFormat: '%d/%m/%Y',
+      valueSuffix: ' VND',
     },
     legend: {
       enabled: false,
@@ -66,6 +68,7 @@ const RevenueChart = (props:{toDate?: string; fromDate?: string }) => {
       {
         type: 'line',
         name: 'Doanh thu',
+        // truyền dữ liệu
         data: data?.map(item => [
           new Date(item.ti).getTime(),
           item.sum,
