@@ -32,13 +32,14 @@ LIMIT ${isBlank(limit) ? fetchCount : limit} OFFSET ${Number(page ?? 0) * Number
       `)
     ])
     const count = Number((counts as any)[0]?.count)
+
     return NextResponse.json({
       items: post,
       // phân trang
       pagination: {
         totalCount: count,
         page: page <= 0 ? 1 : page + 1,
-        totalPage: fetchCount ? Number(formatNumber(count / Number(fetchCount))) : 1,
+        totalPage: fetchCount ? Number(Math.ceil(count / Number(fetchCount))) : 1,
       },
       limit
     });
