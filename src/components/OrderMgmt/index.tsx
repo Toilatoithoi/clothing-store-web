@@ -189,11 +189,11 @@ const OrderMgmt = () => {
             className='flex gap-8 items-end'
             onSubmit={handleSubmit}>
             <TextInput
-              label='Tìm kiếm'
+              label='Tìm kiếm theo tên người nhận'
               inputClassName='h-[4rem]'
               placeholder='Nhập từ khóa tìm kiếm...'
               name='searchKey'
-              className='w-[20rem]'
+              className='w-[25rem]'
               onChange={handleChange}
               value={values.searchKey}
             />

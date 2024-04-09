@@ -194,6 +194,7 @@ const PostMgmt = () => {
                         className='flex gap-4 items-center'
                         onSubmit={handleSubmit}>
                         <TextInput
+                            label='Tìm kiếm theo tiêu đề'
                             inputClassName='h-[4rem]'
                             placeholder='Nhập từ khóa tìm kiếm...'
                             name='searchKey'

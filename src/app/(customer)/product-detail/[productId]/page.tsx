@@ -236,7 +236,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
             </div></a><Tooltip id="my-tooltip" /></>
             )}
           </div>
-          {/* <div className='text-[#bc0516] text-[1.6rem] py-[0.8rem] cursor-pointer'>Hướng dẫn kích thước</div> */}
+          {/* <div className='text-[#bc0516] text-[1.6rem] py-[0.8rem] cursor-pointer'>Hướng dẫn kích cỡ</div> */}
           <div className='flex items-center'>
             <div className="text-[1.6rem] font-semibold mr-[1.6rem]">Số lượng</div>
 

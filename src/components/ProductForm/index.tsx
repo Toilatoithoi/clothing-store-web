@@ -219,7 +219,7 @@ const ProductForm = (props: Props) => {
             }) => (
               <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>
                 <TextInput
-                  label="Tên"
+                  label="Tên sản phẩm"
                   name="name"
                   className="col-span-2"
                   value={values.name}
@@ -248,8 +248,8 @@ const ProductForm = (props: Props) => {
                   <Editor data={values.description} onChange={(data) => setFieldValue('description', data)} />
                 </FieldContainer>
                 
-                {/* render kích thước */}
-                <FieldContainer label="Kích thước" className="col-span-2">
+                {/* render kích cỡ */}
+                <FieldContainer label="Kích cỡ" className="col-span-2">
                   <div>
                     <div className="flex gap-4 py-8">
                       {values.sizes?.map((item) => (
@@ -259,7 +259,7 @@ const ProductForm = (props: Props) => {
                         >
                           {item}
                           <div
-                            // xoá kích thước
+                            // xoá kích cỡ
                             onClick={() => {
                               // dùng filter để tìm ra size cần xoá
                               const sizes = values.sizes.filter(
@@ -355,7 +355,7 @@ const ProductForm = (props: Props) => {
                             Màu sắc
                           </th>
                           <th className="border border-slate-600 text-center">
-                            Size
+                            Kích cỡ
                           </th>
                           <th className="border border-slate-600 text-center">
                             Giá
@@ -432,7 +432,7 @@ const ProductForm = (props: Props) => {
                                     <TextInput
                                       name={`quantityConfig[${key}]`}
                                       onChange={handleChange}
-                                      value={values.quantityConfig[key]}
+                                      value={values.quantityConfig[key] ?? 0}
                                       className="w-full"
                                       type="number"
                                     />

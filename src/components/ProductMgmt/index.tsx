@@ -10,7 +10,7 @@ import ButtonCell, { Edit, Trash, Upload } from '../DataGrid/ButtonCell';
 import { uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
 import { ProductRes } from '@/interfaces/model';
-import { integerFormatter } from '@/utils/grid';
+import { integerFormatter, integerFormatterVND} from '@/utils/grid';
 import ProductForm from '../ProductForm';
 import ConfirmModal from '../ConfirmModal';
 import Loader from '../Loader';
@@ -105,7 +105,7 @@ const ProductMgmt = () => {
       maxWidth: 60,
     },
     {
-      headerName: 'Tên',
+      headerName: 'Tên sản phẩm',
       field: 'name',
       flex: 1,
     },
@@ -114,7 +114,7 @@ const ProductMgmt = () => {
       headerName: 'Giá',
       field: 'price.price',
       cellClass: 'text-right',
-      valueFormatter: integerFormatter,
+      valueFormatter: integerFormatterVND,
       maxWidth: 120,
     },
     {
@@ -228,6 +228,7 @@ const ProductMgmt = () => {
             className='flex gap-4 items-center'
             onSubmit={handleSubmit}>
             <TextInput
+              label='Tìm kiếm theo tên sản phẩm'
               inputClassName='h-[4rem]'
               placeholder='Nhập từ khóa tìm kiếm...'
               name='searchKey'

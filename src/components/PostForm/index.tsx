@@ -121,7 +121,7 @@ const PostForm = (props: Props) => {
   };
 
   const schema = yup.object().shape({
-    title: yup.string().label('title').required(),
+    title: yup.string().label('Tiêu đề').required(),
   });
 
   const getInitialValues = (post?: PostRes): PostValues => {
@@ -156,6 +156,7 @@ const PostForm = (props: Props) => {
             onSubmit={submit}
             // validationSchema={schema}
             initialValues={getInitialValues(post)}
+            validationSchema={schema}
           >
             {({
               values,

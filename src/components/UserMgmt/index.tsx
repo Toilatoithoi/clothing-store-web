@@ -90,7 +90,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
       maxWidth: 60
     },
     {
-      headerName: 'Tên',
+      headerName: 'Họ tên',
       field: 'name',
       minWidth: 120
     },
@@ -172,6 +172,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
             className='flex gap-4 items-center'
             onSubmit={handleSubmit}>
             <TextInput
+              label='Tìm kiếm theo họ tên'
               inputClassName='h-[4rem]'
               placeholder='Nhập từ khóa tìm kiếm...'
               name='searchKey'

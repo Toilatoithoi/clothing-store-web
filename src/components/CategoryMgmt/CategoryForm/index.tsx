@@ -77,7 +77,7 @@ const CategoryForm = (props: Props) => {
         {({ values, handleBlur, handleChange, errors, touched, setFieldValue, handleSubmit }) =>
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <TextInput
-              label='Tên'
+              label='Tên danh mục'
               name='name'
               value={values.name}
               onChange={handleChange}

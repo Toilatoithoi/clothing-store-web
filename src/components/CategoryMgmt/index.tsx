@@ -56,7 +56,7 @@ const CategoryMgmt = () => {
       field: 'id',
     },
     {
-      headerName: 'Tên',
+      headerName: 'Tên danh mục',
       field: 'name',
       flex: 1
     },
@@ -115,6 +115,7 @@ const CategoryMgmt = () => {
             className='flex gap-4 items-center'
             onSubmit={handleSubmit}>
             <TextInput
+              label='Tìm kiếm theo tên danh mục'
               inputClassName='h-[4rem]'
               placeholder='Nhập từ khóa tìm kiếm...'
               name='searchKey'
