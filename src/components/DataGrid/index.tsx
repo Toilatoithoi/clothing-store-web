@@ -21,6 +21,8 @@ interface DataGridProps extends AgGridReactProps {
 export interface DataGridHandle {
   api?: GridApi;
 }
+// ở thằng con muốn gọi hàm hoặc thuộc tính ở thằng cha thằng cha có thể truyền xuống cho con 1 hàm hoặc thuộc tính
+// khi cha muốn gọi hàm hoặc thuộc tính của thằng con nó sẽ thông qua forwardRef truyền một số hàm của thằng con cho thàng cha sử dụng
 const DataGrid = forwardRef(
   (
     props: DataGridProps,
@@ -36,7 +38,7 @@ const DataGrid = forwardRef(
     const containerRef = useRef<HTMLDivElement>(null);
 
     const dataGridRef = useRef<{
-      // ???
+      // một đối tượng api
       api?: GridApi;
     }>({});
     useImperativeHandle(

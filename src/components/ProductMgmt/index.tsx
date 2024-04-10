@@ -52,6 +52,7 @@ const ProductMgmt = () => {
       // khi thành công thì sẽ có data.pagination
       pagination.current = data.pagination;
       // khi thành công sẽ gọi hàm này để add vào bảng DataGrid
+      // add thêm các phần tử vào bảng
       gridRef.current?.api?.applyTransaction({
         // add là add những phần tử
         add: data.items,
@@ -85,6 +86,7 @@ const ProductMgmt = () => {
 
   const requestData = () => {
     // có totalPage thì nếu check page bé hơn totalPage thì mới query
+    // từ thằng gridRef có thể gọi ra các hàm của thăng fcon cho thằng cha sử dụng
     const { page, totalPage } = pagination.current;
     if (page < totalPage) {
       // trước khi query thì showLoadingOverlay để cho người ta biết không thao tác 
@@ -211,6 +213,7 @@ const ProductMgmt = () => {
       totalCount: 0,
       totalPage: 1,
     };
+    // hàm của api để update rowdata
     gridRef.current?.api?.updateGridOptions({ rowData: [] });
     requestData();
   };
@@ -256,6 +259,7 @@ const ProductMgmt = () => {
       <div className="w-full flex-1">
         {/* lúc grid được load lên sẽ chạy requestData */}
         <DataGrid
+          // gán vào thì nó đã forward vào thằng gridRef này rồi
           ref={gridRef}
           columnDefs={columnDefs}
           // phải chờ onGridReady thì mới query data

@@ -1,6 +1,6 @@
 'use client';
 import DataGrid, { DataGridHandle } from '@/components/DataGrid';
-import { FETCH_COUNT, METHOD } from '@/constants';
+import { FETCH_COUNT, METHOD, ROLES } from '@/constants';
 import { useMutation } from '@/store/custom';
 import React, { useRef, useState } from 'react';
 import ModalProvider from '../ModalProvider';
@@ -123,7 +123,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
             render: Lock,
             onClick: handleShowModal,
             hide: (data: any) => {
-              return data.is_lock || inDashboard
+              return data.is_lock || inDashboard || data.role === ROLES.ADMIN
             },
 
           },
@@ -131,7 +131,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
             render: Unlock,
             onClick: handleShowModal,
             hide: (data: any) => {
-              return !data.is_lock || inDashboard
+              return !data.is_lock || inDashboard || data.role === ROLES.ADMIN
             },
           },
           {
