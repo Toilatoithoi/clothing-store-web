@@ -197,7 +197,7 @@ const ProductForm = (props: Props) => {
 
   return (
     <Loader loading={loading} className="w-screen max-w-screen-md product-form">
-      <div className="font-bold mb-[2.4rem]"> Tạo sản phẩm</div>
+      <div className="font-bold mb-[2.4rem]"> {props.data ? 'Chỉnh sửa sản phẩm' : 'Tạo sản phẩm'}</div>
       <div className="max-h-[80vh] overflow-y-auto">
         {props.data && isLoading ? (
           <div>Đang tải dữ liệu</div>

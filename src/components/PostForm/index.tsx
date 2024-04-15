@@ -42,7 +42,7 @@ const PostForm = (props: Props) => {
     }
   );
 
-  const { trigger } = useMutation('/api/post', {
+  const { trigger: createPost } = useMutation('/api/post', {
     method: METHOD.POST,
     loading: true,
     url: '/api/post',
@@ -113,7 +113,7 @@ const PostForm = (props: Props) => {
       if (props.data) {
         updatePost({ ...postload });
       } else {
-        trigger({ ...postload });
+        createPost({ ...postload });
       }
       console.log({ postload });
     }
@@ -147,7 +147,7 @@ const PostForm = (props: Props) => {
 
   return (
     <Loader loading={loading} className="w-screen max-w-screen-md product-form">
-      <div className="font-bold mb-[2.4rem]"> Tạo bài viết</div>
+      <div className="font-bold mb-[2.4rem]"> {props.data ? 'Chỉnh sửa bài viết' : 'Tạo bài viết'}</div>
       <div className="max-h-[80vh] overflow-y-auto p-2">
         {props.data && isLoading ? (
           <div>Đang tải dữ liệu</div>

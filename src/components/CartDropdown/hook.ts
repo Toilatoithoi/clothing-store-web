@@ -59,9 +59,13 @@ export const useCart = () => {
     url: `/api/cart/{product_model_id}`,
     method: METHOD.DELETE,
   });
-  const updateCart = (cart: ProductCart[]) => {
+  const updateCart = (model: ProductCart, override?: boolean) => {
     // hiểu là truyền value cho global state /api/cart
-    mutate(cart);
+    trigger({
+      quantity: model.quantity,
+      product_model_id: model.product_model_id,
+      override,
+    });
   };
 
   // global state dùng key để lấy gia 1 giá trị bất kì

@@ -133,7 +133,8 @@ const User = () => {
           handleSubmit,
           touched,
           errors,
-          setFieldValue
+          setFieldValue,
+          isValid
         }) => <form className='w-full flex flex-col gap-8 m-4 p-4 border border-gray-800 ' onSubmit={handleSubmit} >
             <div className='w-full text-center text-[3rem] font-bold text-black'>Thông tin cá nhân</div>
             {/* kiểm tra có lỗi hay không */}
@@ -201,7 +202,7 @@ const User = () => {
               value={values.dob}
               name="dob"
               onChange={handleChange} /> */}
-            <button type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Lưu</button>
+            <button disabled={!isValid}type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Lưu</button>
           </form>}
       </Formik>
     </Loader>

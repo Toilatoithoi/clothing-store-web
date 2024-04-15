@@ -43,7 +43,7 @@ const ProductMgmt = () => {
   } | null>();
   const filter = useRef<{ searchKey?: string }>()
 
-  const { trigger } = useMutation<PaginationRes<ProductRes>>('/api/product', {
+  const { trigger: createProduct } = useMutation<PaginationRes<ProductRes>>('/api/product', {
     url: '/api/product',
     method: METHOD.GET,
     // lần đầu tiên nó query rồi nó add vào
@@ -92,7 +92,7 @@ const ProductMgmt = () => {
       // trước khi query thì showLoadingOverlay để cho người ta biết không thao tác 
       gridRef.current?.api?.showLoadingOverlay();
       // query data truyền page hiện tại và fetchCount
-      trigger({
+      createProduct({
         fetchCount: FETCH_COUNT,
         page: page + 1,
         searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
