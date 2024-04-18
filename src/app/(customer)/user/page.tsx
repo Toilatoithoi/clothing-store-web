@@ -111,7 +111,7 @@ const User = () => {
   console.log({ data})
 
   return (
-    <Loader id={componentId.current} className='flex items-center justify-center'>
+    <Loader id={componentId.current} className='flex items-center justify-center h-[60rem]'>
       <Formik
         innerRef={(instance) => formRef.current = instance!}
         onSubmit={handleUpdate}

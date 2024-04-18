@@ -52,7 +52,7 @@ const ProductForm = (props: Props) => {
     }
   );
 
-  const { trigger } = useMutation('/api/product', {
+  const { trigger: createProduct } = useMutation('/api/product', {
     method: METHOD.POST,
     loading: true,
     url: '/api/product',
@@ -141,7 +141,7 @@ const ProductForm = (props: Props) => {
     if (props.data) {
       updateProduct({ ...payload });
     } else {
-      trigger({ ...payload });
+      createProduct({ ...payload });
     }
     console.log({ payload });
   };
