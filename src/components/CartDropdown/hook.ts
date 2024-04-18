@@ -1,4 +1,4 @@
-import { List } from '@/app/(customer)/list-bill/page';
+import { List } from '@/components/ListBill';
 import { UserPayload } from '@/app/(customer)/user/page';
 import { METHOD } from '@/constants';
 import { PaginationRes } from '@/interfaces';

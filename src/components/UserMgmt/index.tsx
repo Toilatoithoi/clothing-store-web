@@ -13,7 +13,7 @@ import { Formik } from 'formik';
 import TextInput from '../TextInput';
 import ConfirmModal from '../ConfirmModal';
 import Loader from '../Loader';
-import ListBill from '@/app/(customer)/list-bill/page';
+import ListBill from '@/components/ListBill';
 
 
 const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
