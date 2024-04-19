@@ -18,7 +18,6 @@ import LuxonUtils from '@date-io/luxon';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { TextField } from "@material-ui/core";
 import DatePicker from '@/components/DatePicker';
-import { formatDateToString } from '@/utils/datetime';
 import { useUserInfo } from '@/store/globalSWR';
 import Combobox, { ComboboxOption } from '@/components/Combobox';
 import { useUser } from '@/components/CartDropdown/hook';

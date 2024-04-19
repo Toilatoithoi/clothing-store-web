@@ -20,16 +20,15 @@ export const GET = async (req: NextRequest) => {
   if(isBlank(toDate)){
     toDate =  formatDateToString(new Date(), 'yyyy-MM-dd')
   }
-  console.log(fromDate)
-  console.log(toDate)
 
+  toDate = formatDateToString(addDays(toDate!, 1), 'yyyy-MM-dd')
 
   try {
     // tính doanh thu theo ngày tạo 
     const query = `
     SELECT DATE(created_at) as ti, SUM(total_price) as sum
     FROM bill
-    WHERE status = 'SUCCESS' AND created_at >= '${fromDate}' AND created_at <= '${formatDateToString(addDays(toDate!, 1), 'yyyy-MM-dd')}'
+    WHERE status = 'SUCCESS' AND created_at >= '${fromDate}' AND created_at <= '${toDate}'
     GROUP BY ti;
   `
     const results = await prisma.$queryRawUnsafe(query);
