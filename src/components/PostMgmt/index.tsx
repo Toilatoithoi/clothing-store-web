@@ -35,11 +35,7 @@ const PostMgmt = () => {
         show?: boolean;
         data: any;
     } | null>();
-    const [modalPub, setModalPub] = useState<{
-        show?: boolean;
-        data: any;
-    } | null>();
-    const { trigger } = useMutation<PaginationRes<PostRes>>('/api/post', {
+    const { trigger: getPost } = useMutation<PaginationRes<PostRes>>('/api/post', {
         url: '/api/post',
         method: METHOD.GET,
         onSuccess(data, key, config) {
@@ -85,6 +81,7 @@ const PostMgmt = () => {
         componentId: componentId.current,
         onSuccess() {
             refreshData();
+            setModalDel(null);
         }
     })
 
@@ -92,7 +89,7 @@ const PostMgmt = () => {
         const { page, totalPage } = pagination.current;
         if (page < totalPage) {
             gridRef.current?.api?.showLoadingOverlay();
-            trigger({
+            getPost({
                 fetchCount: FETCH_COUNT,
                 page: page + 1,
                 searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
@@ -159,7 +156,6 @@ const PostMgmt = () => {
     const handleCloseModal = () => {
         setModal(null);
     };
-
 
     const handleDelete = () => {
         deletePost({ postId: modalDel?.data.id });
