@@ -2,6 +2,7 @@ import { ORDER_STATUS, ROLES } from '@/constants';
 import { verifyToken } from '@/utils/service';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import {formatDateToString} from '@/utils/datetime'
 import { addDays, subMonths } from 'date-fns';
 import { isBlank } from '@/utils';
 export const GET = async (req: NextRequest) => {
@@ -37,6 +38,6 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json(results)
   } catch (error) {
     console.log(error)
-    return NextResponse.json({ error }, { status: 500 })
+    return NextResponse.json({ error }, { status: 300 })
   }
 }
