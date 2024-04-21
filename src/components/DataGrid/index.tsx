@@ -64,7 +64,7 @@ const DataGrid = forwardRef(
           '.ag-body-viewport'
         ) as HTMLElement;
         if (agBodyViewport) {
-          console.log(agBodyViewport.scrollHeight,agBodyViewport.clientHeight,agBodyViewport)
+          // console.log(agBodyViewport.scrollHeight,agBodyViewport.clientHeight,agBodyViewport)
           if (agBodyViewport.scrollHeight <= agBodyViewport.clientHeight) {
             if (props.onScrollToBottom) {
               props.onScrollToBottom();
