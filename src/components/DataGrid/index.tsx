@@ -38,7 +38,7 @@ const DataGrid = forwardRef(
     const containerRef = useRef<HTMLDivElement>(null);
 
     const dataGridRef = useRef<{
-      // một đối tượng api
+      // một đối tượng api ???
       api?: GridApi;
     }>({});
     useImperativeHandle(

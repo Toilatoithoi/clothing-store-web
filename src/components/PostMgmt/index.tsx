@@ -47,22 +47,22 @@ const PostMgmt = () => {
             });
         },
     });
-    const ImageRenderer = ({ data }: ICellRendererParams) => {
-        if (!data || !data.image) {
-            return null;
-        }
-        return (
-            <Image
-                className="object-contain overflow-hidden"
-                src={data.image}
-                alt="Ảnh bìa"
-                width={70}
-                height={70}
-                style={{ width: 'auto', height: 'auto' }}
-                priority
-            />
-        );
-    };
+    // const ImageRenderer = ({ data }: ICellRendererParams) => {
+    //     if (!data || !data.image) {
+    //         return null;
+    //     }
+    //     return (
+    //         <Image
+    //             className="object-contain overflow-hidden"
+    //             src={data.image}
+    //             alt="Ảnh bìa"
+    //             width={70}
+    //             height={70}
+    //             style={{ width: 'auto', height: 'auto' }}
+    //             priority
+    //         />
+    //     );
+    // };
 
     const stripHtmlTags = (htmlString: string) => {
         const tempDiv = document.createElement('div');
