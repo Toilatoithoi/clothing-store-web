@@ -38,12 +38,13 @@ const DataGrid = forwardRef(
     const containerRef = useRef<HTMLDivElement>(null);
 
     const dataGridRef = useRef<{
-      // một đối tượng api ???
+      // một đối tượng api 
       api?: GridApi;
     }>({});
     useImperativeHandle(
       ref,
       () => ({
+        //  api có để lấy các hàm thao  tác với bảng DataGrid
         api: dataGridRef.current.api,
       }),
       [gridInit]
@@ -63,6 +64,7 @@ const DataGrid = forwardRef(
           '.ag-body-viewport'
         ) as HTMLElement;
         if (agBodyViewport) {
+          console.log(agBodyViewport.scrollHeight,agBodyViewport.clientHeight,agBodyViewport)
           if (agBodyViewport.scrollHeight <= agBodyViewport.clientHeight) {
             if (props.onScrollToBottom) {
               props.onScrollToBottom();
