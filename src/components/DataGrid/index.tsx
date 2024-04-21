@@ -78,13 +78,15 @@ const DataGrid = forwardRef(
           onGridReady={handleGridReady}
           onBodyScroll={(event) => {
             if (event.direction === 'vertical') {
-              const { bottom } = event.api.getVerticalPixelRange()!;
-
-              const rowHeight = event.api.getSizesForCurrentTheme().rowHeight;
-              const rowCount = event.api.getDisplayedRowCount();
-              if (rowHeight * rowCount - bottom <= 0) {
-                props.onScrollToBottom?.();
+              const agBodyViewport: HTMLElement = containerRef.current?.querySelector(
+                '.ag-body-viewport'
+              ) as HTMLElement;
+              if (agBodyViewport) {
+                if (agBodyViewport.offsetHeight + agBodyViewport.scrollTop === agBodyViewport.scrollHeight) {
+                  props.onScrollToBottom?.();
+                }
               }
+
             }
           }}
           defaultColDef={{
