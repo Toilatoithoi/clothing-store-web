@@ -80,6 +80,7 @@ const LoginForm = (props: { onShowRegister(): void }) => {
               onChange={handleChange}
               name="username"
               hasError={!isBlank(errors.username) && touched.username}
+              placeholder='Nhập email'
               errorMessage={errors.username}
               autoComplete='off'
             />

@@ -68,7 +68,7 @@ const CategoryForm = (props: Props) => {
 
   return (
     <Loader id={componentId.current} className='w-screen max-w-screen-sm'>
-      <div className='font-bold mb-[2.4rem]'> Tạo danh mục</div>
+      <div className='font-bold mb-[2.4rem]'>{props.data ? 'Chỉnh sửa danh mục' : 'Tạo danh mục'}</div>
       <Formik
         onSubmit={submit}
         validationSchema={schema}
@@ -77,7 +77,7 @@ const CategoryForm = (props: Props) => {
         {({ values, handleBlur, handleChange, errors, touched, setFieldValue, handleSubmit }) =>
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <TextInput
-              label='Tên'
+              label='Tên danh mục'
               name='name'
               value={values.name}
               onChange={handleChange}

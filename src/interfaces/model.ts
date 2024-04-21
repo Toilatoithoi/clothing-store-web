@@ -67,21 +67,27 @@ export interface Bill {
   full_name: string;
   created_at: string;
   updated_at: string;
+  total_price?: number;
   bill_product: BillProduct[];
 
 }
 
 export interface BillProduct {
-  product_model: {
-    product: {
-      name: string;
-    },
-    price: number;
-    size: number;
-    color: string;
-    image: string;
-  };
+  // product_model: {
+  //   product: {
+  //     name: string;
+  //   },
+  //   price: number;
+  //   size: number;
+  //   color: string;
+  //   image: string;
+  // };
+  product_name: string;
+  color: string;
+  size: string;
+  image: string;
   quantity: number;
+  price: number;
   id: number;
 }
 

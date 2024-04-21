@@ -1,6 +1,6 @@
 'use client';
 import DataGrid, { DataGridHandle } from '@/components/DataGrid';
-import { FETCH_COUNT, METHOD } from '@/constants';
+import { FETCH_COUNT, METHOD, ROLES } from '@/constants';
 import { useMutation } from '@/store/custom';
 import React, { useRef, useState } from 'react';
 import ModalProvider from '../ModalProvider';
@@ -8,12 +8,13 @@ import { ColDef, ColGroupDef } from 'ag-grid-community';
 import ButtonCell, { Edit, Eye, Lock, Trash, Unlock } from '../DataGrid/ButtonCell';
 import { uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
-import { integerFormatter } from '@/utils/grid';
+import { integerFormatter, integerFormatterVND } from '@/utils/grid';
 import { Formik } from 'formik';
 import TextInput from '../TextInput';
 import ConfirmModal from '../ConfirmModal';
 import Loader from '../Loader';
-import ListBill from '@/app/(customer)/list-bill/page';
+import ListBill from '@/components/ListBill';
+
 
 const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
   const gridRef = useRef<DataGridHandle>();
@@ -89,7 +90,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
       maxWidth: 60
     },
     {
-      headerName: 'Tên',
+      headerName: 'Họ tên',
       field: 'name',
       minWidth: 120
     },
@@ -110,7 +111,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
     {
       headerName: 'Tổng chi',
       field: 'totalPrice',
-      valueFormatter: integerFormatter,
+      valueFormatter: integerFormatterVND,
     },
     {
       headerName: '',
@@ -122,7 +123,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
             render: Lock,
             onClick: handleShowModal,
             hide: (data: any) => {
-              return data.is_lock
+              return data.is_lock || inDashboard || data.role === ROLES.ADMIN
             },
 
           },
@@ -130,7 +131,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
             render: Unlock,
             onClick: handleShowModal,
             hide: (data: any) => {
-              return !data.is_lock
+              return !data.is_lock || inDashboard || data.role === ROLES.ADMIN
             },
           },
           {
@@ -171,6 +172,7 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
             className='flex gap-4 items-center'
             onSubmit={handleSubmit}>
             <TextInput
+              label='Tìm kiếm theo họ tên'
               inputClassName='h-[4rem]'
               placeholder='Nhập từ khóa tìm kiếm...'
               name='searchKey'

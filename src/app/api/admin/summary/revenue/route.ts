@@ -2,16 +2,30 @@ import { ORDER_STATUS, ROLES } from '@/constants';
 import { verifyToken } from '@/utils/service';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import {formatDateToString} from '@/utils/datetime'
+import { addDays, subMonths } from 'date-fns';
+import { isBlank } from '@/utils';
 export const GET = async (req: NextRequest) => {
   const user = await verifyToken(req);
   if (user?.role !== ROLES.ADMIN) {
     return NextResponse.json({ code: '' }, { status: 403 });
   }
+  const url = new URL(req.url);
+  let fromDate = url.searchParams.get('fromDate')
+  let toDate = url.searchParams.get('toDate')
+  
+  if(isBlank(fromDate)){
+    fromDate =  formatDateToString(subMonths(new Date(), 1), 'yyyy-MM-dd')
+  }
 
-  const fromDate = '2024-03-01';
-  const toDate = '2024-10-04';
+  if(isBlank(toDate)){
+    toDate =  formatDateToString(new Date(), 'yyyy-MM-dd')
+  }
+
+  toDate = formatDateToString(addDays(toDate!, 1), 'yyyy-MM-dd')
 
   try {
+    // tính doanh thu theo ngày tạo 
     const query = `
     SELECT DATE(created_at) as ti, SUM(total_price) as sum
     FROM bill
@@ -24,6 +38,6 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json(results)
   } catch (error) {
     console.log(error)
-    return NextResponse.json({ error }, { status: 500 })
+    return NextResponse.json({ error }, { status: 300 })
   }
 }

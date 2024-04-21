@@ -55,6 +55,7 @@ export const fetcher = async <T = Record<string, unknown>>(
 
 
 export const uploadFile = async (file: File) => {
+  // upload file thì phải truyền dạng FormData
   const formData = new FormData();
   formData.append('file', file);
   const res = await fetcher('/api/file', METHOD.POST, formData);

@@ -10,7 +10,7 @@ import ButtonCell, { Edit, Trash, Upload } from '../DataGrid/ButtonCell';
 import { uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
 import { ProductRes } from '@/interfaces/model';
-import { integerFormatter } from '@/utils/grid';
+import { integerFormatter, integerFormatterVND} from '@/utils/grid';
 import ProductForm from '../ProductForm';
 import ConfirmModal from '../ConfirmModal';
 import Loader from '../Loader';
@@ -24,7 +24,9 @@ const ProductStatusTranslate: Record<string, string> = {
 
 const ProductMgmt = () => {
   const gridRef = useRef<DataGridHandle>();
+  // khởi tạo pagination
   const pagination = useRef<IPagination>({
+    // để page = 0 và totalPage = 1 để nó luôn bé hơn để query
     page: 0,
     totalCount: 0,
     totalPage: 1,
@@ -41,14 +43,21 @@ const ProductMgmt = () => {
   } | null>();
   const filter = useRef<{ searchKey?: string }>()
 
-  const { trigger } = useMutation<PaginationRes<ProductRes>>('/api/product', {
+  const { trigger: getProduct } = useMutation<PaginationRes<ProductRes>>('/api/product', {
     url: '/api/product',
     method: METHOD.GET,
+    // lần đầu tiên nó query rồi nó add vào
     onSuccess(data, key, config) {
       gridRef.current?.api?.hideOverlay();
+      // khi thành công thì sẽ có data.pagination
       pagination.current = data.pagination;
+      // khi thành công sẽ gọi hàm này để add vào bảng DataGrid
+      // add thêm các phần tử vào bảng
       gridRef.current?.api?.applyTransaction({
+        // add là add những phần tử
         add: data.items,
+        // add index là add vào đâu: getDisplayedRowCount() là add vào cuối
+        // add vào đầu addIndex: 0
         addIndex: gridRef.current.api.getDisplayedRowCount(),
       });
     },
@@ -76,10 +85,14 @@ const ProductMgmt = () => {
   );
 
   const requestData = () => {
+    // có totalPage thì nếu check page bé hơn totalPage thì mới query
+    // từ thằng gridRef có thể gọi ra các hàm của thăng fcon cho thằng cha sử dụng
     const { page, totalPage } = pagination.current;
     if (page < totalPage) {
+      // trước khi query thì showLoadingOverlay để cho người ta biết không thao tác 
       gridRef.current?.api?.showLoadingOverlay();
-      trigger({
+      // query data truyền page hiện tại và fetchCount
+      getProduct({
         fetchCount: FETCH_COUNT,
         page: page + 1,
         searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
@@ -94,7 +107,7 @@ const ProductMgmt = () => {
       maxWidth: 60,
     },
     {
-      headerName: 'Tên',
+      headerName: 'Tên sản phẩm',
       field: 'name',
       flex: 1,
     },
@@ -103,7 +116,7 @@ const ProductMgmt = () => {
       headerName: 'Giá',
       field: 'price.price',
       cellClass: 'text-right',
-      valueFormatter: integerFormatter,
+      valueFormatter: integerFormatterVND,
       maxWidth: 120,
     },
     {
@@ -133,9 +146,13 @@ const ProductMgmt = () => {
       maxWidth: 180,
       pinned: 'right',
       cellRendererParams: {
+        // danh sách các button
         buttons: [
           {
+            // render ra cái gì
             render: Edit,
+            // khi onClick
+            // data là dữ liệu của cả hàng cell 
             onClick: (data: any) => {
               setModal({ show: true, data });
             },
@@ -152,7 +169,7 @@ const ProductMgmt = () => {
             onClick: (data: any) => {
               setModalPub({ show: true, data });
             },
-            // ???
+            // khi ẩn
             hide(data: Record<string, unknown>) {
               return data.status !== 'DRAFT';
             },
@@ -191,12 +208,12 @@ const ProductMgmt = () => {
   };
 
   const refreshData = () => {
-    // ???
     pagination.current = {
       page: 0,
       totalCount: 0,
       totalPage: 1,
     };
+    // hàm của api để update rowdata
     gridRef.current?.api?.updateGridOptions({ rowData: [] });
     requestData();
   };
@@ -214,6 +231,7 @@ const ProductMgmt = () => {
             className='flex gap-4 items-center'
             onSubmit={handleSubmit}>
             <TextInput
+              label='Tìm kiếm theo tên sản phẩm'
               inputClassName='h-[4rem]'
               placeholder='Nhập từ khóa tìm kiếm...'
               name='searchKey'
@@ -239,10 +257,15 @@ const ProductMgmt = () => {
         </button>
       </div>
       <div className="w-full flex-1">
+        {/* lúc grid được load lên sẽ chạy requestData */}
         <DataGrid
+          // gán vào thì nó đã forward vào thằng gridRef này rồi
           ref={gridRef}
           columnDefs={columnDefs}
+          // phải chờ onGridReady thì mới query data
           onGridReady={requestData}
+          // lần thứ 2 trở đi là scoll đến cuối bảng thì hàm onScrollToBottom sẽ check xem là còn data không nếu còn data sẽ query tiếp
+          // rồi add vào cho đến khi nào hết thì thôi
           onScrollToBottom={requestData}
         />
       </div>

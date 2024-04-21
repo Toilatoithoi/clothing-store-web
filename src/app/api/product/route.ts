@@ -19,7 +19,7 @@ export const GET = async (request: NextRequest) => {
   const category_id = url.searchParams.get('categoryId');
   const status = url.searchParams.get('status');
   // lấy từ link url api lấy giá trị fetchCount
-  const fetchCount = Number(url.searchParams.get('fetchCount')) || FETCH_COUNT; // default 8 bản ghi
+  const fetchCount = Number(url.searchParams.get('fetchCount')) || FETCH_COUNT; // default 50 bản ghi
   // orderBy là sort thời gian, giá từ thấp đến cap, giá từ cao đến thấp
   const orderBy = url.searchParams.get('orderBy') as SORT_TYPE ?? SORT_TYPE.TIME; // mặc định sort theo time 
   const isList = url.searchParams.get('isList');
@@ -58,7 +58,6 @@ export const GET = async (request: NextRequest) => {
       ...(data?.role == ROLES.ADMIN && isList == null? {
         status: status ? status : { not: PRODUCT_STATUS.DELETED }
       } : {
-        // ???
         status: PRODUCT_STATUS.PUBLISHED,
       }),
       ...(category != null && {
@@ -159,7 +158,8 @@ export const GET = async (request: NextRequest) => {
     // chỉ sort những thằng lấy ra được sau khi phân trang chứ không phải toàn bộ từ database
     // nên phải dùng order by ở câu truy vấn luôn nên bắt buộc phải có thêm thuộc tính price ở sản phẩm
     // res = res.sort() 
-
+    const total_count = products.length
+    console.log({total_count})
 
     return NextResponse.json({
       items: res,

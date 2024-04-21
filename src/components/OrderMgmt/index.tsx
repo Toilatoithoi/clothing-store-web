@@ -8,8 +8,8 @@ import { ColDef, ColGroupDef } from 'ag-grid-community';
 import ButtonCell, { Edit, Eye, Upload } from '../DataGrid/ButtonCell';
 import { isBlank, uuid } from '@/utils';
 import { IPagination, PaginationRes } from '@/interfaces';
-import { ProductRes } from '@/interfaces/model';
-import { integerFormatter, timeFormatterFromTimestamp } from '@/utils/grid';
+import { Bill, ProductRes } from '@/interfaces/model';
+import { integerFormatter, integerFormatterVND, timeFormatterFromTimestamp } from '@/utils/grid';
 import Loader from '../Loader';
 import BillDetail from '../BillDetail';
 import OrderForm from './OrderForm';
@@ -56,7 +56,7 @@ const OrderMgmt = () => {
     show?: boolean;
     data: any;
   } | null>();
-  const { trigger } = useMutation<PaginationRes<ProductRes>>('/api/bill', {
+  const { trigger } = useMutation<PaginationRes<Bill>>('/api/bill', {
     url: '/api/bill',
     method: METHOD.GET,
     onSuccess(data, key, config) {
@@ -96,13 +96,13 @@ const OrderMgmt = () => {
     {
       headerName: 'Tài khoản',
       field: 'user.username',
-      minWidth: 150,
+      minWidth: 180,
       flex: 1,
     },
     {
       headerName: 'Tên người nhận',
       field: 'full_name',
-      minWidth: 150,
+      minWidth: 180,
       flex: 1,
     },
     {
@@ -118,7 +118,7 @@ const OrderMgmt = () => {
       headerName: 'Tổng tiền',
       field: 'total_price',
       maxWidth: 150,
-      valueFormatter: integerFormatter,
+      valueFormatter: integerFormatterVND,
     },
     {
       headerName: 'Trạng thái',
@@ -189,11 +189,11 @@ const OrderMgmt = () => {
             className='flex gap-8 items-end'
             onSubmit={handleSubmit}>
             <TextInput
-              label='Tìm kiếm'
+              label='Tìm kiếm theo tên người nhận'
               inputClassName='h-[4rem]'
               placeholder='Nhập từ khóa tìm kiếm...'
               name='searchKey'
-              className='w-[20rem]'
+              className='w-[25rem]'
               onChange={handleChange}
               value={values.searchKey}
             />

@@ -133,7 +133,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
     router.push('/user')
   }
 
-  const handleShowLogout = () => {
+  const Logout = () => {
     // chỉ cần thay đổi mutate thì sẽ hiển thị form đăng nhập
     // xoá access_token đi để user_info set lại
     removeKey('access_token')
@@ -203,7 +203,7 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
               <button type="button" onClick={handleUser} className="text-[2.4rem]"><User /></button>
               <div className="text-[2.8rem] cursor-pointer z-10"><CartDropdown /></div>
               <div className="text-[2.8rem]"><Link href={'/list-bill'}><Menu /></Link></div>
-              <button type="button" className='font-bold' onClick={handleShowLogout}>Đăng xuất</button>
+              <button type="button" className='font-bold' onClick={Logout}>Đăng xuất</button>
               {
                 userInfo?.role === ROLES.ADMIN && <Link href={`/cms`} className='font-bold text-[#BC0517]'>Quản trị</Link>
               }

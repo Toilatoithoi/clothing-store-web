@@ -21,6 +21,8 @@ interface DataGridProps extends AgGridReactProps {
 export interface DataGridHandle {
   api?: GridApi;
 }
+// ở thằng con muốn gọi hàm hoặc thuộc tính ở thằng cha thằng cha có thể truyền xuống cho con 1 hàm hoặc thuộc tính
+// khi cha muốn gọi hàm hoặc thuộc tính của thằng con nó sẽ thông qua forwardRef truyền một số hàm của thằng con cho thàng cha sử dụng
 const DataGrid = forwardRef(
   (
     props: DataGridProps,
@@ -30,12 +32,13 @@ const DataGrid = forwardRef(
       | Ref<DataGridHandle | null | undefined>
       | null
   ) => {
+    // ghi đè thuộc tính mặc định
     const { defaultColDef, onGridReady, ...rest } = props;
     const [gridInit, setGridInit] = useState<boolean>(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const dataGridRef = useRef<{
-      // ???
+      // một đối tượng api
       api?: GridApi;
     }>({});
     useImperativeHandle(
@@ -85,6 +88,7 @@ const DataGrid = forwardRef(
             }
           }}
           defaultColDef={{
+            // các thuộct tính mặc định
             resizable: false,
             minWidth: 80,
             ...defaultColDef,
@@ -95,6 +99,7 @@ const DataGrid = forwardRef(
           suppressRowHoverHighlight
           suppressCellFocus
           onViewportChanged={onViewportChanged}
+          // tuỳ vào từng cách dùng có thể ghi đè thuộc tính là props
           {...rest}
         />
       </div>

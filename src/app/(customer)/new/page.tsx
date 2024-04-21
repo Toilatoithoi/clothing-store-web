@@ -123,7 +123,7 @@ const New = () => {
         {
           postData && postData.pagination.totalCount >= fetchCount + count && (
             <button onClick={() => handleValuePage(Number(fetchCount + count))}type='button' className='bg-red-700 text-white text-[1rem] text-center px-9 py-2 rounded-[1.5rem]'>
-              Xem thêm
+              Tiếp
             </button>
           )
         }

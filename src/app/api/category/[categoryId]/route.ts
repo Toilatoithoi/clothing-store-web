@@ -27,6 +27,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { categoryId: 
       },
       data: {
         ...body,
+        // nếu nhập level bằng 1 thì parent_id = null còn không thì bằng parent_id nhập vào nếu không nhập thì sẽ lấy parent_id của category hiện tại 
         parent_id: Number(body.level) === 1 ? null : body.parent_id || category.parent_id
       }
     })

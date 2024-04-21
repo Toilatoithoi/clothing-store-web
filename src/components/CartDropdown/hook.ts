@@ -1,4 +1,4 @@
-import { List } from '@/app/(customer)/list-bill/page';
+import { List } from '@/components/ListBill';
 import { UserPayload } from '@/app/(customer)/user/page';
 import { METHOD } from '@/constants';
 import { PaginationRes } from '@/interfaces';
@@ -59,9 +59,13 @@ export const useCart = () => {
     url: `/api/cart/{product_model_id}`,
     method: METHOD.DELETE,
   });
-  const updateCart = (cart: ProductCart[]) => {
+  const updateCart = (model: ProductCart, override?: boolean) => {
     // hiểu là truyền value cho global state /api/cart
-    mutate(cart);
+    trigger({
+      quantity: model.quantity,
+      product_model_id: model.product_model_id,
+      override,
+    });
   };
 
   // global state dùng key để lấy gia 1 giá trị bất kì

@@ -18,7 +18,6 @@ import LuxonUtils from '@date-io/luxon';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { TextField } from "@material-ui/core";
 import DatePicker from '@/components/DatePicker';
-import { formatDateToString } from '@/utils/datetime';
 import { useUserInfo } from '@/store/globalSWR';
 import Combobox, { ComboboxOption } from '@/components/Combobox';
 import { useUser } from '@/components/CartDropdown/hook';
@@ -69,7 +68,7 @@ const User = () => {
   //   method: METHOD.GET
   // })
 
-  const { data, updateToUser } = useUser({})
+  const { data, updateToUser } = useUser({componentId: componentId.current})
 
 
   useEffect(() => {
@@ -111,7 +110,7 @@ const User = () => {
   console.log({ data})
 
   return (
-    <Loader id={componentId.current} className='flex items-center justify-center'>
+    <Loader id={componentId.current} className='flex items-center justify-center h-[60rem]'>
       <Formik
         innerRef={(instance) => formRef.current = instance!}
         onSubmit={handleUpdate}
@@ -133,7 +132,8 @@ const User = () => {
           handleSubmit,
           touched,
           errors,
-          setFieldValue
+          setFieldValue,
+          isValid
         }) => <form className='w-full flex flex-col gap-8 m-4 p-4 border border-gray-800 ' onSubmit={handleSubmit} >
             <div className='w-full text-center text-[3rem] font-bold text-black'>Thông tin cá nhân</div>
             {/* kiểm tra có lỗi hay không */}
@@ -201,7 +201,7 @@ const User = () => {
               value={values.dob}
               name="dob"
               onChange={handleChange} /> */}
-            <button type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Lưu</button>
+            <button disabled={!isValid}type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Lưu</button>
           </form>}
       </Formik>
     </Loader>

@@ -10,12 +10,19 @@ import ButtonCell, { Edit, Trash } from '../DataGrid/ButtonCell';
 import { uuid } from '@/utils';
 import { Formik } from 'formik';
 import TextInput from '../TextInput';
+import Loader from '../Loader';
+import ConfirmModal from '../ConfirmModal';
 
 
 const CategoryMgmt = () => {
   const gridRef = useRef<DataGridHandle>();
   const componentId = useRef(uuid());
   const [modal, setModal] = useState<{ show?: boolean, data: any } | null>()
+  const [modalDel, setModalDel] = useState<{
+    show?: boolean;
+    data: any;
+  } | null>();
+  
   const filter = useRef<{ searchKey?: string }>()
 
   const { trigger } = useMutation<Record<string, unknown>[]>('/api/category', {
@@ -38,6 +45,7 @@ const CategoryMgmt = () => {
     componentId: componentId.current,
     onSuccess() {
       refreshData();
+      setModalDel(null);
     }
   })
 
@@ -56,7 +64,7 @@ const CategoryMgmt = () => {
       field: 'id',
     },
     {
-      headerName: 'Tên',
+      headerName: 'Tên danh mục',
       field: 'name',
       flex: 1
     },
@@ -80,10 +88,9 @@ const CategoryMgmt = () => {
           {
             render: Trash,
             onClick: (data: any) => {
-              console.log(data)
-              deleteCategory({ categoryId: data.id });
-            }
-          }
+              setModalDel({ show: true, data });
+            },
+          },
         ]
       }
     }
@@ -96,6 +103,14 @@ const CategoryMgmt = () => {
   const handleShowModal = (data?: Record<string, string>) => {
     setModal({ show: true, data })
   }
+
+  const handleDelete = () => {
+    deleteCategory({ categoryId: modalDel?.data.id });
+  };
+
+  const handleCloseModalDel = () => {
+    setModalDel(null);
+  };
 
   const refreshData = () => {
     gridRef.current?.api?.updateGridOptions({ rowData: [] });
@@ -115,6 +130,7 @@ const CategoryMgmt = () => {
             className='flex gap-4 items-center'
             onSubmit={handleSubmit}>
             <TextInput
+              label='Tìm kiếm theo tên danh mục'
               inputClassName='h-[4rem]'
               placeholder='Nhập từ khóa tìm kiếm...'
               name='searchKey'
@@ -127,7 +143,7 @@ const CategoryMgmt = () => {
               type="submit"
               className="btn  bg-[#bc0517] text-white"
             >
-              Tìm kiếm
+              Tìm kiếm 
             </button>
           </form>}
         </Formik>
@@ -145,6 +161,17 @@ const CategoryMgmt = () => {
         onHide={handleCloseModal}
       >
         <CategoryForm onClose={handleCloseModal} onRefresh={refreshData} data={modal?.data} />
+      </ModalProvider>
+      <ModalProvider show={modalDel?.show} onHide={handleCloseModalDel}>
+        <Loader id={componentId.current}>
+          <ConfirmModal
+            title="Xóa bài viết"
+            content="Bạn có chắc chán muốn xóa bài viết này không"
+            type="warning"
+            onCancel={handleCloseModalDel}
+            onConfirm={handleDelete}
+          />
+        </Loader>
       </ModalProvider>
     </div>
   )

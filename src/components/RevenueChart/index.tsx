@@ -8,15 +8,16 @@ import { useSWRWrapper } from '@/store/custom';
 import { METHOD } from '@/constants';
 import { formatDateToString } from '@/utils/datetime';
 import { subMonths } from 'date-fns';
-// ???
-const RevenueChart = () => {
+import { integerFormatterVND } from '@/utils/grid';
 
-  const { data } = useSWRWrapper<{ ti: string, sum: number }[]>('/api/admin/summary/revenue', {
+const RevenueChart = (props:{toDate?: string; fromDate?: string }) => {
+
+  const { data } = useSWRWrapper<{ ti: string, sum: number }[]>(`/api/admin/summary/revenue?fromDate=${props.fromDate}&toDate=${props.toDate}`, {
     url: '/api/admin/summary/revenue',
     method: METHOD.GET,
     params: {
-      fromDate: formatDateToString(subMonths(new Date(), 1), 'yyyy-MM-dd'),
-      toDate: formatDateToString(new Date(), 'yyyy-MM-dd'),
+      fromDate: props.fromDate,
+      toDate: props.toDate,
     }
   })
 
@@ -51,6 +52,7 @@ const RevenueChart = () => {
         fontSize: '12px',
       },
       xDateFormat: '%d/%m/%Y',
+      valueSuffix: ' VND',
     },
     legend: {
       enabled: false,
@@ -66,6 +68,7 @@ const RevenueChart = () => {
       {
         type: 'line',
         name: 'Doanh thu',
+        // truyền dữ liệu
         data: data?.map(item => [
           new Date(item.ti).getTime(),
           item.sum,
@@ -74,7 +77,7 @@ const RevenueChart = () => {
       },
     ],
   };
-  console.log(options)
+  // console.log(options)
   if (!data) {
     return null
   }

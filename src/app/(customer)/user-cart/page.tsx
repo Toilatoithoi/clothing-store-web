@@ -23,7 +23,7 @@ const UserCart = () => {
   const formRef = useRef<FormikProps<UserCartForm>>()
   // điều hướng route
   const router = useRouter();
-  const { addToCart, deleteToCart, data } = useCart();
+  const { updateCart, deleteToCart, data } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
   const timer = useRef<NodeJS.Timeout>()
@@ -59,7 +59,7 @@ const UserCart = () => {
       clearTimeout(timer.current)
     }
     // call api để update value của user-cart
-    addToCart({ ...item, quantity: qty }, true);
+    updateCart({ ...item, quantity: qty }, true);
   }
 
   const handledelete = (item: ProductCart) => {
@@ -69,7 +69,7 @@ const UserCart = () => {
     deleteToCart({ ...item });
   }
   return (
-    <div>
+    <div className='h-[60rem]'>
       <div className='flex items-center justify-center my-[3.2rem]'>
         <div className='font-bold'>Giỏ hàng</div><Right />
         <div>Thanh toán</div><Right />
