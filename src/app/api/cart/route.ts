@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { CreateCartReq } from '@/interfaces/request';
 import { RestError, verifyToken } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
+import { PRODUCT_STATUS } from '@/constants';
 
 
 interface UpdateCartInput {
@@ -23,6 +24,11 @@ export const GET = async (req: NextRequest) => {
       where: {
         user: {
           username: data.username
+        },
+        product_model:{
+          product:{
+            status: PRODUCT_STATUS.PUBLISHED
+          }
         }
       },
       select: {

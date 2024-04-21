@@ -88,6 +88,7 @@ const ProductMgmt = () => {
   const requestData = () => {
     // có totalPage thì nếu check page bé hơn totalPage thì mới query
     // từ thằng gridRef có thể gọi ra các hàm của thăng fcon cho thằng cha sử dụng
+    console.log('request')
     const { page, totalPage } = pagination.current;
     if (page < totalPage) {
       // trước khi query thì showLoadingOverlay để cho người ta biết không thao tác 
