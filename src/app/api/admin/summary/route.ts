@@ -1,4 +1,4 @@
-import { ORDER_STATUS, ROLES } from '@/constants';
+import { ORDER_STATUS, PRODUCT_STATUS, ROLES } from '@/constants';
 import { verifyToken } from '@/utils/service';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
@@ -8,7 +8,11 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json({ code: '' }, { status: 403 });
   }
 
-  const product = await prisma?.product.count();
+  const product = await prisma?.product.count({
+    where:{
+      status: PRODUCT_STATUS.PUBLISHED
+    } 
+  });
   const sold = await prisma?.product_model.aggregate({
     _sum: {
       sold: true,
