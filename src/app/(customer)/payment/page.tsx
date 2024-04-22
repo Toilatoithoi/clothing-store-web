@@ -51,7 +51,7 @@ const Payment = () => {
   const router = useRouter();
   const formRef = useRef<FormikProps<PaymentForm>>()
   // lí do phải cho data vào initialValues vì initialValues chỉ nhận data lần đầu tiên còn ví dụ truyền state vào khi state update nó cũng không ăn
-  const { addToCart, data: dataCart, isLoading, mutate, updateCart } = useCart()
+  const { addToCart, data: getCart, isLoading, mutate, updateCart } = useCart()
   const { addToBill } = useBill({
     componentId: componentId.current,
     onCreateSuccess: (data: Record<string, string>) => {
@@ -59,12 +59,11 @@ const Payment = () => {
       router.push(`/list-bill/${data.id}`)
       // clear cart -> call api clear cart
       mutate() // -> muate key /api/cart  để useSWR query lại api/cart
-
     }
   })
   const [summary, setSummary] = useState({ totalPrice: 0, totalQuantity: 0 });
 
-  const { data: userData } = useUser({})
+  const { data: getUser } = useUser({})
 
   useEffect(() => {
     // [] để chỉ chạy 1 lần đầu tiên 
@@ -72,11 +71,11 @@ const Payment = () => {
   }, [])
   useEffect(() => {
     // [] để chỉ chạy 1 lần đầu tiên 
-    if (dataCart && userData) {
+    if (getCart && getUser) {
       // reduce là một phương thức của JavaScript được sử dụng để tính toán một giá trị duy nhất từ các phần tử của mảng
       // acc tham số này là giá trị tích lũy, nghĩa là giá trị tạm tính tính đến thời điểm hiện tại trong quá trình duyệt qua mảng
       // item tham số này là phần tử hiện tại trong mảng, trong trường hợp này là một đối tượng sản phẩm
-      const summaryQty = dataCart.reduce((acc, item) => ({
+      const summaryQty = getCart.reduce((acc, item) => ({
         totalPrice: acc.totalPrice + item.quantity * item.price,
         totalQuantity: acc.totalQuantity + item.quantity,
       }), { totalPrice: 0, totalQuantity: 0 });
@@ -84,13 +83,13 @@ const Payment = () => {
       // setValue cho formik
       formRef.current?.setValues({
         ...formRef.current.values,
-        productCart: dataCart,
-        email: userData?.username,
-        phone: userData?.phoneNumber,
-        name: userData?.name
+        productCart: getCart,
+        email: getUser?.username,
+        phone: getUser?.phoneNumber,
+        name: getUser?.name
       })
     }
-  }, [dataCart, userData])
+  }, [getCart, getUser])
   // giá trị
   // const [email, setEmail] = useState('')
   // lỗi
@@ -154,10 +153,10 @@ const Payment = () => {
     email: yup.string().label('Email').required().email('Email không hợp lệ'),
     // rỗng và khớp với kiểu sđt
     phone: yup.string().label('Số điện thoại').required().matches(/^(?:[0-9] ?){6,14}[0-9]$/, 'Số điện thoại không hợp lệ'),
-    // city: yup.string().label('Tỉnh/Thành phố').required(),
-    // district: yup.string().label('Quận/huyện').required(),
-    // wards: yup.string().label('Phường/xã').required(),
-    // address: yup.string().label('Địa chỉ').required(),
+    city: yup.string().label('Tỉnh/Thành phố').required(),
+    district: yup.string().label('Quận/huyện').required(),
+    wards: yup.string().label('Phường/xã').required(),
+    address: yup.string().label('Địa chỉ').required(),
   })
   return (
     <Loader id={componentId.current} loading={isLoading} >
@@ -171,10 +170,10 @@ const Payment = () => {
         // giá trị khởi tạo ban đầu
         initialValues={{
           // chú ý cái tên trong initialValues phải giống kiểu và tên với values trong handlePayment do trong onSubmit
-          name: userData?.name || '',
-          email: userData?.username || '',
-          phone: userData?.phoneNumber || '',
-          productCart: dataCart || [],
+          name: getUser?.name || '',
+          email: getUser?.username || '',
+          phone: getUser?.phoneNumber || '',
+          productCart: getCart || [],
         }}
 
         validationSchema={schema}

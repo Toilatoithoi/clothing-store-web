@@ -97,7 +97,8 @@ const UserMgmt = ({ inDashboard }: { inDashboard?: boolean }) => {
     {
       headerName: 'username',
       field: 'username',
-      minWidth: 300
+      minWidth: 300,
+      flex: 1,
     },
     {
       headerName: 'Số điện thoại',
