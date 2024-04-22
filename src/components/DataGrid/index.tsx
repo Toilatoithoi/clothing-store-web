@@ -48,7 +48,7 @@ const DataGrid = forwardRef(
       }),
       [gridInit]
     );
-
+    const loading = useRef(false)
     const handleGridReady = (event: GridReadyEvent) => {
       dataGridRef.current.api = event.api;
       setGridInit(true);
@@ -82,11 +82,18 @@ const DataGrid = forwardRef(
                 '.ag-body-viewport'
               ) as HTMLElement;
               if (agBodyViewport) {
-                if (agBodyViewport.offsetHeight + agBodyViewport.scrollTop === agBodyViewport.scrollHeight) {
-                  props.onScrollToBottom?.();
+                if (!loading.current) {
+                  if (agBodyViewport.scrollHeight - agBodyViewport.offsetHeight - agBodyViewport.scrollTop <= 15) {
+                    loading.current = true;
+                    props.onScrollToBottom?.();
+                  }
+                } else {
+                  if (agBodyViewport.scrollHeight - agBodyViewport.offsetHeight - agBodyViewport.scrollTop > 15) {
+                    loading.current = false;
+                  }
                 }
-              }
 
+              }
             }
           }}
           defaultColDef={{
