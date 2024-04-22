@@ -28,6 +28,7 @@ import { useRouter } from 'next/navigation';
 import { PaginationRes } from '@/interfaces';
 import SearchBox from '../SearchBox';
 import { ROLES } from '@/constants';
+import { Tooltip } from 'react-tooltip';
 
 interface HeaderProps {
 
@@ -200,9 +201,17 @@ const Header = (props: HeaderProps) => { //jsx, không phai html
             </div>
             {/* nếu đăng nhập rồi isAuthenticated là true sẽ show ra biểu tượng */}
             {appStatus?.isAuthenticated ? <div className="flex item-center gap-[1.6rem]">
-              <button type="button" onClick={handleUser} className="text-[2.4rem]"><User /></button>
-              <div className="text-[2.8rem] cursor-pointer z-10"><CartDropdown /></div>
-              <div className="text-[2.8rem]"><Link href={'/list-bill'}><Menu /></Link></div>
+              <button type="button" onClick={handleUser} className="text-[1.6rem] z-10">
+                <User data-tooltip-id="my-tooltip" data-tooltip-content={'Thông tin cá nhân'} />
+                <Tooltip id="my-tooltip" />
+              </button>
+              <div className="text-[1.6rem] cursor-pointer z-10">
+                <CartDropdown  />
+              </div>
+              <div className="text-[1.6rem] z-10">
+                <Link href={'/list-bill'}><Menu data-tooltip-id="my-tooltip" data-tooltip-content={'Lịch sử mua hàng'}/></Link>
+                <Tooltip id="my-tooltip" />
+              </div>
               <button type="button" className='font-bold' onClick={Logout}>Đăng xuất</button>
               {
                 userInfo?.role === ROLES.ADMIN && <Link href={`/cms`} className='font-bold text-[#BC0517]'>Quản trị</Link>
