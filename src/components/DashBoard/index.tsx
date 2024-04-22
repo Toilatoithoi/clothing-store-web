@@ -31,7 +31,7 @@ const Dashboard = () => {
           <div className="h-[1rem] bg-blue-400 w-full"></div>
           <div className="flex flex-col w-full items-center p-2 gap-2">
             <div className="text-[1.8rem] flex gap-2 items-center">
-              Tổng sản phẩm
+              Tổng sản phẩm đang bán
             </div>
             <div className="font-bold text-[2.4rem]">
               {formatNumber(summary?.count?.product ?? 0)}
