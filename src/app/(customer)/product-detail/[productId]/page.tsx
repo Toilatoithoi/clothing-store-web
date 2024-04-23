@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation';
 import { useAppStatus } from '@/store/globalSWR';
 import Link from 'next/link';
 import { mutate } from 'swr';
+import { Elsie } from 'next/font/google';
 
 interface ImageProp {
   original: string,
@@ -136,7 +137,16 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   }, [product])
 
   const handleAddCart = () => {
-    const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
+    let selectedModel;
+    if (selectedSize && selectedColor) {
+      selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
+    } else {
+      if (selectedColor) {
+        selectedModel = MapSizeColorToModel.current["null" + selectedColor] ?? product?.product_model[0];
+      } else {
+        selectedModel = MapSizeColorToModel.current[selectedSize + "null"] ?? product?.product_model[0];
+      }
+    }
     addToCart({
       // thêm vào chỉ lấy quantity và product_model_id
       // lý do dùng global state là để các compoment không phụ thuộc
@@ -150,7 +160,16 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
     setQuantity(1);
   }
   const handleAddPayment = () => {
-    const selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
+    let selectedModel;
+    if (selectedSize && selectedColor) {
+      selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
+    } else {
+      if (selectedColor) {
+        selectedModel = MapSizeColorToModel.current["null" + selectedColor] ?? product?.product_model[0];
+      } else {
+        selectedModel = MapSizeColorToModel.current[selectedSize + "null"] ?? product?.product_model[0];
+      }
+    }
     addToCart({
       // thêm vào chỉ lấy quantity và product_model_id
       // lý do dùng global state là để các compoment không phụ thuộc
@@ -170,10 +189,14 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
   // mặc định khi render ban đầu sẽ hiển thị MapSizeColorToModel đầu tiên của product nếu không chọn
   // selectdModel là product_model chọn
   let selectedModel;
-  if (selectedSize) {
+  if (selectedSize && selectedColor) {
     selectedModel = MapSizeColorToModel.current[selectedSize + selectedColor] ?? product?.product_model[0];
   } else {
-    selectedModel = MapSizeColorToModel.current["null" + selectedColor] ?? product?.product_model[0];
+    if(selectedColor){
+      selectedModel = MapSizeColorToModel.current["null" + selectedColor] ?? product?.product_model[0];
+    }else {
+      selectedModel = MapSizeColorToModel.current[selectedSize + "null"] ?? product?.product_model[0];
+    }
   }
   return (
     <div className='w-full  h-full flex-1'>
