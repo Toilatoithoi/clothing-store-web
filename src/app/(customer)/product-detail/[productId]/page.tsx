@@ -23,7 +23,6 @@ import { useRouter } from 'next/navigation';
 import { useAppStatus } from '@/store/globalSWR';
 import Link from 'next/link';
 import { mutate } from 'swr';
-import { Elsie } from 'next/font/google';
 
 interface ImageProp {
   original: string,
