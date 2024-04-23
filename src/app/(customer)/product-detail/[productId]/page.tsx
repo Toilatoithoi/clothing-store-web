@@ -165,7 +165,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
     // nếu muốn ghi đè thì thêm / không nó sẽ hiển thị tiếp nối url hiện tại
     router.push('/payment')
   }
-  console.log({ sizes, MapSizeColorToModel: MapSizeColorToModel.current })
+  console.log({ MapSizeColorToModel: MapSizeColorToModel.current })
   // chon product_model mong muốn bằng MapSizeColorToModel.current[key] lấy giá trị
   // mặc định khi render ban đầu sẽ hiển thị MapSizeColorToModel đầu tiên của product nếu không chọn
   // selectdModel là product_model chọn
