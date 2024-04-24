@@ -52,6 +52,8 @@ const ProductForm = (props: Props) => {
     }
   );
 
+  console.log(product)
+
   const { trigger: createProduct } = useMutation('/api/product', {
     method: METHOD.POST,
     loading: true,
@@ -96,41 +98,73 @@ const ProductForm = (props: Props) => {
   const submit = async (values: ProductValues) => {
     setLoading(true);
     const model: ProductModelReq[] = [];
-      
-    for (let i = 0; i < values.colors.length; i++) {
-      const color = values.colors[i];
-      // lấy được file theo key là color
-      const file = values.fileConfig[color];
-      let image = '';
-      // file có thể là string vì lúc sửa chỉ cần load file string lên nếu không thay đổi dile thì file vẫn là string thì không cần upload nữa
-      if (file && typeof file !== 'string') {
-        try {
-          // upload file lên cloudinary
-          const res = await uploadFile(file);
-          // thu về url sau khi upload ảnh
-          image = res.url as string;
-        } catch (error) {}
-      } else if (typeof file === 'string') {
-        image = file;
-      }
-      // for sizes tạo model
-      for (let j = 0; j < values.sizes.length; j++) {
-        const size = values.sizes[j];
-        const key = `${color}-${size}`;
+    if (values.colors.length > 0 && values.sizes.length > 0) {
+      for (let i = 0; i < values.colors.length; i++) {
+        const color = values.colors[i];
+        // lấy được file theo key là color
+        const file = values.fileConfig[color];
+        let image = '';
+        // file có thể là string vì lúc sửa chỉ cần load file string lên nếu không thay đổi dile thì file vẫn là string thì không cần upload nữa
+        if (file && typeof file !== 'string') {
+          try {
+            // upload file lên cloudinary
+            const res = await uploadFile(file);
+            // thu về url sau khi upload ảnh
+            image = res.url as string;
+          } catch (error) { }
+        } else if (typeof file === 'string') {
+          image = file;
+        }
+        // for sizes tạo model
+        for (let j = 0; j < values.sizes.length; j++) {
+          const size = values.sizes[j];
+          const key = `${color}-${size}`;
 
-        model.push({
-          color,
-          size,
-          // dự vào key để lấy ra giá và số lượng
-          price: Number(values.priceConfig[key] ?? values.price),
-          stock: Number(values.quantityConfig[key]),
-          image,
-          // id dùng cho lúc sửa
-          id: values.idModelConfig?.[key],
-        });
+          model.push({
+            color,
+            size,
+            // dự vào key để lấy ra giá và số lượng
+            price: Number(values.priceConfig[key] ?? values.price),
+            stock: Number(values.quantityConfig[key]),
+            image,
+            // id dùng cho lúc sửa
+            id: values.idModelConfig?.[key],
+          });
+        }
+      }
+    } else {
+      if (values.colors.length > 0 && values.sizes.length == 0) {
+        for (let i = 0; i < values.colors.length; i++) {
+          const color = values.colors[i];
+          // lấy được file theo key là color
+          const file = values.fileConfig[color];
+          let image = '';
+          // file có thể là string vì lúc sửa chỉ cần load file string lên nếu không thay đổi dile thì file vẫn là string thì không cần upload nữa
+          if (file && typeof file !== 'string') {
+            try {
+              // upload file lên cloudinary
+              const res = await uploadFile(file);
+              // thu về url sau khi upload ảnh
+              image = res.url as string;
+            } catch (error) { }
+          } else if (typeof file === 'string') {
+            image = file;
+          }
+          // for sizes tạo model
+          const key = `${color}-'null'`;
+
+          model.push({
+            color,
+            // dự vào key để lấy ra giá và số lượng
+            price: Number(values.priceConfig[key] ?? values.price),
+            stock: Number(values.quantityConfig[key]),
+            image,
+            // id dùng cho lúc sửa
+            id: values.idModelConfig?.[key],
+          });
+        }
       }
     }
-
     const payload: CreateProductReq = {
       model,
       name: values.name,
@@ -247,7 +281,7 @@ const ProductForm = (props: Props) => {
                 <FieldContainer label="Mô tả" className="col-span-2">
                   <Editor data={values.description} onChange={(data) => setFieldValue('description', data)} />
                 </FieldContainer>
-                
+
                 {/* render kích cỡ */}
                 <FieldContainer label="Kích cỡ" className="col-span-2">
                   <div>
@@ -343,75 +377,167 @@ const ProductForm = (props: Props) => {
                     </div>
                   </div>
                 </FieldContainer>
-                <FieldContainer label="Cấu hính giá" className="col-span-2">
-                  <div className="w-full">
-                    <table className="w-full border-collapse border border-slate-500">
-                      <thead>
-                        <tr>
-                          <th className="border border-slate-600 text-center">
-                            Ảnh
-                          </th>
-                          <th className="border border-slate-600 text-center">
-                            Màu sắc
-                          </th>
-                          <th className="border border-slate-600 text-center">
-                            Kích cỡ
-                          </th>
-                          <th className="border border-slate-600 text-center">
-                            Giá
-                          </th>
-                          <th className="border border-slate-600 text-center">
-                            Số lượng
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {/* for theo colors */}
-                        {values.colors.map((color, idx) => {
-                          // for theo sizes mỗi size sẽ một hàng
-                          return values.sizes.map((size, sizeIdx) => {
-                            // key để định danh đối tượng giá và size của đối tượng nào
-                            const key = `${color}-${size}`;
-                            return (
-                              <tr key={key}>
-                                {sizeIdx === 0 && (
-                                  <td
-                                    // rowSpan là chiếm bao nhiêu dòng do ảnh chỉ cần 1 dòng cho tất cả các kích cỡ
-                                    rowSpan={values.sizes.length}
-                                    className="border border-slate-600 text-center w-[15rem]"
-                                  >
-                                    <div className="w-full flex items-center justify-center p-2 min-w-[10rem] min-h-[20rem] h-full">
-                                      {/* do image chỉ liên đến màu sắc nên key chỉ là color */}
-                                      <ImageUploader
-                                        initImage={
-                                          typeof values.fileConfig[color] ===
-                                          'string'
-                                            ? (values.fileConfig[
+                <FieldContainer label="Model sản phẩm" className="col-span-2">
+                  {
+                    values.colors.length != 0 && values.sizes.length != 0 && <div className="w-full">
+                      <table className="w-full border-collapse border border-slate-500">
+                        <thead>
+                          <tr>
+                            <th className="border border-slate-600 text-center">
+                              Ảnh
+                            </th>
+                            <th className="border border-slate-600 text-center">
+                              Màu sắc
+                            </th>
+                            <th className="border border-slate-600 text-center">
+                              Kích cỡ
+                            </th>
+                            <th className="border border-slate-600 text-center">
+                              Giá
+                            </th>
+                            <th className="border border-slate-600 text-center">
+                              Số lượng
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {/* for theo colors */}
+                          {values.colors.map((color, idx) => {
+                            // for theo sizes mỗi size sẽ một hàng
+                            return values.sizes.map((size, sizeIdx) => {
+                              // key để định danh đối tượng giá và size của đối tượng nào
+                              const key = `${color}-${size}`;
+                              return (
+                                <tr key={key}>
+                                  {sizeIdx === 0 && (
+                                    <td
+                                      // rowSpan là chiếm bao nhiêu dòng do ảnh chỉ cần 1 dòng cho tất cả các kích cỡ
+                                      rowSpan={values.sizes.length}
+                                      className="border border-slate-600 text-center w-[15rem]"
+                                    >
+                                      <div className="w-full flex items-center justify-center p-2 min-w-[10rem] min-h-[20rem] h-full">
+                                        {/* do image chỉ liên đến màu sắc nên key chỉ là color */}
+                                        <ImageUploader
+                                          initImage={
+                                            typeof values.fileConfig[color] ===
+                                              'string'
+                                              ? (values.fileConfig[
                                                 color
                                               ] as string)
-                                            : null
+                                              : null
+                                          }
+                                          onChange={(file) =>
+                                            setFieldValue(
+                                              `fileConfig[${color}]`,
+                                              file
+                                            )
+                                          }
+                                        />
+                                      </div>
+                                    </td>
+                                  )}
+                                  {sizeIdx === 0 && (
+                                    <td
+                                      // rowSpan là chiếm bao nhiêu dòng do màu sắc chỉ cần 1 dòng cho tất cả các kích cỡ
+                                      rowSpan={values.sizes.length}
+                                      className="border border-slate-600 text-center"
+                                    >
+                                      {color}
+                                    </td>
+                                  )}
+                                  <td className="border border-slate-600 text-center">
+                                    {size}
+                                  </td>
+                                  <td className="border border-slate-600 text-center">
+                                    <div className="min-w-[5rem] w-full">
+                                      <TextInput
+                                        name={`priceConfig[${key}]`}
+                                        onChange={handleChange}
+                                        value={
+                                          // nếu values.priceConfig[key] rỗng thì lấy giá chung ở input giá
+                                          values.priceConfig[key] ?? values.price
                                         }
-                                        onChange={(file) =>
-                                          setFieldValue(
-                                            `fileConfig[${color}]`,
-                                            file
-                                          )
-                                        }
+                                        className="w-full"
+                                        type="number"
                                       />
                                     </div>
                                   </td>
-                                )}
-                                {sizeIdx === 0 && (
-                                  <td
-                                  // rowSpan là chiếm bao nhiêu dòng do màu sắc chỉ cần 1 dòng cho tất cả các kích cỡ
-                                    rowSpan={values.sizes.length}
-                                    className="border border-slate-600 text-center"
-                                  >
-                                    {color}
+                                  <td className="border border-slate-600 text-center">
+                                    <div className="min-w-[5rem] w-full">
+                                      <TextInput
+                                        name={`quantityConfig[${key}]`}
+                                        onChange={handleChange}
+                                        value={values.quantityConfig[key] ?? 0}
+                                        className="w-full"
+                                        type="number"
+                                      />
+                                    </div>
                                   </td>
-                                )}
-                                <td className="border border-slate-600 text-center">
-                                  {size}
+                                </tr>
+                              );
+                            });
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  }
+                  {
+                    values.colors.length != 0 && values.sizes.length == 0 && <div className="w-full">
+                      <table className="w-full border-collapse border border-slate-500">
+                        <thead>
+                          <tr>
+                            <th className="border border-slate-600 text-center">
+                              Ảnh
+                            </th>
+                            <th className="border border-slate-600 text-center">
+                              Màu sắc
+                            </th>
+                            <th className="border border-slate-600 text-center">
+                              Giá
+                            </th>
+                            <th className="border border-slate-600 text-center">
+                              Số lượng
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {/* for theo colors */}
+                          {values.colors.map((color, idx) => {
+                            // key để định danh đối tượng giá và size của đối tượng nào
+                            const key = `${color}-'null'`;
+                            return (
+                              <tr key={key}>
+                                <td
+                                  // rowSpan là chiếm bao nhiêu dòng do ảnh chỉ cần 1 dòng cho tất cả các kích cỡ
+                                  // rowSpan={values.colors.length}
+                                  className="border border-slate-600 text-center w-[15rem]"
+                                >
+                                  <div className="w-full flex items-center justify-center p-2 min-w-[10rem] min-h-[20rem] h-full">
+                                    {/* do image chỉ liên đến màu sắc nên key chỉ là color */}
+                                    <ImageUploader
+                                      initImage={
+                                        typeof values.fileConfig[color] ===
+                                          'string'
+                                          ? (values.fileConfig[
+                                            color
+                                          ] as string)
+                                          : null
+                                      }
+                                      onChange={(file) =>
+                                        setFieldValue(
+                                          `fileConfig[${color}]`,
+                                          file
+                                        )
+                                      }
+                                    />
+                                  </div>
+                                </td>
+                                <td
+                                  // rowSpan là chiếm bao nhiêu dòng do màu sắc chỉ cần 1 dòng cho tất cả các kích cỡ
+                                  // rowSpan={values.colors.length}
+                                  className="border border-slate-600 text-center"
+                                >
+                                  {color}
                                 </td>
                                 <td className="border border-slate-600 text-center">
                                   <div className="min-w-[5rem] w-full">
@@ -440,13 +566,12 @@ const ProductForm = (props: Props) => {
                                 </td>
                               </tr>
                             );
-                          });
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  }
                 </FieldContainer>
-
                 <div className="flex gap-2 col-span-2 mt-[5rem]">
                   <button
                     type="button"

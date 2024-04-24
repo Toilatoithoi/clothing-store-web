@@ -80,7 +80,7 @@ export enum PRODUCT_STATUS {
 
 export interface ProductModelReq {
   color: string;
-  size: string;
+  size?: string;
   price: number;
   stock: number;
   image: string;
