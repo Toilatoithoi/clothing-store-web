@@ -6,7 +6,7 @@ import TextInput from '../TextInput';
 import Dropdown from '../Dropdown';
 import Close from '@/assets/svg/x-circle.svg';
 import * as yup from 'yup';
-const Editor = dynamic(() => import('../Editor'));
+const Editor = dynamic(() => import('../Editor'), {ssr: false});
 import FieldContainer from '../FieldContainer';
 import './style.scss';
 import dynamic from 'next/dynamic';
@@ -183,6 +183,7 @@ const ProductForm = (props: Props) => {
   const schema = yup.object().shape({
     name: yup.string().label('Tên').required(),
     price: yup.string().label('Giá').required(),
+    categoryId: yup.string().label('Danh mục').required(),
   });
 
   const getInitialValues = (product?: ProductDetail): ProductValues => {
@@ -273,7 +274,7 @@ const ProductForm = (props: Props) => {
                 />
 
                 <CategoryPicker
-                  label="Danh mục "
+                  label="Danh mục"
                   level="2"
                   selected={values.categoryId}
                   onChange={(value) => setFieldValue('categoryId', value)}

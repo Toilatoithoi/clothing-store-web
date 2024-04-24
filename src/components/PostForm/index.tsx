@@ -6,7 +6,7 @@ import TextInput from '../TextInput';
 import Dropdown from '../Dropdown';
 import Close from '@/assets/svg/x-circle.svg';
 import * as yup from 'yup';
-const Editor = dynamic(() => import('../Editor'));
+const Editor = dynamic(() => import('../Editor'), {ssr: false});
 import FieldContainer from '../FieldContainer';
 import dynamic from 'next/dynamic';
 import ImageUploader from '../ImageUploader';
