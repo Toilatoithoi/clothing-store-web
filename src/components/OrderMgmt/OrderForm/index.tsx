@@ -15,6 +15,7 @@ type Props = {
   onClose(): void;
   onRefresh(): void;
   data?: any;
+  isCusomer?: boolean;
 };
 interface IOrderValues {
   status?: string;
@@ -60,7 +61,7 @@ const OrderForm = (props: Props) => {
         onSubmit={submit}
         // validationSchema={schema}
         initialValues={
-          props.data ?? ({ status: '', reason: '' } as IOrderValues)
+        props.isCusomer?({ status: ORDER_STATUS.CANCELED, reason: '' } as IOrderValues) :  props.data  
         }
         validationSchema={schema}
       >

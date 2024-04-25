@@ -329,6 +329,7 @@ const ListBill = ({ username }: { username?: string }) => {
       <ModalProvider show={modalCancel?.show} onHide={handleCloseModalCancel}>
         {modalCancel?.data && (
           <OrderForm
+          isCusomer
             data={modalCancel?.data}
             onClose={handleCloseModalCancel}
             onRefresh={refreshData}

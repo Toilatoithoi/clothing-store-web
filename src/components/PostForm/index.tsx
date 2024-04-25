@@ -166,6 +166,7 @@ const PostForm = (props: Props) => {
               touched,
               setFieldValue,
               handleSubmit,
+              isValid
             }) => (
               <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 <div className='w-full'>
@@ -202,7 +203,7 @@ const PostForm = (props: Props) => {
                   >
                     Hủy
                   </button>
-                  <button type="submit" className="btn-primary flex-1">
+                  <button disabled={!isValid} type="submit" className="btn-primary flex-1">
                     Xác nhận
                   </button>
                 </div>

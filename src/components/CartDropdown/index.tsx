@@ -42,7 +42,8 @@ const CartDropdown = () => {
           {data?.length != 0 ? summary.totalQuantity ?? '0': '0'}
         </div>
       </div>
-      <div className='cart-menu absolute border top-full right-0 w-[30rem] p-6 min-h-[40rem] bg-white border-black'>
+      <div className='cart-menu flex flex-col absolute border top-full right-0 w-[30rem] py-6  min-h-[40rem] bg-white border-black '>
+        <div className='flex flex-col flex-1 max-h-[20rem] overflow-y-auto p-6'>
         {
           summary.totalPrice > 0  && data?.length != 0 ? data?.map(item => <div key={item.id} className='flex gap-2 text-[1rem] pb-2 border-b-2 border-gray-300'>
             <div>
@@ -63,7 +64,8 @@ const CartDropdown = () => {
           </div>
           )
             : <div className='text-[1.4rem] text-center'> Chưa có sản phẩm nào </div>}
-        <div className='absolute bottom-0 mb-3'>
+        </div>
+        <div className='mt-auto mb-3 p-6'>
           {summary.totalPrice > 0 && data?.length != 0 && (
             <div className='text-center text-[1.6rem] font-[700] border-b-2 border-gray-300 pb-2'>
               <div>Tổng cộng: {formatNumber(summary.totalPrice)} VND</div>
