@@ -69,7 +69,7 @@ const UserCart = () => {
     deleteToCart({ ...item });
   }
   return (
-    <div className='h-[60rem]'>
+    <div className='h-[60rem] overflow-y-auto mb-4'>
       <div className='flex items-center justify-center my-[3.2rem]'>
         <div className='font-bold'>Giỏ hàng</div><Right />
         <div>Thanh toán</div><Right />
