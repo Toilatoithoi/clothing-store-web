@@ -71,5 +71,11 @@ body {
   &-primary {
     background-color: var(--primary);
     color: white;
+    &:disabled{
+      opacity: 0.4;
+    }
+  }
+  &:disabled{
+    opacity: 0.4;
   }
 }

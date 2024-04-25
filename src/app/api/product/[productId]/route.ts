@@ -37,12 +37,13 @@ export const PUT = async (
         category_id: body.categoryId,
         price: body.price,
         product_model: {
-          update: body.model.map(item => ({
+          update: body.model.filter(item=> item.id).map(item => ({
             where: {
               id: item.id!
             },
             data: item
-          }))
+          })),
+          create: body.model.filter(item => !item.id)
         }
       },
     });

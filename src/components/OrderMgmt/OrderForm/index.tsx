@@ -62,6 +62,7 @@ const OrderForm = (props: Props) => {
         initialValues={
           props.data ?? ({ status: '', reason: '' } as IOrderValues)
         }
+        validationSchema={schema}
       >
         {({
           values,
@@ -71,6 +72,7 @@ const OrderForm = (props: Props) => {
           touched,
           setFieldValue,
           handleSubmit,
+          isValid
         }) => (
           userInfo && <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             {
@@ -151,7 +153,7 @@ const OrderForm = (props: Props) => {
               >
                 Hủy
               </button>
-              <button type="submit" className="btn-primary flex-1">
+              <button disabled={!isValid} type="submit" className="btn-primary flex-1">
                 Xác nhận
               </button>
             </div>

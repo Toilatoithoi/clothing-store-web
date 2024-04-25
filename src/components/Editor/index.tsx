@@ -15,7 +15,6 @@ interface EditorProps {
 
 const Editor = (props: EditorProps) => {
   const editorRef = React.useRef<CustomEditor>();
-  console.log(props)
 
   return (
     <div className={`h-full editor`}>

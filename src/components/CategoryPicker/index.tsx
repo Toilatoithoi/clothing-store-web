@@ -14,6 +14,11 @@ const CategoryPicker = (props: Props) => {
       ...!isBlank(props.level) && {
         level: props.level
       }
+    },
+    onSuccess(data){
+      if(data[0]?.id){
+        props.onChange?.(data[0].id as string)
+      }
     }
   })
   return (

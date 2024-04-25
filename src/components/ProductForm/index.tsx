@@ -32,6 +32,8 @@ interface ProductValues {
   // danh sách màu sắc và size hiển thị 
   colors: string[];
   sizes: string[];
+  rawSizes: string[];
+  rawColors: string[];
   // danh sách màu sắc và size theo product_model ở input thêm
   sizeTmp?: string;
   colorTmp?: string;
@@ -44,6 +46,7 @@ interface ProductValues {
 
 const ProductForm = (props: Props) => {
   const componentId = useRef(uuid());
+  const isModify = props.data != null;
   const [loading, setLoading] = useState(false);
   const { data: product, isLoading } = useSWRWrapper<ProductDetail>(
     props.data ? `/api/product/${props.data?.id}` : null,
@@ -96,7 +99,8 @@ const ProductForm = (props: Props) => {
   );
 
   const submit = async (values: ProductValues) => {
-    setLoading(true);
+    // setLoading(true);
+    console.log(values)
     const model: ProductModelReq[] = [];
     if (values.colors.length > 0 && values.sizes.length > 0) {
       for (let i = 0; i < values.colors.length; i++) {
@@ -151,7 +155,7 @@ const ProductForm = (props: Props) => {
             image = file;
           }
           // for sizes tạo model
-          const key = `${color}-'null'`;
+          const key = `${color}`;
 
           model.push({
             color,
@@ -200,11 +204,16 @@ const ProductForm = (props: Props) => {
         fileConfig: {},
         priceConfig: {},
         quantityConfig: {},
+        rawColors: [],
+        rawSizes: []
       };
       values.idModelConfig = {};
 
       product.product_model.forEach((model) => {
-        const key = `${model.color}-${model.size}`;
+        let key = `${model.color}-${model.size}`;
+        if(!model.size){
+          key = model.color
+        }
 
         if (!values.colors.includes(model.color)) {
           values.colors.push(model.color);
@@ -217,6 +226,9 @@ const ProductForm = (props: Props) => {
         values.idModelConfig![key] = model.id!;
         values.fileConfig[model.color] = model.image;
       });
+      values.sizes = values.sizes.filter(item => item);
+      values.rawColors = values.colors;
+      values.rawSizes = values.sizes;
       return values;
     }
 
@@ -227,6 +239,8 @@ const ProductForm = (props: Props) => {
       priceConfig: {},
       quantityConfig: {},
       fileConfig: {},
+      rawColors:['Trắng', 'Đen'],
+      rawSizes: ['S', 'M', 'L', 'XL']
     };
   };
 
@@ -251,6 +265,7 @@ const ProductForm = (props: Props) => {
               touched,
               setFieldValue,
               handleSubmit,
+              isValid
             }) => (
               <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>
                 <TextInput
@@ -276,6 +291,8 @@ const ProductForm = (props: Props) => {
                 <CategoryPicker
                   label="Danh mục"
                   level="2"
+                  errorMessage={errors.categoryId}
+                  hasError={touched.categoryId && !isBlank(errors.categoryId)}
                   selected={values.categoryId}
                   onChange={(value) => setFieldValue('categoryId', value)}
                 />
@@ -284,7 +301,7 @@ const ProductForm = (props: Props) => {
                 </FieldContainer>
 
                 {/* render kích cỡ */}
-                <FieldContainer label="Kích cỡ" className="col-span-2">
+                {(!isModify || values.sizes.length >0) && <FieldContainer label="Kích cỡ" className="col-span-2">
                   <div>
                     <div className="flex gap-4 py-8">
                       {values.sizes?.map((item) => (
@@ -293,7 +310,7 @@ const ProductForm = (props: Props) => {
                           key={item}
                         >
                           {item}
-                          <div
+                         {!values.rawSizes.includes(item) &&  <div
                             // xoá kích cỡ
                             onClick={() => {
                               // dùng filter để tìm ra size cần xoá
@@ -305,7 +322,7 @@ const ProductForm = (props: Props) => {
                             className="absolute bg-white cursor-pointer h-6 w-6 top-0 right-0 translate-x-1/2 -translate-y-1/2 "
                           >
                             <Close className="h-6 w-6 " />
-                          </div>
+                          </div>}
                         </div>
                       ))}
                     </div>
@@ -332,7 +349,7 @@ const ProductForm = (props: Props) => {
                       </button>
                     </div>
                   </div>
-                </FieldContainer>
+                </FieldContainer>}
                 <FieldContainer label="Màu sắc" className="col-span-2">
                   <div>
                     <div className="flex gap-4 py-8">
@@ -342,7 +359,7 @@ const ProductForm = (props: Props) => {
                           key={item}
                         >
                           {item}
-                          <div
+                         {!values.rawColors.includes(item) &&  <div
                             onClick={() => {
                               const colors = values.colors.filter(
                                 (size) => size !== item
@@ -352,7 +369,7 @@ const ProductForm = (props: Props) => {
                             className="absolute bg-white cursor-pointer h-6 w-6 top-0 right-0 translate-x-1/2 -translate-y-1/2 "
                           >
                             <Close className="h-6 w-6 " />
-                          </div>
+                          </div>}
                         </div>
                       ))}
                     </div>
@@ -505,7 +522,7 @@ const ProductForm = (props: Props) => {
                           {/* for theo colors */}
                           {values.colors.map((color, idx) => {
                             // key để định danh đối tượng giá và size của đối tượng nào
-                            const key = `${color}-'null'`;
+                            const key = `${color}`;
                             return (
                               <tr key={key}>
                                 <td
@@ -581,7 +598,7 @@ const ProductForm = (props: Props) => {
                   >
                     Hủy
                   </button>
-                  <button type="submit" className="btn-primary flex-1">
+                  <button disabled={!isValid}  type="submit" className="btn-primary flex-1">
                     Xác nhận
                   </button>
                 </div>
