@@ -21,13 +21,15 @@ export const GET = async (req: NextRequest) => {
   const bill = await prisma?.bill.count({
     where: { status: ORDER_STATUS.SUCCESS },
   });
-  const customer = await prisma?.user.count({
-    where: {
-      role: {
-        not: ROLES.ADMIN,
-      },
-    },
-  });
+  
+  // const customer = await prisma?.user.count({
+  //   where: {
+  //     role: {
+  //       not: ROLES.ADMIN,
+  //     },
+  //   },
+  // });
+
 
   const revenue = await prisma.bill.aggregate({
     _sum: {
@@ -53,7 +55,7 @@ export const GET = async (req: NextRequest) => {
       product_count,
       sold: (billRows as any)[0]?.totalQuantity,
       bill,
-      customer,
+      // customer,
       revenue: revenue._sum.total_price,
     },
   });
