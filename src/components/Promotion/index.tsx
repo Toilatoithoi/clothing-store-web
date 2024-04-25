@@ -132,6 +132,7 @@ const Promotion = (props: { promotionId?: string; }) => {
                     postData && postData.items.map((item, idx) => (
                       <Link href={`/promotion/${item.id}`} key={idx} className='flex mb-5'>
                         <div className=''>
+                          {/* nếu bài viết k có ảnh thì sẽ lấy ảnh bìa */}
                           {item.image ?
                             <Image className="object-contain overflow-hidden" src={item.image} alt="Ảnh bìa" width={300} height={200} />
                             : <Image className="object-contain overflow-hidden" src={anhBia} alt="Ảnh bìa" width={300} height={200} />

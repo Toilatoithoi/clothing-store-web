@@ -33,7 +33,7 @@ const CartDropdown = () => {
     router.push('/payment')
   }
 
-  console.log({ data })
+  // console.log({ data })
   return (
     <div className='relative cart'>
       <div className='relative'>

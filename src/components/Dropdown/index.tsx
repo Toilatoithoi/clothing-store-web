@@ -21,6 +21,7 @@ export type DropdownProps = {
 interface DropdownOption {
   label: string;
   value: string | number;
+  // disabled?: boolean;
 }
 
 const Dropdown = (props: DropdownProps) => {

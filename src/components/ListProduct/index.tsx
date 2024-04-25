@@ -46,7 +46,8 @@ const ListProduct = (props: { categoryId?: string; }) => {
     }
   })
 
-  const { data: category } = useSWRWrapper<Category>(`/api/category/${props.categoryId}?level=1`, {
+  // lấy danh mục cha hiển thị ở trang chủ/ danh mục cha
+  const { data: getCategory } = useSWRWrapper<Category>(`/api/category/${props.categoryId}?level=1`, {
     url: `/api/category/${props.categoryId}`,
     params:{
       level: 1,
@@ -80,7 +81,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
       <div className='h-[6rem] flex items-center text-gray-400 text-[1.6rem]'>
         <Link href={`/`}> <span className='hover:text-gray-600 cursor-pointer'>Trang chủ</span></Link>
         <span className='mx-2'>/</span>
-        <span className='hover:text-gray-600 cursor-pointer'>{category?.name}</span>
+        <span className='hover:text-gray-600 cursor-pointer'>{getCategory?.name}</span>
       </div>
 
       <div className='h-[4rem] mb-[1.5rem] flex justify-between items-center bg-slate-100 px-4'>

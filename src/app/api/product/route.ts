@@ -72,7 +72,7 @@ export const GET = async (request: NextRequest) => {
           })) : !isBlank(category_id) ?
             [
               {
-                // bằng category truyền vào
+                // lấy cả category cha và category con
                 id: Number(category_id),
               },
               {
