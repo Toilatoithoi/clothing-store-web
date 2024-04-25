@@ -8,16 +8,16 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json({ code: '' }, { status: 403 });
   }
 
-  const product = await prisma?.product.count({
+  const product_count = await prisma?.product.count({
     where:{
       status: PRODUCT_STATUS.PUBLISHED
     } 
   });
-  const sold = await prisma?.product_model.aggregate({
-    _sum: {
-      sold: true,
-    },
-  });
+  // const sold = await prisma?.product_model.aggregate({
+  //   _sum: {
+  //     sold: true,
+  //   },
+  // });
   const bill = await prisma?.bill.count({
     where: { status: ORDER_STATUS.SUCCESS },
   });
@@ -50,7 +50,7 @@ export const GET = async (req: NextRequest) => {
 
   return NextResponse.json({
     count: {
-      product,
+      product_count,
       sold: (billRows as any)[0]?.totalQuantity,
       bill,
       customer,

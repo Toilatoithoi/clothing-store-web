@@ -98,7 +98,7 @@ export interface CreateProductReq {
 
 export interface Summary {
   count: {
-    product: number;
+    product_count: number;
     sold: number;
     bill: number;
     customer: number;

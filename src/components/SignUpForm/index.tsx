@@ -73,7 +73,7 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
     password: yup.string().label('Mật khẩu').required(),
     address: yup.string().label('Địa chỉ').required(),
     gender: yup.string().label('Giới tính').required(),
-    
+    dob: yup.string().label('Ngày sinh').required(),
   })
 
   const handleSignUp = (values: SingUpPayload) => {

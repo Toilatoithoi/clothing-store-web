@@ -34,7 +34,7 @@ const Dashboard = () => {
               Tổng sản phẩm đang bán
             </div>
             <div className="font-bold text-[2.4rem]">
-              {formatNumber(summary?.count?.product ?? 0)}
+              {formatNumber(summary?.count?.product_count ?? 0)}
             </div>
           </div>
         </div>
