@@ -94,7 +94,6 @@ const OrderForm = (props: Props) => {
                 {
                   label: 'Chờ xác nhận',
                   value: ORDER_STATUS.NEW,
-                  disabled: true,
                 },
                 {
                   label: 'Đã xác nhận',
@@ -123,7 +122,6 @@ const OrderForm = (props: Props) => {
                 {
                   label: 'Yêu cầu hủy',
                   value: ORDER_STATUS.REQUEST_CANCEL,
-                  disabled: true,
                 },      
               ]}
               selected={values.status}

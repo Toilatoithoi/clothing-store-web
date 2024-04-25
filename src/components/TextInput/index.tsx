@@ -16,8 +16,7 @@ interface TextInputProps
 const TextInput = (props: TextInputProps) => {
   // loại bỏ label ra khỏi props
   // lấy những thứ ngoài label về rest từ props
-  const { label, hasError, errorMessage, className, cols, rows, inputClassName, ...rest } =
-    props;
+  const { label, hasError, errorMessage, className, cols, rows, inputClassName, ...rest } = props;
   // thuộc tính cùng tên khi ghép thì tên nào lấy sau sẽ được lấy
   //  const a = {name: 'a'}
   //  const b = {age: 12, name: 'b'}
