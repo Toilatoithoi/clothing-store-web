@@ -116,7 +116,7 @@ const ProductDetailPage = (props: { params: { productId: string; } }) => {
         if (!colors[model.color]) {        // kiểm tra color đã có trong list chưa
           colors[model.color] = model;
         }
-        console.log(model)
+        console.log({model})
         // chứa key là size + màu và vaule gán bằng model
         // vd: const colos = {'Xanh': {color:'xanh', size:'M'}}
         // value: {color: xanh, size: 'M} 
