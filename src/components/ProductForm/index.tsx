@@ -49,14 +49,14 @@ const ProductForm = (props: Props) => {
   const componentId = useRef(uuid());
   const isModify = props.data != null;
   const [loading, setLoading] = useState(false);
-  const { data: product, isLoading } = useSWRWrapper<ProductDetail>(
+  const { data: getProduct, isLoading } = useSWRWrapper<ProductDetail>(
     props.data ? `/api/product/${props.data?.id}` : null,
     {
       url: `/api/product/${props.data?.id}`,
     }
   );
 
-  console.log(product)
+  console.log({getProduct})
 
   const { trigger: createProduct } = useMutation('/api/product', {
     method: METHOD.POST,
@@ -255,7 +255,7 @@ const ProductForm = (props: Props) => {
           <Formik
             onSubmit={submit}
             // validationSchema={schema}
-            initialValues={getInitialValues(product)}
+            initialValues={getInitialValues(getProduct)}
             validationSchema={schema}
           >
             {({
@@ -339,7 +339,7 @@ const ProductForm = (props: Props) => {
                         className="btn-primary !w-fit px-8"
                         onClick={() => {
                           // lúc nhấn thêm nếu sizeTmp khác null thì add thằng sizeTmp vào bảng sizes đồng thời là clear textInput xoá sizeTmp
-                          if (!isBlank(values.sizeTmp) && !values.rawSizes.includes(values.sizeTmp!)) {
+                          if (!isBlank(values.sizeTmp) && !values.rawSizes.includes(values.sizeTmp!) && !values.sizes.includes(values.sizeTmp!)) {
                             const sizes = [...values.sizes, values.sizeTmp];
                             setFieldValue('sizes', sizes);
                             setFieldValue('sizeTmp', '');
@@ -384,7 +384,7 @@ const ProductForm = (props: Props) => {
                         type="button"
                         className="btn-primary !w-fit px-8"
                         onClick={() => {
-                          if (!isBlank(values.colorTmp) && !values.rawColors.includes(values.colorTmp!)) {
+                          if (!isBlank(values.colorTmp) && !values.rawColors.includes(values.colorTmp!) && !values.colors.includes(values.colorTmp!)) {
                             const colors = [...values.colors, values.colorTmp];
                             setFieldValue('colors', colors);
                             setFieldValue('colorTmp', '');
