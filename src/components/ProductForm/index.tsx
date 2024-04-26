@@ -339,7 +339,7 @@ const ProductForm = (props: Props) => {
                         className="btn-primary !w-fit px-8"
                         onClick={() => {
                           // lúc nhấn thêm nếu sizeTmp khác null thì add thằng sizeTmp vào bảng sizes đồng thời là clear textInput xoá sizeTmp
-                          if (!isBlank(values.sizeTmp)) {
+                          if (!isBlank(values.sizeTmp) && !values.rawSizes.includes(values.sizeTmp!)) {
                             const sizes = [...values.sizes, values.sizeTmp];
                             setFieldValue('sizes', sizes);
                             setFieldValue('sizeTmp', '');
@@ -384,7 +384,7 @@ const ProductForm = (props: Props) => {
                         type="button"
                         className="btn-primary !w-fit px-8"
                         onClick={() => {
-                          if (!isBlank(values.colorTmp)) {
+                          if (!isBlank(values.colorTmp) && !values.rawSizes.includes(values.colorTmp!)) {
                             const colors = [...values.colors, values.colorTmp];
                             setFieldValue('colors', colors);
                             setFieldValue('colorTmp', '');

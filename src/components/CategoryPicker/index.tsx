@@ -16,7 +16,7 @@ const CategoryPicker = (props: Props) => {
       }
     },
     onSuccess(data){
-      if(data[0]?.id){
+      if(props.selected == null && data[0]?.id){
         props.onChange?.(data[0].id as string)
       }
     }
