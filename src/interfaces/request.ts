@@ -1,3 +1,4 @@
+import { ORDER_STATUS } from '@/constants';
 import { product_model } from '@prisma/client';
 import { bill_product } from '@prisma/client';
 
@@ -12,11 +13,11 @@ export interface CreateUserReq {
   role: string;
 }
 
-enum BILL_STATUS {
-  SUCCESS = 'SUCCESS',
-  REJECT = 'REJECT',
-  CANCEL = 'CANCEL',
-}
+// enum BILL_STATUS {
+//   SUCCESS = 'SUCCESS',
+//   REJECT = 'REJECT',
+//   CANCEL = 'CANCEL',
+// }
 
 export interface CreateBillReq {
   user_id: number;
@@ -28,7 +29,7 @@ export interface CreateBillReq {
   name: string;
   phone: string;
   note: string;
-  status?: BILL_STATUS;
+  status?: ORDER_STATUS;
   create_at: string;
   update_at: string;
   bill_product: bill_product[];
