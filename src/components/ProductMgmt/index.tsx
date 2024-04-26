@@ -61,6 +61,7 @@ const ProductMgmt = () => {
         // add vào đầu addIndex: 0
         addIndex: gridRef.current.api.getDisplayedRowCount(),
       });
+      console.log(pagination.current.page)
     },
   });
 

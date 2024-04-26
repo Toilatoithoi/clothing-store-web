@@ -18,6 +18,8 @@ export const GET = async (req: NextRequest) => {
   //     sold: true,
   //   },
   // });
+
+  // tổng đơn hàng thành công
   const bill = await prisma?.bill.count({
     where: { status: ORDER_STATUS.SUCCESS },
   });
@@ -30,7 +32,7 @@ export const GET = async (req: NextRequest) => {
   //   },
   // });
 
-
+  // tổng doanh thu đơn hàng thành công
   const revenue = await prisma.bill.aggregate({
     _sum: {
       total_price: true,
@@ -40,7 +42,7 @@ export const GET = async (req: NextRequest) => {
     }
   });
 
-
+  // tổng sản phẩm bán thành công  
   const billRows = await prisma.$queryRawUnsafe(`SELECT  SUM(subquery.quantity) as totalQuantity
   FROM bill
   JOIN (
