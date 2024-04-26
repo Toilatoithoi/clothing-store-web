@@ -1,5 +1,5 @@
 import { isBlank, uuid } from '@/utils';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CategoryPicker from '../CategoryPicker';
 import { Formik } from 'formik';
 import TextInput from '../TextInput';
@@ -100,7 +100,7 @@ const ProductForm = (props: Props) => {
   );
 
   const submit = async (values: ProductValues) => {
-    // setLoading(true);
+    setLoading(true);
     console.log(values)
     const model: ProductModelReq[] = [];
     if (values.colors.length > 0 && values.sizes.length > 0) {
