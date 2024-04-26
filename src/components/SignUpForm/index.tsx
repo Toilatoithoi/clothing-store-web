@@ -115,7 +115,8 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
           handleSubmit,
           touched,
           errors,
-          setFieldValue
+          setFieldValue,
+          isValid
         }) => <form className='flex flex-col gap-8' onSubmit={handleSubmit} >
             <div className='w-full text-center text-[3rem] font-bold text-black'>Đăng ký</div>
             <div>Bạn đã có tài khoản? <strong className='text-blue-500 cursor-pointer' onClick={props.onShowLogin}>Đăng nhập ngay</strong></div>
@@ -202,7 +203,7 @@ const SignUpForm = (props: { onShowLogin(): void }) => {
               value={values.dob}
               name="dob"
               onChange={handleChange} /> */}
-            <button type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Đăng ký</button>
+            <button disabled={!isValid} type='submit' className='bg-[#bc0516] disabled:opacity-[0.5] text-white uppercase px-[1.6rem] h-[4rem] flex items-center justify-center font-bold'>Đăng ký</button>
           </form>}
       </Formik>
     </Loader>
