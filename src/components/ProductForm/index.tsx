@@ -384,7 +384,7 @@ const ProductForm = (props: Props) => {
                         type="button"
                         className="btn-primary !w-fit px-8"
                         onClick={() => {
-                          if (!isBlank(values.colorTmp) && !values.rawSizes.includes(values.colorTmp!)) {
+                          if (!isBlank(values.colorTmp) && !values.rawColors.includes(values.colorTmp!)) {
                             const colors = [...values.colors, values.colorTmp];
                             setFieldValue('colors', colors);
                             setFieldValue('colorTmp', '');
