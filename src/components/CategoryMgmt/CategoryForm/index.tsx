@@ -74,7 +74,7 @@ const CategoryForm = (props: Props) => {
         validationSchema={schema}
         initialValues={props.data ?? { name: '' } as ICategoryValues}
       >
-        {({ values, handleBlur, handleChange, errors, touched, setFieldValue, handleSubmit }) =>
+        {({ values, handleBlur, handleChange, errors, touched, setFieldValue, handleSubmit, isValid }) =>
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <TextInput
               label='Tên danh mục'
@@ -112,7 +112,7 @@ const CategoryForm = (props: Props) => {
 
             <div className="flex gap-2">
               <button type="button" className='btn flex-1' onClick={props.onClose}>Hủy</button>
-              <button type="submit" className='btn-primary flex-1'>Xác nhận</button>
+              <button disabled={!isValid} type="submit" className='btn-primary flex-1'>Xác nhận</button>
             </div>
           </form>}
       </Formik>
