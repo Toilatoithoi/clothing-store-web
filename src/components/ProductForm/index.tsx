@@ -109,7 +109,7 @@ const ProductForm = (props: Props) => {
         // lấy được file theo key là color
         const file = values.fileConfig[color];
         let image = '';
-        // file có thể là string vì lúc sửa chỉ cần load file string lên nếu không thay đổi dile thì file vẫn là string thì không cần upload nữa
+        // file có thể là string vì lúc sửa chỉ cần load file string lên nếu không thay đổi file thì file vẫn là string thì không cần upload nữa
         if (file && typeof file !== 'string') {
           try {
             // upload file lên cloudinary
@@ -210,6 +210,7 @@ const ProductForm = (props: Props) => {
       };
       values.idModelConfig = {};
 
+      // thêm dữ liệu cho colors và sizes
       product.product_model.forEach((model) => {
         let key = `${model.color}-${model.size}`;
         if(!model.size){
@@ -230,6 +231,7 @@ const ProductForm = (props: Props) => {
       values.sizes = values.sizes.filter(item => item);
       values.rawColors = values.colors;
       values.rawSizes = values.sizes;
+      console.log({values})
       return values;
     }
 
@@ -398,6 +400,7 @@ const ProductForm = (props: Props) => {
                 </FieldContainer>
                 <FieldContainer label="Model sản phẩm" className="col-span-2">
                   {
+                    // có màu sắc và kích cỡ
                     values.colors.length != 0 && values.sizes.length != 0 && <div className="w-full">
                       <table className="w-full border-collapse border border-slate-500">
                         <thead>
@@ -501,6 +504,7 @@ const ProductForm = (props: Props) => {
                     </div>
                   }
                   {
+                    // nếu có màu sắc nhưng không có kích cỡ
                     values.colors.length != 0 && values.sizes.length == 0 && <div className="w-full">
                       <table className="w-full border-collapse border border-slate-500">
                         <thead>

@@ -84,7 +84,7 @@ const Promotion = (props: { promotionId?: string; }) => {
           {/* dùng grid chia làm 5 cột */}
           {/* box-sizing là tổng chiều dài của phần tử có tính thêm border, padding hay không */}
           {/* mã màu bg-[#f7f8fa] */}
-          <div className="bg-[#f7f8fa] w-[70rem] h-fit">
+          <div className="bg-[#f7f8fa] w-[70rem] h-fit mb-4">
             {/* <div className="font-bold text-[1.8rem] mb-2">ENJOY CHRISMAS | MUA 1 TẶNG 1 toàn bộ hệ thống</div>
             <div className='mb-6 text-[1.2rem]'>20/12/2023</div>
             <Image className="object-contain mb-8" src={anhBia} alt="Ảnh bìa" width={700} />

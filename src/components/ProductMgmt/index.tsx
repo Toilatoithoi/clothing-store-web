@@ -99,7 +99,7 @@ const ProductMgmt = () => {
         searchKey: filter.current?.searchKey ? filter.current?.searchKey: '',
       });
     }
-    console.log({page, totalPage})
+    // console.log({page, totalPage})
   };
 
   const columnDefs: Array<ColDef | ColGroupDef> = [

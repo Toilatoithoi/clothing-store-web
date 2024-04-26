@@ -167,6 +167,7 @@ const ListBill = ({ username }: { username?: string }) => {
       cellRenderer: ButtonCell,
       maxWidth: 120,
       pinned: 'right',
+      // tắt các nút khi ở trong admin
       hide: !isBlank(username),
       cellRendererParams: {
         buttons: [
