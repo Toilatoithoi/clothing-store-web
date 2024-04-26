@@ -147,7 +147,7 @@ const Promotion = (props: { promotionId?: string; }) => {
                             </div>
                             <div className='text-[1.2rem] font-bold'>{item.title}</div>
                           </div>
-                          <div className="sapo" dangerouslySetInnerHTML={{ __html: item.sapo || '' }}></div>
+                          <div className="sapo text-[0.9rem]" dangerouslySetInnerHTML={{ __html: item.sapo || '' }}></div>
                           <div className='flex cursor-pointer text-red-700 hover:text-green-700'>
                             <button type='button' className='font-bold text-[1.2rem] mr-1'>Xem thêm</button>
                             <Plus className='text-[1rem] mt-[0.45rem] h-4 w-4' />
