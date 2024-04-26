@@ -32,6 +32,7 @@ interface ProductValues {
   // danh sách màu sắc và size hiển thị 
   colors: string[];
   sizes: string[];
+  // là các giá trị ban đầu sẽ không thể xoá mà chỉ thêm
   rawSizes: string[];
   rawColors: string[];
   // danh sách màu sắc và size theo product_model ở input thêm
@@ -239,8 +240,8 @@ const ProductForm = (props: Props) => {
       priceConfig: {},
       quantityConfig: {},
       fileConfig: {},
-      rawColors:['Trắng', 'Đen'],
-      rawSizes: ['S', 'M', 'L', 'XL']
+      rawColors:[],
+      rawSizes: []
     };
   };
 
