@@ -31,7 +31,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
   // Kết quả sẽ là '{"priceMin":100,"priceMax":200}'
   // khi key thay đổi thì data mới load lại nếu key vẫn dữ nguyên data
   // do method searchParams.get chỉ nhận chuỗi string nên phải chuyển các category con thành chuỗi rồi khi get xong thì chuyển thành mảng 
-  const { data } = useSWRWrapper<PaginationRes<ProductRes>>(`/api/product?orderBy=${orderBy}${JSON.stringify(filter)}`, {
+  const { data: getProduct } = useSWRWrapper<PaginationRes<ProductRes>>(`/api/product?orderBy=${orderBy}${JSON.stringify(filter)}`, {
     url: '/api/product',
     params: {
       ...props.categoryId && { categoryId: props.categoryId },
@@ -54,7 +54,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
     }
   })
 
-  console.log({ data });
+  console.log({ getProduct });
 
   const handleValuePage = (values: number) => {
     setPage(values)
@@ -86,7 +86,7 @@ const ListProduct = (props: { categoryId?: string; }) => {
 
       <div className='h-[4rem] mb-[1.5rem] flex justify-between items-center bg-slate-100 px-4'>
         {/* tính tổng số sản phẩm */}
-        <div>{`Tổng ${formatNumber(data?.pagination.totalCount)} sản phẩm `}</div>
+        <div>{`Tổng ${formatNumber(getProduct?.pagination.totalCount)} sản phẩm `}</div>
         <div className='flex'>
           <div className='mr-4'>Sắp xếp theo</div>
           <div>
@@ -113,23 +113,23 @@ const ListProduct = (props: { categoryId?: string; }) => {
       <div className='flex mb-[2rem] gap-[1.5rem]'>
         <SideBar categoryId={props.categoryId} onChangeFilter={onChangeFilter} />
         <div className='grid grid-cols-4 gap-5 h-fit'>
-          {data && data.pagination.totalCount != 0 ?
-            data.items.map(item => <ProductCard data={item} key={item.id} />)
+          {getProduct && getProduct.pagination.totalCount != 0 ?
+            getProduct.items.map(item => <ProductCard data={item} key={item.id} />)
             :
             <div>Không có sản phẩm</div>
           }
         </div>
       </div>
       {
-        data && data.pagination.totalCount != 0 ?
+        getProduct && getProduct.pagination.totalCount != 0 ?
           <div className='flex items-center justify-center gap-4'>
             <select className='w-[5rem] flex items-end justify-end p-2 border-2 border-blue-600' onChange={(e) => handleValuePage(Number(e.target.value))}>
-              {Array.from({ length: data.pagination.totalPage }, (_, index) => (
+              {Array.from({ length: getProduct.pagination.totalPage }, (_, index) => (
                 <option className="text-center" key={index} value={index + 1}>{`${index + 1}`}</option>
               ))}
             </select>
             <div>/</div>
-            <div>{data?.pagination.totalPage}</div>
+            <div>{getProduct?.pagination.totalPage}</div>
           </div>
           : <div></div>
       }
