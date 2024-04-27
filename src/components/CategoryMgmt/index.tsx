@@ -165,8 +165,8 @@ const CategoryMgmt = () => {
       <ModalProvider show={modalDel?.show} onHide={handleCloseModalDel}>
         <Loader id={componentId.current}>
           <ConfirmModal
-            title="Xóa bài viết"
-            content="Bạn có chắc chán muốn xóa bài viết này không"
+            title="Xóa danh mục"
+            content="Bạn có chắc chán muốn xóa danh mục này không"
             type="warning"
             onCancel={handleCloseModalDel}
             onConfirm={handleDelete}
