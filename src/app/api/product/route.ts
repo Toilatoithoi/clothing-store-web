@@ -139,8 +139,9 @@ export const GET = async (request: NextRequest) => {
         if (mode.price && mode.price < price.priceMin) {
           price.priceMin = mode.price;
         }
-
+        // Tổng sản phẩm đã bán
         quantity.sold += (mode.sold ?? 0);
+        // Tổng sản phẩm trong kho
         quantity.stock += (mode.stock ?? 0);
       });
 
