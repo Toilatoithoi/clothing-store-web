@@ -78,6 +78,7 @@ const RevenueChart = (props:{toDate?: string; fromDate?: string }) => {
     ],
   };
   // console.log(options)
+  console.log({data})
   if (!data) {
     return null
   }
