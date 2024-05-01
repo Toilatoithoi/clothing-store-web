@@ -24,6 +24,9 @@ export const GET = async (req: NextRequest) => {
 
   toDate = formatDateToString(addDays(toDate!, 1), 'yyyy-MM-dd')
 
+  console.log({fromDate})
+  console.log({toDate})
+
   try {
     // tính doanh thu theo ngày tạo 
     const query = `
