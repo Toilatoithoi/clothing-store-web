@@ -13,7 +13,7 @@ export const GET = async (req: NextRequest) => {
   const summary = order.reduce(
     // prev là giá trị tích luỹ
     // curr la giá trị hiện tại
-    (prev, curr) => {
+    (prev: any, curr: any) => {
       const result = { ...prev };
       if (curr.status === ORDER_STATUS.SUCCESS) {
         result.success++;
