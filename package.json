@@ -8,9 +8,6 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "engines": {
-      "node": "20.x"
-  },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^6.2.0",
     "@date-io/date-fns": "^3.0.0",
