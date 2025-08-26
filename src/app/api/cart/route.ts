@@ -52,7 +52,7 @@ export const GET = async (req: NextRequest) => {
       }
     });
 
-    const res = cart.map(item => {
+    const res = cart.map((item: any) => {
       return {
         ...item.product_model,
         quantity: item.quantity,
