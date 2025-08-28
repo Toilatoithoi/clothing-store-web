@@ -3,6 +3,8 @@ import { verifyToken } from '@/utils/service';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 // API route Vercel-ready, GET only
 export const GET = async (req: NextRequest) => {
   try {
