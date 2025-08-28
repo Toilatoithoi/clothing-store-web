@@ -2,41 +2,47 @@ import { ORDER_STATUS, ROLES } from '@/constants';
 import { verifyToken } from '@/utils/service';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+
 export const GET = async (req: NextRequest) => {
-  const user = await verifyToken(req);
-  if (user?.role !== ROLES.ADMIN) {
-    return NextResponse.json({ code: '' }, { status: 403 });
-  }
-
-  const order = await prisma.bill.findMany({ select: { status: true } });
-
-  const summary = order.reduce(
-    // prev là giá trị tích luỹ
-    // curr la giá trị hiện tại
-    (prev, curr) => {
-      const result = { ...prev };
-      if (curr.status === ORDER_STATUS.SUCCESS) {
-        result.success++;
-      } else if (curr.status === ORDER_STATUS.FAILED) {
-        result.failed++;
-      } else if (curr.status === ORDER_STATUS.CANCELED) {
-        result.canceled++;
-      } else if (curr.status === ORDER_STATUS.REJECT) {
-        result.reject++;
-      }
-
-      return result;
-    },
-    {
-      success: 0,
-      failed: 0,
-      canceled: 0,
-      reject: 0,
+  try {
+    // Xác thực user
+    const user = await verifyToken(req);
+    if (!user || user.role !== ROLES.ADMIN) {
+      return NextResponse.json({ code: 'forbidden' }, { status: 403 });
     }
-  );
 
-  return NextResponse.json({
-    total: order.length,
-    ...summary,
-  });
+    // Lấy đơn hàng
+    const orders = await prisma.bill.findMany({ select: { status: true } });
+
+    // Tính tổng
+    const summary = orders.reduce(
+      (prev, curr) => {
+        const result = { ...prev };
+        switch (curr.status) {
+          case ORDER_STATUS.SUCCESS:
+            result.success++;
+            break;
+          case ORDER_STATUS.FAILED:
+            result.failed++;
+            break;
+          case ORDER_STATUS.CANCELED:
+            result.canceled++;
+            break;
+          case ORDER_STATUS.REJECT:
+            result.reject++;
+            break;
+        }
+        return result;
+      },
+      { success: 0, failed: 0, canceled: 0, reject: 0 }
+    );
+
+    return NextResponse.json({
+      total: orders.length,
+      ...summary,
+    });
+  } catch (error) {
+    console.error('GET /api/admin/summary/order failed', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 };
