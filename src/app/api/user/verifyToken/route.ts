@@ -4,6 +4,8 @@ import prisma from '@/lib/db';
 import { INTERNAL_SERVER_ERROR, UNAUTHORIZED } from '@/constants/errorCodes';
 import { UserPayload } from '@/app/(customer)/user/page';
 
+export const dynamic = 'force-dynamic';
+
 export const GET = async (req: NextRequest) => {
   // verify token
   const data = await verifyToken(req);

@@ -8,7 +8,7 @@ import { RestError, verifyToken } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 import { FETCH_COUNT, ROLES, SORT_TYPE } from '@/constants';
 
-
+export const dynamic = 'force-dynamic';
 
 export const GET = async (request: NextRequest) => {
   // lấy từ link url api

@@ -6,6 +6,7 @@ import { RestError, verifyToken } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 import { PRODUCT_STATUS } from '@/constants';
 
+export const dynamic = 'force-dynamic';
 
 interface UpdateCartInput {
   quantity: number;

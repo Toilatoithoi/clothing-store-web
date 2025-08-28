@@ -3,9 +3,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { isBlank } from '@/utils';
-import { product_model } from '@prisma/client';
 import { RestError } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
+
+export const dynamic = 'force-dynamic';
+
 export const GET = async (request: NextRequest) => {
   // lấy từ link url api
   const url = new URL(request.url);

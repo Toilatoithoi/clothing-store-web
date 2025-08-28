@@ -9,6 +9,8 @@ import { FETCH_COUNT, ORDER_STATUS, ROLES } from '@/constants';
 import { formatStringToDate } from '@/utils/datetime';
 import { addDays } from 'date-fns';
 
+export const dynamic = 'force-dynamic';
+
 export const GET = async (req: NextRequest) => {
   const url = new URL(req.url);
   const fromDate = formatStringToDate(url.searchParams.get('fromDate')?.toString(), 'yyyy-MM-dd');

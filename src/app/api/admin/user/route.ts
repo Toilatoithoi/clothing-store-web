@@ -5,6 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { isBlank } from '@/utils';
 
+export const dynamic = 'force-dynamic';
+
 export const GET = async (req: NextRequest) => {
   const user = await verifyToken(req);
   if (user?.role !== ROLES.ADMIN) {

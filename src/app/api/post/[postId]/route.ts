@@ -5,6 +5,8 @@ import { RestError } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 import { isBlank } from '@/utils';
 
+export const dynamic = 'force-dynamic';
+
 export const PUT = async (req: NextRequest, { params }: { params: { postId: string; } }) => {
   const id = Number(params.postId);
   const body = await req.json();

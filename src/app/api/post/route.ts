@@ -4,7 +4,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { CreatePostReq } from '@/interfaces/request';
 import { RestError } from '@/utils/service';
 import { INPUT_INVALID, INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
-import { Select } from '@material-ui/core';
+
+export const dynamic = 'force-dynamic';
+
 export const GET = async (req: NextRequest) => {
   // lấy từ link url api
   const url = new URL(req.url);

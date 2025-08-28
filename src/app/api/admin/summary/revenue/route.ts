@@ -5,6 +5,9 @@ import prisma from '@/lib/db';
 import {formatDateToString} from '@/utils/datetime'
 import { addDays, subMonths } from 'date-fns';
 import { isBlank } from '@/utils';
+
+export const dynamic = 'force-dynamic';
+
 export const GET = async (req: NextRequest) => {
   const user = await verifyToken(req);
   if (user?.role !== ROLES.ADMIN) {

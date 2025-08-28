@@ -2,6 +2,9 @@ import { ORDER_STATUS, PRODUCT_STATUS, ROLES } from '@/constants';
 import { verifyToken } from '@/utils/service';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+
+export const dynamic = 'force-dynamic';
+
 export const GET = async (req: NextRequest) => {
   const user = await verifyToken(req);
   if (user?.role !== ROLES.ADMIN) {

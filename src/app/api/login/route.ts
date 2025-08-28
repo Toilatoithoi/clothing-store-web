@@ -5,6 +5,8 @@ import { RestError, hashPassword } from '@/utils/service';
 import jwt from 'jsonwebtoken';
 import { INPUT_INVALID } from '@/constants/errorCodes';
 
+export const dynamic = 'force-dynamic';
+
 export const POST = async (req: NextRequest) => {
   //validate input
   const body = await req.json();

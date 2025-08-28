@@ -3,6 +3,8 @@ import prisma from '@/lib/db';
 import { RestError, verifyToken } from "@/utils/service";
 import { INTERNAL_SERVER_ERROR } from "@/constants/errorCodes";
 
+export const dynamic = 'force-dynamic';
+
 export const DELETE = async (req: NextRequest, { params }: { params: { productmodelId: string; } }) => {
     const id = Number(params.productmodelId);
     const data = await verifyToken(req);

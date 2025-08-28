@@ -2,6 +2,9 @@ import { ROLES } from '@/constants';
 import prisma from '@/lib/db';
 import { verifyToken } from '@/utils/service';
 import { NextRequest, NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
+
 export const GET = async (req: NextRequest) => {
   const data = await verifyToken(req);
   if (data == null) {

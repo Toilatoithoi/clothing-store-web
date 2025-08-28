@@ -5,6 +5,8 @@ import { User } from '@prisma/client';
 import { RestError, verifyToken } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 
+export const dynamic = 'force-dynamic';
+
 // Update user info
 export const PUT = async (req: NextRequest, { params }: { params: { userId: string; } }) => {
   console.log({ params })

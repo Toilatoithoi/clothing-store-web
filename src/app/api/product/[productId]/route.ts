@@ -4,6 +4,8 @@ import { RestError } from '@/utils/service';
 import { INTERNAL_SERVER_ERROR } from '@/constants/errorCodes';
 import { CreateProductReq } from '@/interfaces/request';
 
+export const dynamic = 'force-dynamic';
+
 export const PUT = async (
   req: NextRequest,
   { params }: { params: { productId: string } }

@@ -6,6 +6,8 @@ import { bill_product } from '@prisma/client';
 import { ORDER_STATUS, ROLES } from '@/constants';
 import { isBlank } from '@/utils';
 
+export const dynamic = 'force-dynamic';
+
 export const PUT = async (
   req: NextRequest,
   { params }: { params: { billId: string } }
