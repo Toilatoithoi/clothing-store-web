@@ -1,15 +1,16 @@
-import { PrismaClient } from '@prisma/client'
-
-const prismaClientSingleton = () => {
-  return new PrismaClient()
-}
+import { PrismaClient } from '@prisma/client';
 
 declare global {
-  var prisma: undefined | ReturnType<typeof prismaClientSingleton>
+  // Dùng globalThis để tránh tạo nhiều instance khi HMR
+  var prisma: PrismaClient | undefined;
 }
 
-const prisma = globalThis.prisma ?? prismaClientSingleton()
+// Tạo singleton
+const prisma = globalThis.prisma ?? new PrismaClient();
 
-export default prisma
+// Gán lại chỉ khi không phải production để tránh multiple instances
+if (process.env.NODE_ENV !== 'production') {
+  globalThis.prisma = prisma;
+}
 
-if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma
+export default prisma;
