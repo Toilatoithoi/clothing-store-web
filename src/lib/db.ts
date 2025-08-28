@@ -7,12 +7,10 @@ const prismaClientSingleton = () => {
 }
 
 declare global {
-  var prisma: PrismaClient | undefined;
+  var prisma: undefined | ReturnType<typeof prismaClientSingleton>
 }
 
-const prisma = globalThis.prisma ?? new PrismaClient({
-  log: ['query', 'info'], // chỉ log, không connect lúc build
-});
+const prisma = globalThis.prisma ?? prismaClientSingleton()
 
 export default prisma
 
