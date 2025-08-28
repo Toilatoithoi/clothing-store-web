@@ -88,8 +88,8 @@ const OrderForm = (props: Props) => {
               ]}
               selected={ ORDER_STATUS.CANCELED }
               onChange={() => setFieldValue('status', ORDER_STATUS.CANCELED,)}
-              errorMessage={errors.status}
-              hasError={touched && !isBlank(errors.status)}
+              errorMessage={errors.status.toString()}
+              hasError={touched && !isBlank(errors.status.toString())}
             />:
             <Dropdown
               label="Trạng thái"
@@ -131,8 +131,8 @@ const OrderForm = (props: Props) => {
               ]}
               selected={values.status}
               onChange={(value) => setFieldValue('status', value)}
-              errorMessage={errors.status}
-              hasError={touched && !isBlank(errors.status)}
+              errorMessage={errors.status.toString()}
+              hasError={touched && !isBlank(errors.status.toString())}
             />
             }
             
@@ -143,8 +143,8 @@ const OrderForm = (props: Props) => {
               value={values.reason}
               onChange={handleChange}
               onBlur={handleBlur}
-              errorMessage={errors.reason}
-              hasError={touched && !isBlank(errors.reason)}
+              errorMessage={errors.reason.toString()}
+              hasError={touched && !isBlank(errors.reason.toString())}
             />
             <div className="flex gap-2">
               <button
