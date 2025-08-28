@@ -1,36 +1,64 @@
+import { ORDER_STATUS, ROLES } from '@/constants';
+import { verifyToken } from '@/utils/service';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
-import { verifyToken } from '@/utils/service';
-import { ROLES, ORDER_STATUS } from '@/constants';
 
+// API route Vercel-ready, GET only
 export const GET = async (req: NextRequest) => {
   try {
-    // Xác thực user
-    const user = await verifyToken(req).catch(() => null);
+    // 1. Xác thực token, server-only
+    const user = await verifyToken(req);
     if (!user || user.role !== ROLES.ADMIN) {
-      return NextResponse.json({ code: 'forbidden' }, { status: 403 });
+      return NextResponse.json(
+        { code: 'forbidden', message: 'Access denied' },
+        { status: 403 }
+      );
     }
 
-    // Lấy đơn hàng, chỉ query status
-    const orders = await prisma.bill.findMany({ select: { status: true } });
+    // 2. Prisma query chỉ chạy trong handler
+    const orders = await prisma.bill.findMany({
+      select: { status: true },
+    });
 
-    // Tính tổng
+    // 3. Tính summary
     const summary = orders.reduce(
       (prev, curr) => {
         switch (curr.status) {
-          case ORDER_STATUS.SUCCESS: prev.success++; break;
-          case ORDER_STATUS.FAILED: prev.failed++; break;
-          case ORDER_STATUS.CANCELED: prev.canceled++; break;
-          case ORDER_STATUS.REJECT: prev.reject++; break;
+          case ORDER_STATUS.SUCCESS:
+            prev.success++;
+            break;
+          case ORDER_STATUS.FAILED:
+            prev.failed++;
+            break;
+          case ORDER_STATUS.CANCELED:
+            prev.canceled++;
+            break;
+          case ORDER_STATUS.REJECT:
+            prev.reject++;
+            break;
         }
         return prev;
       },
-      { success: 0, failed: 0, canceled: 0, reject: 0 }
+      {
+        success: 0,
+        failed: 0,
+        canceled: 0,
+        reject: 0,
+      }
     );
 
-    return NextResponse.json({ total: orders.length, ...summary });
-  } catch (error) {
-    console.error('GET /api/admin/summary/order failed', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    // 4. Trả kết quả
+    return NextResponse.json({
+      total: orders.length,
+      ...summary,
+    });
+  } catch (error: any) {
+    console.error('Error in /api/admin/summary/order:', error);
+
+    // Nếu Prisma connect fail, trả status 500
+    return NextResponse.json(
+      { code: 'server_error', message: error.message },
+      { status: 500 }
+    );
   }
 };
