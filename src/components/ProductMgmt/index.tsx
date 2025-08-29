@@ -122,13 +122,13 @@ const ProductMgmt = () => {
       valueFormatter: integerFormatterVND,
       maxWidth: 120,
     },
-    {
-      headerName: 'Đã bán',
-      field: 'sold',
-      cellClass: 'text-right',
-      valueFormatter: integerFormatter,
-      maxWidth: 80,
-    },
+    // {
+    //   headerName: 'Đã bán',
+    //   field: 'sold',
+    //   cellClass: 'text-right',
+    //   valueFormatter: integerFormatter,
+    //   maxWidth: 80,
+    // },
     {
       headerName: 'Còn lại',
       field: 'stock',
