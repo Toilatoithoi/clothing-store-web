@@ -82,8 +82,8 @@ const CategoryForm = (props: Props) => {
               value={values.name}
               onChange={handleChange}
               onBlur={handleBlur}
-              errorMessage={errors.name.toString()}
-              hasError={touched && !isBlank(errors.name.toString())}
+              errorMessage={errors.name as string}
+              hasError={touched.name && !isBlank(errors.name as string)}
             />
             <Dropdown
               label='Cấp'
@@ -99,8 +99,8 @@ const CategoryForm = (props: Props) => {
               ]}
               selected={values.level}
               onChange={(value) => setFieldValue('level', value)}
-              errorMessage={errors.level.toString()}
-              hasError={touched && !isBlank(errors.level.toString())}
+              errorMessage={errors.level as string}
+              hasError={touched.level && !isBlank(errors.level as string)}
             />
 
             {String(values.level) === '2' && <CategoryPicker
